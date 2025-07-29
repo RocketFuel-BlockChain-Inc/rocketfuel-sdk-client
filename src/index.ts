@@ -45,12 +45,25 @@ class RKFLPlugin {
 
     this.buttons.forEach((btnType) => {
       const button = document.createElement('button');
+      button.style.minWidth = '250px';
       button.style.margin = '5px';
-      button.style.padding = '10px 20px';
+      button.style.padding = '8px 16px';
+      button.style.border = '1px solid #e0e0e0';
+      button.style.borderRadius = '999px'; // fully rounded pill shape
+      button.style.backgroundColor = 'white';
+      button.style.display = 'flex';
+      button.style.alignItems = 'center';
+      button.style.gap = '8px';
+      button.style.fontFamily = 'sans-serif';
+      button.style.fontSize = '14px';
+      button.style.color = '#1a1a1a';
+      button.style.cursor = 'pointer';
+      button.style.boxShadow = '0 0 0 1px rgba(0,0,0,0.05)';
 
       switch (btnType) {
         case FEATURE_PAYIN:
-          button.innerText = 'Pay Now';
+          button.innerHTML = `<img src="https://ik.imagekit.io/rocketfuel/icons/button-image-crypto.png?updatedAt=1753810008524&tr=w-30,h-30,fo-auto,q-50" alt=""> Pay with Cryto Currency`;
+
           button.disabled = true; // Initially disabled
           this.payNowButton = button;
           button.onclick = async () => {
@@ -77,7 +90,7 @@ class RKFLPlugin {
           break;
 
         case FEATURE_AGE_VERIFICATION:
-          button.innerText = 'Verify Age';
+          button.innerHTML = `<img src="https://ik.imagekit.io/rocketfuel/icons/button-image.png?tr=w-30,h-30,fo-auto,q-50" alt=""> Verification via Rocketfuel`;
           button.onclick = () =>
             alert(`Age verification started for ${this.clientId}`);
           break;
