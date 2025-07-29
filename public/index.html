@@ -3,54 +3,158 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>SDK Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mobile Phone Sale</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f2f4f8;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            max-width: 360px;
+            margin: auto;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .product-details {
+            padding: 16px;
+        }
+
+        .product-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .product-price {
+            font-size: 1.1rem;
+            color: #4caf50;
+            margin-bottom: 16px;
+        }
+
+        .buy-btn,
+        .pay-btn {
+            width: 90%;
+            max-width: 300px;
+            margin: 10px auto;
+            padding: 12px;
+            font-size: 1rem;
+            background: #2e7dff;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            display: block;
+            transition: background 0.3s ease;
+        }
+
+        .buy-btn:disabled,
+        .pay-btn:disabled {
+            background: #b0b9c6;
+            cursor: not-allowed;
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .buy-btn:hover {
+            background: #105ce3;
+        }
+
+        .pay-btn[disabled] {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        #sdk-buttons-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        #cart {
+            max-width: 360px;
+            margin: 20px auto;
+            display: none;
+            background-color: #95e48e;
+            color: #f8f8f8;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+            padding: 16px;
+            font-family: 'Segoe UI', sans-serif;
+            transition: all 0.3s ease-in-out;
+        }
+    </style>
 </head>
 
 <body>
-    <h2>SDK Buttons</h2>
+
+    <div class="product-card">
+        <img class="product-image" src="https://fdn2.gsmarena.com/vv/pics/apple/apple-iphone-14-pro-max-1.jpg"
+            alt="iPhone 14 Pro Max">
+        <div class="product-details">
+            <div class="product-name">iPhone 14 Pro Max</div>
+            <div class="product-price">$10</div>
+            <button id="buy-btn" class="buy-btn" onclick="prepareOrder()" disabled="true">Buy Now</button>
+        </div>
+    </div>
+    <div id="cart"></div>
     <div id="sdk-buttons-container"></div>
+
+    <!-- SDK Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script src="./dist/sdk.min.js"></script>
+
     <script>
         const sdk = new RkflPlugin({
-            clientId: "931e948670dc119e6189bde004da9b1702e5fae810ff7831c0f3171f06d66081",
-            clientSecret: "798d96df31374330837895aae04c30b6",
-            merchantId: '14ec584d-53af-476d-aacd-2b7f025cf21b',
-            buttons: ['FEATURE_AGE_VERIFICATION', 'FEATURE_PAYIN'],
-            containerId: "sdk-buttons-container",
-            redirect: false, // default false
-            enviornment: 'qa'
+      
         });
 
         sdk.init();
-        sdk.prepareOrder({
-            "amount": "3",
-            "currency": "USD",
-            "cart": [
-                {
-                    "id": "1099_129",
-                    "name": "Dummy Product",
-                    "price": "3",
-                    "quantity": 1
-                }
-            ],
-            "customerInfo": {
-                "name": "rkflcs",
-                "email": "hari.s@rocketfuel.inc"
-            },
-            "customParameter": {
-                "returnMethod": "GET",
-                "params": [
-                    {
-                        "name": "submerchant",
-                        "value": "bigcommerce"
-                    }
-                ]
-            },
-            "merchant_id": '14ec584d-53af-476d-aacd-2b7f025cf21b',
-            "redirectUrl": "https://www.irctc.co.in/nget/train-search"
-        });
+
+        function prepareOrder() {
+            const ele = document.getElementById('cart');
+            ele.innerText = 'Cart Item added';
+            ele.style.display = 'block';
+
+            const orderData = {
+                amount: "10",
+                currency: "USD",
+                cart: [{
+                    id: "iphone_14_pro_max",
+                    name: "iPhone 14 Pro Max",
+                    price: "10",
+                    quantity: 1
+                }],
+                customerInfo: {
+                    name: "John Doe",
+                    email: "john.doe@example.com"
+                },
+                customParameter: {
+                    returnMethod: "GET",
+                    params: [{
+                        name: "submerchant",
+                        value: "mobilesale"
+                    }]
+                },
+                merchant_id: '14ec584d-53af-476d-aacd-2b7f025cf21b',
+            };
+
+            sdk.prepareOrder(orderData);
+        }
     </script>
+
 </body>
 
 </html>
