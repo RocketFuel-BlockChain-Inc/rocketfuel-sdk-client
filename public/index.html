@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>SDK Test</title>
+</head>
+
+<body>
+    <h2>SDK Buttons</h2>
+    <div id="sdk-buttons-container"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="./dist/sdk.min.js"></script>
+    <script>
+        const sdk = new RkflPlugin({
+            clientId: "931e948670dc119e6189bde004da9b1702e5fae810ff7831c0f3171f06d66081",
+            clientSecret: "798d96df31374330837895aae04c30b6",
+            merchantId: '14ec584d-53af-476d-aacd-2b7f025cf21b',
+            buttons: ['FEATURE_AGE_VERIFICATION', 'FEATURE_PAYIN'],
+            containerId: "sdk-buttons-container",
+            redirect: true // default false
+        });
+
+        sdk.init();
+    </script>
+</body>
+
+</html>
