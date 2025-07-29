@@ -22,9 +22,16 @@ class RocketFuel {
     this.clientId = options.clientId;
     this.clientSecret = options.clientSecret;
     this.domain = getBaseUrl(options.environment)
-    this.merchantId = options.merchantId
+    this.merchantId = options.merchantId;
+    this.initialize()
   }
-
+  handleMessage(event: MessageEvent) {
+    const data = event.data;
+    console.log("Received from iframe:", data);
+  }
+  private initialize() {
+    window.addEventListener("message", this.handleMessage);
+  }
   getAuthPayload() {
     return CryptoJS.AES.encrypt(JSON.stringify({
       merchantId: this.merchantId,
@@ -84,14 +91,13 @@ class RocketFuel {
   showOverlay(url: string) {
     const iframe = this.createIFrame(url)
     const wrapper = dragElement();
-
-    document.body.appendChild(wrapper);
     iframe.style.display = 'block';
     iframe.style.height = '800px';
     iframe.style.border = '1px solid #dddddd';
     iframe.style.borderRadius = '8px';
 
     wrapper.appendChild(iframe);
+    document.body.appendChild(wrapper);
   }
 
 }

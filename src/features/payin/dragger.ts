@@ -6,7 +6,10 @@ export function dragElement() {
     let iframeWrapperHeader = document.createElement("div");
     iframeWrapper.id = "iframeWrapper";
     iframeWrapperHeader.id = "iframeWrapperHeader"
+    iframeWrapper.style.cssText = 'width: 365px; position: fixed; z-index: 2147483647; top: 10px; right: 55px;';
+    iframeWrapperHeader.style.cssText = 'padding: 10px; cursor: move; position: absolute; width: 100%; height: 10px; left: 50px';
     iframeWrapper.onmousedown = dragMouseDown;
+    iframeWrapper.appendChild(iframeWrapperHeader);
     function dragMouseDown(e: MouseEvent) {
         e = e || window.event;
         e.preventDefault();

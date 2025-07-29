@@ -18,10 +18,38 @@
             merchantId: '14ec584d-53af-476d-aacd-2b7f025cf21b',
             buttons: ['FEATURE_AGE_VERIFICATION', 'FEATURE_PAYIN'],
             containerId: "sdk-buttons-container",
-            redirect: true // default false
+            redirect: false, // default false
+            enviornment: 'qa'
         });
 
         sdk.init();
+        sdk.prepareOrder({
+            "amount": "3",
+            "currency": "USD",
+            "cart": [
+                {
+                    "id": "1099_129",
+                    "name": "Dummy Product",
+                    "price": "3",
+                    "quantity": 1
+                }
+            ],
+            "customerInfo": {
+                "name": "rkflcs",
+                "email": "hari.s@rocketfuel.inc"
+            },
+            "customParameter": {
+                "returnMethod": "GET",
+                "params": [
+                    {
+                        "name": "submerchant",
+                        "value": "bigcommerce"
+                    }
+                ]
+            },
+            "merchant_id": '14ec584d-53af-476d-aacd-2b7f025cf21b',
+            "redirectUrl": "https://www.irctc.co.in/nget/train-search"
+        });
     </script>
 </body>
 
