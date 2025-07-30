@@ -134,7 +134,6 @@ class RKFLPlugin {
     }
   }
   private ageVerification(env: any): void {
-    console.log(env);
     launchWidget();
   }
 }

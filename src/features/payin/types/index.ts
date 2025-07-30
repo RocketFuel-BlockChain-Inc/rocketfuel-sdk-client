@@ -6,6 +6,5 @@ export interface RocketFuelOptions {
 }
 type EnvKey = keyof typeof apiDomains;
 export function getBaseUrl(env: EnvKey): string {
-  console.log('env --- ', env);
   return paymentAppDomains[env];
 }

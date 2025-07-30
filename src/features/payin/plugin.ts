@@ -18,7 +18,6 @@ class RocketFuel {
   constructor(options: RocketFuelOptions) {
     this.clientId = options.clientId;
     this.domain = getBaseUrl(options.environment)
-    console.log(this.domain);
     this.initialize()
   }
   handleMessage(event: MessageEvent) {
