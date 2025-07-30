@@ -1,6 +1,7 @@
 // RocketFuel SDK - TypeScript Version
 
-import { dragElement } from "./dragger";
+import { dragElement } from "../../utils/dragger";
+import IframeUtiltites from "../../utils/IframeUtilities";
 import { getBaseUrl, RocketFuelOptions } from "./types";
 import crypto from 'crypto';
 // Version: 1.0.1
@@ -74,31 +75,9 @@ class RocketFuel {
   }
 
   public async openIframe(url: string) {
-    this.showOverlay(url);
+    IframeUtiltites.showOverlay(url);
   }
 
-  private createIFrame(url: string) {
-    const iframe = document.createElement('iframe');
-    iframe.title = 'Rocketfuel';
-    iframe.style.display = 'none';
-    iframe.style.backgroundColor = 'transparent';
-    iframe.style.border = '0';
-    iframe.style.width = '410px';
-    iframe.src = url;
-    return iframe;
-  }
-
-  showOverlay(url: string) {
-    const iframe = this.createIFrame(url)
-    const wrapper = dragElement();
-    iframe.style.display = 'block';
-    iframe.style.height = '800px';
-    iframe.style.border = '1px solid #dddddd';
-    iframe.style.borderRadius = '8px';
-
-    wrapper.appendChild(iframe);
-    document.body.appendChild(wrapper);
-  }
 
 }
 
