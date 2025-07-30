@@ -1,7 +1,7 @@
 import RocketFuel from './plugin';
 
 let rkflInstance: RocketFuel;
-function makeOrderData(data: any) {
+export function verifyOrderData(data: any) {
   // Basic format check
   if (
     typeof data !== 'object' || !data ||
@@ -59,23 +59,14 @@ function makeOrderData(data: any) {
   };
 }
 
-export async function placeOrder(clientId: string, clientSecret: string, merchantId: string, redirect: Boolean = false, payload: any, environment: any) {
-  console.log('place order', payload);
+export async function placeOrder(clientId: string, redirect: Boolean = false, uuid: string, environment: any) {
   try {
-    const data = makeOrderData(payload);
     // Create instance for reuse if needed later
-    rkflInstance = new RocketFuel({
-      environment,
-      clientId,
-      clientSecret,
-      merchantId
-    });
-    const response = await rkflInstance.purchaseCheck(data);
-    console.log(response.url)
+    rkflInstance = new RocketFuel({ clientId, environment });
     if (redirect) {
-      rkflInstance.openRedirect(response?.url)
+      rkflInstance.openRedirect(uuid)
     } else {
-      rkflInstance.openIframe(response?.url)
+      rkflInstance.openIframe(uuid)
     }
 
   } catch (err) {

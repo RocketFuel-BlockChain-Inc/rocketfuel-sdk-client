@@ -14,23 +14,26 @@ export class ZKP {
         this.clientId = clientId;
     }
     initialize() {
-        console.log('this.appruk', this.appUrl)
         IframeUtiltites.showOverlay(this.appUrl)
         this.eventListnerConcodium()
     }
 
     eventListnerConcodium() {
         window.addEventListener('message', async (event: any) => {
-            console.log(event);
             if (event.data.type === 'request_concordium') {
-                console.log('received request for concordium')
-                const provider = window.concordium;
+                const provider = window?.concordium;
+
                 if (provider) {
                     // Use the provider in parent and relay only usable data
+                    let account;
+                    account = await provider.getMostRecentlySelectedAccount()
+                    if (!account) {
+                        account = await provider.connect();
+                    }
                     event.source.postMessage(
                         {
                             type: 'concordium_response',
-                            message: { provider }, // Only send serializable data
+                            message: account,
                         },
                         event.origin
                     );
@@ -42,6 +45,32 @@ export class ZKP {
                         },
                         event.origin
                     );
+                }
+            }
+            if (event.data.type === 'concordium_requestVerifiablePresentation') {
+                const provider = window?.concordium;
+
+                if (provider) {
+                    // Use the provider in parent and relay only usable data
+                    const { statement, challenge } = event.data.payload;
+                    provider.requestVerifiablePresentation(challenge, statement).then((d: any) => {
+                        event.source.postMessage(
+                            {
+                                type: 'concordium_requestVerifiablePresentation_response',
+                                message: 'verified',
+                            },
+                            event.origin
+                        );
+                    }).catch((err: any) => {
+                        event.source.postMessage(
+                            {
+                                type: 'concordium_requestVerifiablePresentation_error',
+                                error: err,
+                            },
+                            event.origin
+                        );
+                    })
+
                 }
             }
         });

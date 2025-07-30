@@ -1,12 +1,11 @@
-import { apiDomains } from "../../../utils/constants";
+import { apiDomains, paymentAppDomains } from "../../../utils/constants";
 
 export interface RocketFuelOptions {
   clientId: string;
-  clientSecret: string;
   environment: "prod" | "qa" | "preprod" | "sandbox";
-  merchantId: string;
 }
 type EnvKey = keyof typeof apiDomains;
 export function getBaseUrl(env: EnvKey): string {
-  return apiDomains[env];
+  console.log('env --- ', env);
+  return paymentAppDomains[env];
 }

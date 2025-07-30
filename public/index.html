@@ -99,6 +99,7 @@
             transition: all 0.3s ease-in-out;
         }
     </style>
+    <script src="./payin.js"></script>
 </head>
 
 <body>
@@ -122,18 +123,22 @@
 
 
     <script>
+        const payin = {
+            feature: "PAYIN",
+            containerId: "sdk-buttons-container"
+        }
+        const age = {
+            feature: "AGE_VERIFICATION",
+            containerId: "sdk-buttons-container"
+        }
         const sdk = new RkflPlugin({
-            clientId: "931e948670dc119e6189bde004da9b1702e5fae810ff7831c0f3171f06d66081",
-            clientSecret: "798d96df31374330837895aae04c30b6",
-            merchantId: '14ec584d-53af-476d-aacd-2b7f025cf21b',
-            buttons: ['FEATURE_AGE_VERIFICATION', 'FEATURE_PAYIN'],
-            containerId: "sdk-buttons-container",
-            redirect: false, // default false
-            enviornment: 'qa'
+            plugins: [payin, age],
+            environment: 'qa',
+            clientId: '931e948670dc119e6189bde004da9b1702e5fae810ff7831c0f3171f06d66081',
+            // redirect: false, // optional
         });
 
         sdk.init();
-
         function prepareOrder() {
             const ele = document.getElementById('cart');
             ele.innerText = 'Cart Item added';
@@ -161,8 +166,13 @@
                 },
                 merchant_id: '14ec584d-53af-476d-aacd-2b7f025cf21b',
             };
+            localStorage.setItem('cart', JSON.stringify(orderData));
+            purchaseCheck(orderData).then((result) => {
+                localStorage.removeItem('cart');
+                console.log('Purchase Check Result:', result);
+                sdk.prepareOrder(result.uuid);
+            });
 
-            sdk.prepareOrder(orderData);
         }
     </script>
 
