@@ -5,6 +5,7 @@
   "scripts": {
     "build": "rollup -c",
     "postbuild": "rm -rf ./public/dist && cp -r ./dist ./public/",
+    "serve": "npm run build && serve public/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
