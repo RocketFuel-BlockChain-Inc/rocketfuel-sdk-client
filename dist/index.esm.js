@@ -177,7 +177,7 @@ const paymentAppDomains = {
 };
 const appDomains = {
     prod: "http://localhost:3000",
-    qa: "rocketfuel-ccd.netlify.app",
+    qa: "https://rocketfuel-ccd.netlify.app",
     preprod: "http://localhost:3000",
     sandbox: "http://localhost:3000",
 };
