@@ -30,6 +30,7 @@ class RKFLPlugin {
 
   public init(): void {
     const isPayinEnabled = this.buttons.find(v => v.feature === FEATURE_PAYIN.feature)
+    // to-do clientid verification
     if (isPayinEnabled) {
       if (!this.clientId) {
         console.error('Client ID, Client Secret, and Merchant Id are required');
