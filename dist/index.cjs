@@ -119,8 +119,8 @@ class IframeUtiltites {
         loader.alt = "Loading";
         loader.style.width = "100px";
         loader.style.height = "100px";
-        loader.style.animation = "rkfl-pendulum 3s ease-in-out infinite";
-        loader.style.transform = "translate(-55%, -50%)";
+        loader.style.animation = "rkfl-pendulum 1s linear infinite";
+        loader.style.transform = "translate(-50%, -50%)";
         loader.style.position = "absolute";
         loader.style.top = "50%";
         loader.style.left = "52%";
@@ -131,17 +131,13 @@ class IframeUtiltites {
             style.id = "rkfl-spinner-style";
             style.textContent = `
             @keyframes rkfl-pendulum {
-                0%   { transform: translate(-50%, -50%) rotate(0deg); }
-                10%  { transform: translate(-50%, -50%) rotate(30deg); }
-                25%  { transform: translate(-50%, -50%) rotate(90deg); }
-                40%  { transform: translate(-50%, -50%) rotate(150deg); }
-                50%  { transform: translate(-50%, -50%) rotate(180deg); }
-                60%  { transform: translate(-50%, -50%) rotate(210deg); }
-                75%  { transform: translate(-50%, -50%) rotate(270deg); }
-                90%  { transform: translate(-50%, -50%) rotate(330deg); }
-                100% { transform: translate(-50%, -50%) rotate(360deg); }
-            }
-      `;
+                 0% {
+                        transform: translate(-50%, -50%) rotate(0deg);
+                    }
+                    100% {
+                        transform: translate(-50%, -50%) rotate(360deg);
+                    }
+            }`;
             document.head.appendChild(style);
         }
         // Remove loader on iframe load
