@@ -1,9 +1,4 @@
-// ✅ Makes available globally
+import { RKFLPlugin } from './RkflPlugin';
 
-import { RKFLPlugin, SDKConfig } from "./RkflPlugin";
-
-
-(window as any).RkflPlugin = RKFLPlugin;
-
-// ✅ Optionally export types for SDK users
-export type { SDKConfig };
+export { RKFLPlugin as RkflPlugin };
+export default RKFLPlugin;

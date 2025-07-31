@@ -67,13 +67,14 @@ export class RKFLPlugin {
           button.disabled = true; // Initially disabled
           button.style.opacity = '0.4';
           this.payNowButton = button;
+          button.id = '#pay'
           const container = document.getElementById(btnType.containerId || ContainerId);
           if (!container) {
             console.error(`Container not found.`);
             return;
           }
           button.onclick = async () => {
-            if(IframeUtiltites.iframe) {
+            if (IframeUtiltites.iframe) {
               return;
             }
             if (!this.uuid) {
@@ -95,19 +96,24 @@ export class RKFLPlugin {
               this.setLoadingState(false);
             }
           };
-          container.appendChild(button);
+          if (!document.getElementById('#pay')) {
+            container.appendChild(button);
+          }
           break;
 
         case FEATURE_AGE_VERIFICATION.feature:
           button.innerHTML = `<img src="https://ik.imagekit.io/rocketfuel/icons/button-image.png?tr=w-30,h-30,fo-auto,q-50" alt=""> Verification via Rocketfuel`;
           button.onclick = () => this.ageVerification(this.enviornment);
+          button.id = '#age'
           const container2 = document.getElementById(btnType.containerId || ContainerId);
           if (!container2) {
             console.error(`Container not found.`);
             return;
           }
           initializeWidget(this.clientId, this.enviornment, this.redirect);
-          container2.appendChild(button);
+          if (!document.getElementById('#age')) {
+            container2.appendChild(button);
+          }
           break;
 
         default:

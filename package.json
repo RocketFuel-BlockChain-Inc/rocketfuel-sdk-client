@@ -1,7 +1,15 @@
 {
-  "name": "rocketfuel-client",
+  "name": "rocketfuel-sdk",
   "version": "1.0.0",
-  "main": "index.js",
+ "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "unpkg": "dist/sdk.min.js",
+  "exports": {
+    "import": "./dist/index.esm.js",
+    "require": "./dist/index.cjs.js"
+  },
+  "files": ["dist"],
   "scripts": {
     "build": "rollup -c",
     "postbuild": "rm -rf ./public/dist && cp -r ./dist ./public/",

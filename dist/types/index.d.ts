@@ -1,2 +1,3 @@
-import { SDKConfig } from "./RkflPlugin";
-export type { SDKConfig };
+import { RKFLPlugin } from './RkflPlugin';
+export { RKFLPlugin as RkflPlugin };
+export default RKFLPlugin;

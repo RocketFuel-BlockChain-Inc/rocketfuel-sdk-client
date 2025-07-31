@@ -40,13 +40,21 @@ const commonPlugins = [
 ];
 
 export default defineConfig([
-  // ✅ IIFE Build for browser usage
   {
     input: 'src/index.ts',
+    output: [
+      { file: 'dist/index.cjs', format: 'cjs' },
+      { file: 'dist/index.esm.js', format: 'esm' },
+    ],
+    external: ['crypto-js'],
+    plugins: [...commonPlugins],
+  },
+  {
+    input: 'src/standalone.ts',
     output: {
       file: 'dist/sdk.min.js',
       format: 'iife',
-      name: 'RkflPlugin',
+      name: 'RkflPlugin', // This creates `window.RkflPlugin`
       globals: {
         'crypto-js': 'CryptoJS',
       },
@@ -55,26 +63,4 @@ export default defineConfig([
     external: ['crypto-js'],
     plugins: [...commonPlugins],
   },
-
-  // ✅ Optional: React ESM Build
-  // {
-  //   input: 'src/react.tsx',
-  //   output: {
-  //     file: 'dist/react-sdk.js',
-  //     format: 'esm',
-  //   },
-  //   external: ['react'],
-  //   plugins: [...commonPlugins],
-  // },
-
-  // ✅ Optional: Vue ESM Build
-  // {
-  //   input: 'src/vue.ts',
-  //   output: {
-  //     file: 'dist/vue-sdk.js',
-  //     format: 'esm',
-  //   },
-  //   external: ['vue'],
-  //   plugins: [...commonPlugins, vue()],
-  // },
 ]);
