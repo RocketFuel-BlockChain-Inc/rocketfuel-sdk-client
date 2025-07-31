@@ -150,8 +150,7 @@ class RocketFuel {
         this.initialize();
     }
     handleMessage(event) {
-        const data = event.data;
-        console.log("Received from iframe:", data);
+        event.data;
     }
     initialize() {
         window.addEventListener("message", this.handleMessage);
