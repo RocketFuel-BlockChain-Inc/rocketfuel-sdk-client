@@ -9,14 +9,20 @@ declare global {
 export class ZKP {
     private appUrl: string;
     private clientId: string;
-    constructor(clientId: string, env: "prod" | "qa" | "preprod" | "sandbox") {
+    private redirect: boolean;
+    constructor(clientId: string, env: "prod" | "qa" | "preprod" | "sandbox", redirect: boolean) {
         this.appUrl = appDomains[env];
         this.clientId = clientId;
+        this.redirect = redirect;
     }
     public initialize() {
-        IframeUtiltites.showOverlay(this.appUrl)
-        this.eventListnerConcodium();
-        window.addEventListener("message", this.handleMessage);
+        if (this.redirect) {
+            this.openRedirect(`${this.appUrl}?clientId=${this.clientId}`)
+        } else {
+            IframeUtiltites.showOverlay(this.appUrl, false)
+            this.eventListnerConcodium();
+            window.addEventListener("message", this.handleMessage);
+        }
     }
     private handleMessage(event: MessageEvent) {
         const data = event.data;
@@ -25,6 +31,9 @@ export class ZKP {
         }
     }
 
+    private openRedirect(url: string) {
+        window.open(url, '_blank')
+    }
 
     private eventListnerConcodium() {
         window.addEventListener('message', async (event: any) => {

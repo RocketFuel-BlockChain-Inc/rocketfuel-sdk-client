@@ -6,8 +6,10 @@ declare global {
 export declare class ZKP {
     private appUrl;
     private clientId;
-    constructor(clientId: string, env: "prod" | "qa" | "preprod" | "sandbox");
+    private redirect;
+    constructor(clientId: string, env: "prod" | "qa" | "preprod" | "sandbox", redirect: boolean);
     initialize(): void;
     private handleMessage;
+    private openRedirect;
     private eventListnerConcodium;
 }

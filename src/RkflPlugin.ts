@@ -106,7 +106,7 @@ export class RKFLPlugin {
             console.error(`Container not found.`);
             return;
           }
-          initializeWidget(this.clientId, this.enviornment);
+          initializeWidget(this.clientId, this.enviornment, this.redirect);
           container2.appendChild(button);
           break;
 
