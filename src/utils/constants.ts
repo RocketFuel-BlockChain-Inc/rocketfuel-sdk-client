@@ -10,27 +10,27 @@ export const FEATURE_AGE_VERIFICATION = {
   containerStyle: 'default',
   containerId: 'default',
 } as const;
+
 export const apiDomains = {
-  prod: 'https://app.rocketfuel.inc/api',
-  qa: 'https://qa-app.rfdemo.co/api',
-  preprod: 'https://preprod-app.rocketdemo.net/api',
-  sandbox: 'https://app-sandbox.rocketfuel.inc/api',
+  prod: process.env.API_DOMAIN_PROD as string,
+  qa: process.env.API_DOMAIN_QA as string,
+  preprod: process.env.API_DOMAIN_PREPROD as string,
+  sandbox: process.env.API_DOMAIN_SANDBOX as string,
 } as const;
 
 export const paymentAppDomains = {
-  prod: 'https://payments.rocketfuel.inc/select-currency',
-  qa: 'https://qa-payment.rfdemo.co/select-currency',
-  preprod: 'https://preprod-payment.rocketdemo.net/select-currency',
-  sandbox: 'https://payments-sandbox.rocketfuelblockchain.com/select-currency',
+  prod: process.env.PAYMENT_APP_DOMAIN_PROD as string,
+  qa: process.env.PAYMENT_APP_DOMAIN_QA as string,
+  preprod: process.env.PAYMENT_APP_DOMAIN_PREPROD as string,
+  sandbox: process.env.PAYMENT_APP_DOMAIN_SANDBOX as string,
 } as const;
 
 export const appDomains = {
-  prod: 'http://localhost:3000',
-  qa: 'http://localhost:3000',
-  preprod: 'http://localhost:3000',
-  sandbox: 'http://localhost:3000',
+  prod: process.env.APP_DOMAIN_PROD as string,
+  qa: process.env.APP_DOMAIN_QA as string,
+  preprod: process.env.APP_DOMAIN_PREPROD as string,
+  sandbox: process.env.APP_DOMAIN_SANDBOX as string,
 } as const;
-
 export const ContainerId = 'sdk-buttons-container' as const;
 
 export const EVENTS = {

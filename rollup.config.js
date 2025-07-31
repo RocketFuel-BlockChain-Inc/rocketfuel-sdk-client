@@ -1,11 +1,35 @@
 import { defineConfig } from 'rollup';
 import typescript from 'rollup-plugin-typescript2';
 import { terser } from 'rollup-plugin-terser';
-// import vue from 'rollup-plugin-vue';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
+import replace from '@rollup/plugin-replace';
+import dotenv from 'dotenv';
+
+dotenv.config(); // Load environment variables from .env
+
+
+// Map of env variables you want to inject
+const envVars = {
+  'process.env.API_DOMAIN_PROD': JSON.stringify(process.env.API_DOMAIN_PROD),
+  'process.env.API_DOMAIN_QA': JSON.stringify(process.env.API_DOMAIN_QA),
+  'process.env.API_DOMAIN_PREPROD': JSON.stringify(process.env.API_DOMAIN_PREPROD),
+  'process.env.API_DOMAIN_SANDBOX': JSON.stringify(process.env.API_DOMAIN_SANDBOX),
+  'process.env.PAYMENT_APP_DOMAIN_PROD': JSON.stringify(process.env.PAYMENT_APP_DOMAIN_PROD),
+  'process.env.PAYMENT_APP_DOMAIN_QA': JSON.stringify(process.env.PAYMENT_APP_DOMAIN_QA),
+  'process.env.PAYMENT_APP_DOMAIN_PREPROD': JSON.stringify(process.env.PAYMENT_APP_DOMAIN_PREPROD),
+  'process.env.PAYMENT_APP_DOMAIN_SANDBOX': JSON.stringify(process.env.PAYMENT_APP_DOMAIN_SANDBOX),
+  'process.env.APP_DOMAIN_PROD': JSON.stringify(process.env.APP_DOMAIN_PROD),
+  'process.env.APP_DOMAIN_QA': JSON.stringify(process.env.APP_DOMAIN_QA),
+  'process.env.APP_DOMAIN_PREPROD': JSON.stringify(process.env.APP_DOMAIN_PREPROD),
+  'process.env.APP_DOMAIN_SANDBOX': JSON.stringify(process.env.APP_DOMAIN_SANDBOX),
+};
 
 const commonPlugins = [
+  replace({
+    preventAssignment: true,
+    values: envVars,
+  }),
   resolve(),
   commonjs(),
   typescript({
@@ -15,15 +39,14 @@ const commonPlugins = [
   }),
 ];
 
-// Export Rollup config for multiple builds
 export default defineConfig([
-  // ✅ 1. IIFE Build for browser (Global usage via <script>)
+  // ✅ IIFE Build for browser usage
   {
     input: 'src/index.ts',
     output: {
       file: 'dist/sdk.min.js',
       format: 'iife',
-      name: 'RkflPlugin', // Becomes window.RkflPlugin
+      name: 'RkflPlugin',
       globals: {
         'crypto-js': 'CryptoJS',
       },
@@ -33,7 +56,7 @@ export default defineConfig([
     plugins: [...commonPlugins],
   },
 
-  // ✅ 2. React ESM Build
+  // ✅ Optional: React ESM Build
   // {
   //   input: 'src/react.tsx',
   //   output: {
@@ -44,7 +67,7 @@ export default defineConfig([
   //   plugins: [...commonPlugins],
   // },
 
-  // ✅ 3. Vue ESM Build
+  // ✅ Optional: Vue ESM Build
   // {
   //   input: 'src/vue.ts',
   //   output: {
