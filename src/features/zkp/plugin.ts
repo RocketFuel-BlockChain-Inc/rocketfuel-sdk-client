@@ -1,5 +1,4 @@
-import { appDomains, EVENTS } from "../../utils/constants";
-import { dragElement } from "../../utils/dragger";
+import { appDomains } from "../../utils/constants";
 import IframeUtiltites from "../../utils/IframeUtilities";
 declare global {
     interface Window {
