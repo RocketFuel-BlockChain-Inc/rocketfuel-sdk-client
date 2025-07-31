@@ -8,6 +8,7 @@ declare global {
 declare class RocketFuel {
     private domain;
     rkflToken: any;
+    private success_event;
     clientId: string;
     constructor(options: RocketFuelOptions);
     handleMessage(event: MessageEvent): void;

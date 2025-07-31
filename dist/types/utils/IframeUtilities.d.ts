@@ -1,7 +1,7 @@
 export default class IframeUtiltites {
-    private static iframe;
+    static iframe: HTMLIFrameElement | null;
     private static wrapper;
     private static createIFrame;
-    static showOverlay(url: string): void;
+    static showOverlay(url: string, showCross?: boolean): void;
     static closeIframe(): void;
 }

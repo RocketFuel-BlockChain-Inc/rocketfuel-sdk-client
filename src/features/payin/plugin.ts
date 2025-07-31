@@ -13,6 +13,7 @@ declare global {
 class RocketFuel {
   private domain: string;
   public rkflToken: any = null;
+  private success_event: string = "rocketfuel_result_ok";
   clientId: string;
 
   constructor(options: RocketFuelOptions) {
@@ -21,7 +22,15 @@ class RocketFuel {
     this.initialize()
   }
   handleMessage(event: MessageEvent) {
-    const data = event.data;
+    const eventData = event.data;
+    if (eventData.type === this.success_event) {
+      if (eventData.paymentCompleted === 1) {
+        const t = setTimeout(() => {
+          IframeUtiltites.closeIframe();
+          t ?? clearTimeout(t)
+        }, 5000)
+      }
+    }
   }
   private initialize() {
     window.addEventListener("message", this.handleMessage);
@@ -34,7 +43,7 @@ class RocketFuel {
 
   public async openIframe(uuid: string) {
     const open = `${this.domain}/${uuid}`
-    IframeUtiltites.showOverlay(open);
+    IframeUtiltites.showOverlay(open, true);
   }
 
 

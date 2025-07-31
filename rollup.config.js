@@ -1,7 +1,7 @@
 import { defineConfig } from 'rollup';
 import typescript from 'rollup-plugin-typescript2';
 import { terser } from 'rollup-plugin-terser';
-import vue from 'rollup-plugin-vue';
+// import vue from 'rollup-plugin-vue';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 
@@ -34,24 +34,24 @@ export default defineConfig([
   },
 
   // ✅ 2. React ESM Build
-  {
-    input: 'src/react.tsx',
-    output: {
-      file: 'dist/react-sdk.js',
-      format: 'esm',
-    },
-    external: ['react'],
-    plugins: [...commonPlugins],
-  },
+  // {
+  //   input: 'src/react.tsx',
+  //   output: {
+  //     file: 'dist/react-sdk.js',
+  //     format: 'esm',
+  //   },
+  //   external: ['react'],
+  //   plugins: [...commonPlugins],
+  // },
 
   // ✅ 3. Vue ESM Build
-  {
-    input: 'src/vue.ts',
-    output: {
-      file: 'dist/vue-sdk.js',
-      format: 'esm',
-    },
-    external: ['vue'],
-    plugins: [...commonPlugins, vue()],
-  },
+  // {
+  //   input: 'src/vue.ts',
+  //   output: {
+  //     file: 'dist/vue-sdk.js',
+  //     format: 'esm',
+  //   },
+  //   external: ['vue'],
+  //   plugins: [...commonPlugins, vue()],
+  // },
 ]);

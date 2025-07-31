@@ -1,6 +1,7 @@
 import { placeOrder } from './features/payin';
 import { initializeWidget, launchWidget } from './features/zkp';
 import { ContainerId, FEATURE_AGE_VERIFICATION, FEATURE_PAYIN } from './utils/constants';
+import IframeUtiltites from './utils/IframeUtilities';
 interface Buttons {
   feature: "PAYIN" | "AGE_VERIFICATION"; // Add other valid features
   style?: string;
@@ -72,6 +73,9 @@ export class RKFLPlugin {
             return;
           }
           button.onclick = async () => {
+            if(IframeUtiltites.iframe) {
+              return;
+            }
             if (!this.uuid) {
               console.warn('Cart data is not prepared');
               return;
@@ -128,10 +132,10 @@ export class RKFLPlugin {
 
     if (isLoading) {
       this.payNowButton.disabled = true;
-      this.payNowButton.innerText = 'Processing...';
+      this.payNowButton.innerHTML = `<img src="https://ik.imagekit.io/rocketfuel/icons/button-image.png?tr=w-30,h-30,fo-auto,q-50" alt=""> Processing...`;
     } else {
       this.payNowButton.disabled = false;
-      this.payNowButton.innerText = 'Pay Now';
+      this.payNowButton.innerHTML = `<img src="https://ik.imagekit.io/rocketfuel/icons/button-image.png?tr=w-30,h-30,fo-auto,q-50" alt=""> Pay with Cryto Currency`;
     }
   }
   private ageVerification(env: any): void {
