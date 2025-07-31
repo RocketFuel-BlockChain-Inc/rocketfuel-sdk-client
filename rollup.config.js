@@ -1,9 +1,9 @@
+import { defineConfig } from 'rollup';
 import typescript from 'rollup-plugin-typescript2';
 import { terser } from 'rollup-plugin-terser';
 import vue from 'rollup-plugin-vue';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
-import { defineConfig } from 'rollup';
 
 const commonPlugins = [
   resolve(),
@@ -15,24 +15,25 @@ const commonPlugins = [
   }),
 ];
 
+// Export Rollup config for multiple builds
 export default defineConfig([
-  // ✅ Plain JS SDK (IIFE)
+  // ✅ 1. IIFE Build for browser (Global usage via <script>)
   {
     input: 'src/index.ts',
     output: {
       file: 'dist/sdk.min.js',
       format: 'iife',
-      name: 'RkflPlugin',
+      name: 'RkflPlugin', // Becomes window.RkflPlugin
       globals: {
         'crypto-js': 'CryptoJS',
       },
       plugins: [terser()],
     },
     external: ['crypto-js'],
-    plugins: [...commonPlugins, terser()],
+    plugins: [...commonPlugins],
   },
 
-  // ✅ React SDK (ESM)
+  // ✅ 2. React ESM Build
   {
     input: 'src/react.tsx',
     output: {
@@ -43,7 +44,7 @@ export default defineConfig([
     plugins: [...commonPlugins],
   },
 
-  // ✅ Vue SDK (ESM)
+  // ✅ 3. Vue ESM Build
   {
     input: 'src/vue.ts',
     output: {

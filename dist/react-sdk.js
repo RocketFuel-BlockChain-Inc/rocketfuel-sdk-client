@@ -347,8 +347,6 @@ class RKFLPlugin {
         launchWidget();
     }
 }
-// ✅ Makes available globally
-window.RkflPlugin = RKFLPlugin;
 
 const RocketfuelButton = ({ config, uuid }) => {
     var _a;
