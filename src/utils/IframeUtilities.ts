@@ -33,8 +33,8 @@ export default class IframeUtiltites {
             const closeBtn = document.createElement('div');
             closeBtn.innerHTML = '&times;';
             closeBtn.style.position = 'absolute';
-            closeBtn.style.top = '4px';
-            closeBtn.style.right = '2px';
+            closeBtn.style.top = '-6px';
+            closeBtn.style.right = '-37px';
             closeBtn.style.fontSize = '30px';
             closeBtn.style.cursor = 'pointer';
             closeBtn.style.zIndex = '10000';
