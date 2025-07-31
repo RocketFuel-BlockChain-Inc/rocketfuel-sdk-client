@@ -170,11 +170,11 @@ const paymentAppDomains = {
     prod: "https://payments.rocketfuel.inc/select-currency",
     qa: "https://qa-payment.rfdemo.co/select-currency",
     preprod: "https://preprod-payment.rocketdemo.net/select-currency",
-    sandbox: "http://localhost:8081/select-currency",
+    sandbox: "https://payments-sandbox.rocketfuelblockchain.com/select-currency",
 };
 const appDomains = {
     prod: "http://localhost:3000",
-    qa: "http://localhost:3000",
+    qa: "https://rocketfuel-ccd.netlify.app",
     preprod: "http://localhost:3000",
     sandbox: "http://localhost:3000",
 };
