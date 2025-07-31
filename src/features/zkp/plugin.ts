@@ -1,4 +1,4 @@
-import { appDomains } from "../../utils/constants";
+import { appDomains, EVENTS } from "../../utils/constants";
 import { dragElement } from "../../utils/dragger";
 import IframeUtiltites from "../../utils/IframeUtilities";
 declare global {
@@ -13,12 +13,20 @@ export class ZKP {
         this.appUrl = appDomains[env];
         this.clientId = clientId;
     }
-    initialize() {
+    public initialize() {
         IframeUtiltites.showOverlay(this.appUrl)
-        this.eventListnerConcodium()
+        this.eventListnerConcodium();
+        window.addEventListener("message", this.handleMessage);
+    }
+    private handleMessage(event: MessageEvent) {
+        const data = event.data;
+        if (data.type === EVENTS.CLOSE_MODAL) {
+            IframeUtiltites.closeIframe();
+        }
     }
 
-    eventListnerConcodium() {
+
+    private eventListnerConcodium() {
         window.addEventListener('message', async (event: any) => {
             if (event.data.type === 'request_concordium') {
                 const provider = window?.concordium;
@@ -53,11 +61,12 @@ export class ZKP {
                 if (provider) {
                     // Use the provider in parent and relay only usable data
                     const { statement, challenge } = event.data.payload;
-                    provider.requestVerifiablePresentation(challenge, statement).then((d: any) => {
+                    provider.requestVerifiablePresentation(challenge, statement).then((data: any) => {
                         event.source.postMessage(
                             {
                                 type: 'concordium_requestVerifiablePresentation_response',
                                 message: 'verified',
+                                data
                             },
                             event.origin
                         );

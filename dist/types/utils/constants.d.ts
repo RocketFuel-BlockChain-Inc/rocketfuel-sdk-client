@@ -29,3 +29,7 @@ export declare const appDomains: {
     readonly sandbox: "http://localhost:3000";
 };
 export declare const ContainerId: "sdk-buttons-container";
+export declare const EVENTS: {
+    AGE_VERIFICATION: string;
+    CLOSE_MODAL: string;
+};

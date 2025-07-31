@@ -25,6 +25,10 @@ const appDomains = {
     sandbox: 'http://localhost:3000',
 };
 const ContainerId = 'sdk-buttons-container';
+const EVENTS = {
+    AGE_VERIFICATION: "AGE_VERIFICATION",
+    CLOSE_MODAL: "CLOSE_MODAL"
+};
 
 /******************************************************************************
 Copyright (c) Microsoft Corporation.
@@ -114,6 +118,7 @@ class IframeUtiltites {
         }
         this.iframe = this.createIFrame(url);
         const wrapper = dragElement();
+        this.wrapper = wrapper;
         this.iframe.style.display = 'block';
         this.iframe.style.height = '800px';
         this.iframe.style.border = '1px solid #dddddd';
@@ -121,7 +126,16 @@ class IframeUtiltites {
         wrapper.appendChild(this.iframe);
         document.body.appendChild(wrapper);
     }
+    static closeIframe() {
+        if (this.wrapper && this.wrapper.parentNode) {
+            this.wrapper.parentNode.removeChild(this.wrapper);
+        }
+        this.iframe = null;
+        this.wrapper = null;
+    }
 }
+IframeUtiltites.iframe = null;
+IframeUtiltites.wrapper = null;
 
 function getBaseUrl(env) {
     return paymentAppDomains[env];
@@ -183,6 +197,13 @@ class ZKP {
     initialize() {
         IframeUtiltites.showOverlay(this.appUrl);
         this.eventListnerConcodium();
+        window.addEventListener("message", this.handleMessage);
+    }
+    handleMessage(event) {
+        const data = event.data;
+        if (data.type === EVENTS.CLOSE_MODAL) {
+            IframeUtiltites.closeIframe();
+        }
     }
     eventListnerConcodium() {
         window.addEventListener('message', (event) => __awaiter(this, void 0, void 0, function* () {
@@ -212,10 +233,11 @@ class ZKP {
                 if (provider) {
                     // Use the provider in parent and relay only usable data
                     const { statement, challenge } = event.data.payload;
-                    provider.requestVerifiablePresentation(challenge, statement).then((d) => {
+                    provider.requestVerifiablePresentation(challenge, statement).then((data) => {
                         event.source.postMessage({
                             type: 'concordium_requestVerifiablePresentation_response',
                             message: 'verified',
+                            data
                         }, event.origin);
                     }).catch((err) => {
                         event.source.postMessage({

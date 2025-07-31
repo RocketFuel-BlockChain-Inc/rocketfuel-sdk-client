@@ -32,3 +32,8 @@ export const appDomains = {
 } as const;
 
 export const ContainerId = 'sdk-buttons-container' as const;
+
+export const EVENTS = {
+  AGE_VERIFICATION: "AGE_VERIFICATION",
+  CLOSE_MODAL: "CLOSE_MODAL"
+}

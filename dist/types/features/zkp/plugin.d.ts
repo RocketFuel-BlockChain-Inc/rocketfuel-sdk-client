@@ -8,5 +8,6 @@ export declare class ZKP {
     private clientId;
     constructor(clientId: string, env: "prod" | "qa" | "preprod" | "sandbox");
     initialize(): void;
-    eventListnerConcodium(): void;
+    private handleMessage;
+    private eventListnerConcodium;
 }
