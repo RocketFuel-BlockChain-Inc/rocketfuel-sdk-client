@@ -119,28 +119,34 @@ class IframeUtiltites {
         loader.alt = "Loading";
         loader.style.width = "100px";
         loader.style.height = "100px";
-        loader.style.animation = "rkfl-pendulum 1s infinite ease-in-out alternate";
-        loader.style.transform = "translate(-50%, -50%)";
+        loader.style.animation = "rkfl-pendulum 3s ease-in-out infinite";
+        loader.style.transform = "translate(-55%, -50%)";
         loader.style.position = "absolute";
         loader.style.top = "50%";
-        loader.style.left = "50%";
+        loader.style.left = "52%";
         // Append loader to overlay
         // Append animation CSS
         if (!document.getElementById("rkfl-spinner-style")) {
             const style = document.createElement("style");
             style.id = "rkfl-spinner-style";
             style.textContent = `
-        @keyframes rkfl-pendulum {
-          0%   { transform: translate(-50%, -50%) rotate(0deg); }
-          50%  { transform: translate(-50%, -50%) rotate(140deg); }
-          100% { transform: translate(-50%, -50%) rotate(0deg); }
-        }
+            @keyframes rkfl-pendulum {
+                0%   { transform: translate(-50%, -50%) rotate(0deg); }
+                10%  { transform: translate(-50%, -50%) rotate(30deg); }
+                25%  { transform: translate(-50%, -50%) rotate(90deg); }
+                40%  { transform: translate(-50%, -50%) rotate(150deg); }
+                50%  { transform: translate(-50%, -50%) rotate(180deg); }
+                60%  { transform: translate(-50%, -50%) rotate(210deg); }
+                75%  { transform: translate(-50%, -50%) rotate(270deg); }
+                90%  { transform: translate(-50%, -50%) rotate(330deg); }
+                100% { transform: translate(-50%, -50%) rotate(360deg); }
+            }
       `;
             document.head.appendChild(style);
         }
         // Remove loader on iframe load
         this.iframe.addEventListener("load", () => {
-            overlay.remove();
+            // overlay.remove();
         });
         overlay.appendChild(loader);
         wrapper.appendChild(this.iframe);
