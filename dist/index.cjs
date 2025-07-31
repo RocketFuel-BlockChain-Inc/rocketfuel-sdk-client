@@ -97,7 +97,7 @@ class IframeUtiltites {
         this.iframe.style.border = '1px solid #dddddd';
         this.iframe.style.borderRadius = '8px';
         this.iframe.style.background = '#F8F8F8';
-        const iconUrl = "https://ik.imagekit.io/rocketfuel/icons/button-image.png?tr=w-100,h-100,fo-auto";
+        const iconUrl = "https://ik.imagekit.io/rocketfuel/icons/button-image.png?updatedAt=1754002605547&tr=w-100,h-100,fo-auto";
         // Create overlay
         const overlay = document.createElement("div");
         overlay.id = "rkfl-loader-overlay";
@@ -146,7 +146,7 @@ class IframeUtiltites {
         }
         // Remove loader on iframe load
         this.iframe.addEventListener("load", () => {
-            // overlay.remove();
+            overlay.remove();
         });
         overlay.appendChild(loader);
         wrapper.appendChild(this.iframe);

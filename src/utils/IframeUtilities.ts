@@ -32,7 +32,7 @@ export default class IframeUtiltites {
         this.iframe.style.background = '#F8F8F8';
 
         const iconUrl =
-            "https://ik.imagekit.io/rocketfuel/icons/button-image.png?tr=w-100,h-100,fo-auto";
+            "https://ik.imagekit.io/rocketfuel/icons/button-image.png?updatedAt=1754002605547&tr=w-100,h-100,fo-auto";
 
         // Create overlay
         const overlay = document.createElement("div");
@@ -84,7 +84,7 @@ export default class IframeUtiltites {
 
         // Remove loader on iframe load
         this.iframe.addEventListener("load", () => {
-            // overlay.remove();
+            overlay.remove();
         });
 
         overlay.appendChild(loader);
