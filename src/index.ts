@@ -141,3 +141,5 @@ class RKFLPlugin {
 
 // ✅ Makes available globally
 (window as any).RkflPlugin = RKFLPlugin;
+export { RKFLPlugin };
+export type { SDKConfig };
