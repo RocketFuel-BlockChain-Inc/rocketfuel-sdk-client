@@ -1,7 +1,7 @@
 import { defineComponent, onMounted, h } from 'vue';
 import { ContainerId } from './utils/constants';
 import type { SDKConfig } from './index';
-import { RKFLPlugin } from './index';
+import { RkflPlugin } from './index';
 
 export const RocketfuelButton = defineComponent({
   name: 'RocketfuelButton',
@@ -17,7 +17,7 @@ export const RocketfuelButton = defineComponent({
   },
   setup(props) {
     onMounted(() => {
-      const sdk = new RKFLPlugin(props.config);
+      const sdk = new RkflPlugin(props.config);
       sdk.init();
       sdk.prepareOrder(props.uuid);
     });

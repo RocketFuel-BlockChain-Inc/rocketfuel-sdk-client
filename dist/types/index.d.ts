@@ -23,5 +23,5 @@ declare class RKFLPlugin {
     private setLoadingState;
     private ageVerification;
 }
-export { RKFLPlugin };
+export { RKFLPlugin as RkflPlugin };
 export type { SDKConfig };

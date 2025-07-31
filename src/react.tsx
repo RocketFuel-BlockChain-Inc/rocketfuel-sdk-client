@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { ContainerId } from './utils/constants';
 import type { SDKConfig } from './index';
-import { RKFLPlugin } from './index';
+import { RkflPlugin } from './index';
 interface RocketfuelButtonProps {
   config: SDKConfig;
   uuid: string;
@@ -11,7 +11,7 @@ export const RocketfuelButton: React.FC<RocketfuelButtonProps> = ({ config, uuid
 
   useEffect(() => {
     if (!initialized.current) {
-      const sdk = new RKFLPlugin(config);
+      const sdk = new RkflPlugin(config);
       sdk.init();
       sdk.prepareOrder(uuid);
       initialized.current = true;
