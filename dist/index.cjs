@@ -83,7 +83,7 @@ class IframeUtiltites {
         iframe.src = url;
         return iframe;
     }
-    static showOverlay(url, showCross = false) {
+    static showOverlay(url) {
         if (this.iframe) {
             this.iframe.src = url;
             return;
@@ -96,20 +96,35 @@ class IframeUtiltites {
         this.iframe.style.height = '800px';
         this.iframe.style.border = '1px solid #dddddd';
         this.iframe.style.borderRadius = '8px';
-        this.iframe.style.backgroundColor = '#F8F8F8';
-        // Add loader
+        this.iframe.style.background = '#F8F8F8';
         const iconUrl = "https://ik.imagekit.io/rocketfuel/icons/button-image.png?tr=w-100,h-100,fo-auto";
+        // Create overlay
+        const overlay = document.createElement("div");
+        overlay.id = "rkfl-loader-overlay";
+        overlay.style.position = "absolute";
+        overlay.style.top = "0";
+        overlay.style.left = "0";
+        overlay.style.width = "410px";
+        overlay.style.height = "100%";
+        overlay.style.border = '1px solid #dddddd';
+        overlay.style.borderRadius = '8px';
+        overlay.style.backgroundColor = "rgba(255, 255, 255, 1)";
+        overlay.style.display = "flex";
+        overlay.style.justifyContent = "center";
+        overlay.style.alignItems = "center";
+        overlay.style.zIndex = "9998";
+        // Create loader image
         const loader = document.createElement("img");
         loader.src = iconUrl;
         loader.alt = "Loading";
-        loader.style.position = "absolute";
-        loader.style.top = "49%";
-        loader.style.left = "58%";
-        loader.style.transform = "translate(-50%, -50%)";
         loader.style.width = "100px";
         loader.style.height = "100px";
-        loader.style.zIndex = "9999";
         loader.style.animation = "rkfl-pendulum 1s infinite ease-in-out alternate";
+        loader.style.transform = "translate(-50%, -50%)";
+        loader.style.position = "absolute";
+        loader.style.top = "50%";
+        loader.style.left = "50%";
+        // Append loader to overlay
         // Append animation CSS
         if (!document.getElementById("rkfl-spinner-style")) {
             const style = document.createElement("style");
@@ -125,29 +140,11 @@ class IframeUtiltites {
         }
         // Remove loader on iframe load
         this.iframe.addEventListener("load", () => {
-            loader.remove();
+            overlay.remove();
         });
-        // Add close button
-        if (showCross) {
-            const closeBtn = document.createElement('div');
-            closeBtn.innerHTML = '&times;';
-            closeBtn.style.position = 'absolute';
-            closeBtn.style.top = '-6px';
-            closeBtn.style.right = '-37px';
-            closeBtn.style.fontSize = '30px';
-            closeBtn.style.cursor = 'pointer';
-            closeBtn.style.zIndex = '10000';
-            closeBtn.addEventListener('click', () => {
-                if (this.wrapper) {
-                    document.body.removeChild(this.wrapper);
-                    this.wrapper = null;
-                    this.iframe = null;
-                }
-            });
-            wrapper.appendChild(closeBtn);
-        }
+        overlay.appendChild(loader);
         wrapper.appendChild(this.iframe);
-        wrapper.appendChild(loader);
+        wrapper.appendChild(overlay);
         document.body.appendChild(wrapper);
     }
     static closeIframe() {
@@ -177,11 +174,11 @@ const paymentAppDomains = {
     prod: "https://payments.rocketfuel.inc/select-currency",
     qa: "https://qa-payment.rfdemo.co/select-currency",
     preprod: "https://preprod-payment.rocketdemo.net/select-currency",
-    sandbox: "https://payments-sandbox.rocketfuelblockchain.com/select-currency",
+    sandbox: "http://localhost:8081/select-currency",
 };
 const appDomains = {
     prod: "http://localhost:3000",
-    qa: "https://rocketfuel-ccd.netlify.app",
+    qa: "http://localhost:3000",
     preprod: "http://localhost:3000",
     sandbox: "http://localhost:3000",
 };
@@ -227,7 +224,7 @@ class RocketFuel {
     openIframe(uuid) {
         return __awaiter(this, void 0, void 0, function* () {
             const open = `${this.domain}/${uuid}`;
-            IframeUtiltites.showOverlay(open, true);
+            IframeUtiltites.showOverlay(open);
         });
     }
 }
@@ -262,15 +259,8 @@ class ZKP {
             this.openRedirect(`${this.appUrl}?clientId=${this.clientId}`);
         }
         else {
-            IframeUtiltites.showOverlay(this.appUrl, false);
+            IframeUtiltites.showOverlay(this.appUrl);
             this.eventListnerConcodium();
-            window.addEventListener("message", this.handleMessage);
-        }
-    }
-    handleMessage(event) {
-        const data = event.data;
-        if (data.type === EVENTS.CLOSE_MODAL) {
-            IframeUtiltites.closeIframe();
         }
     }
     openRedirect(url) {
@@ -278,6 +268,7 @@ class ZKP {
     }
     eventListnerConcodium() {
         window.addEventListener('message', (event) => __awaiter(this, void 0, void 0, function* () {
+            var _a, _b, _c;
             if (event.data.type === 'request_concordium') {
                 const provider = window === null || window === void 0 ? void 0 : window.concordium;
                 if (provider) {
@@ -318,6 +309,9 @@ class ZKP {
                     });
                 }
             }
+            if (((_a = event.data) === null || _a === void 0 ? void 0 : _a.eventType) === "accountDisconnected") {
+                (_c = (_b = IframeUtiltites.iframe) === null || _b === void 0 ? void 0 : _b.contentWindow) === null || _c === void 0 ? void 0 : _c.postMessage('concordium_disconnected', IframeUtiltites.iframe.src);
+            }
         }));
     }
 }
@@ -334,6 +328,9 @@ class RKFLPlugin {
     constructor(config) {
         this.redirect = false;
         this.payNowButton = null;
+        this.innerHtmlPay = '<img src="https://ik.imagekit.io/rocketfuel/icons/rocketfuel-circular.svg?tr=w-30,h-30,fo-auto,q-50" alt="" style="width: 30px; height:30px;"> Pay with Cryto Currency';
+        this.innerHtmlVerify = `<img src="https://ik.imagekit.io/rocketfuel/icons/rocketfuel-circular.svg?tr=w-30,h-30,fo-auto,q-50" alt="" style="width: 30px; height:30px;"> Verification via Rocketfuel`;
+        this.innerHtmlPayLoading = `<img src="https://ik.imagekit.io/rocketfuel/icons/rocketfuel-circular.svg?tr=w-30,h-30,fo-auto,q-50" alt="" style="width: 30px; height:30px;"> Processing...`;
         this.clientId = config.clientId;
         this.buttons = config.plugins.length === 0 ? [FEATURE_PAYIN] : config.plugins;
         this.redirect = config.redirect || false;
@@ -345,7 +342,7 @@ class RKFLPlugin {
         // to-do clientid verification
         if (isPayinEnabled) {
             if (!this.clientId) {
-                console.error('Client ID, Client Secret, and Merchant Id are required');
+                console.error('Client ID is required');
                 return;
             }
         }
@@ -373,7 +370,7 @@ class RKFLPlugin {
             button.style.boxShadow = '0 0 0 1px rgba(0,0,0,0.05)';
             switch (btnType.feature) {
                 case FEATURE_PAYIN.feature:
-                    button.innerHTML = `<img src="https://ik.imagekit.io/rocketfuel/icons/button-image.png?tr=w-30,h-30,fo-auto,q-50" alt=""> Pay with Cryto Currency`;
+                    button.innerHTML = this.innerHtmlPay;
                     button.disabled = true; // Initially disabled
                     button.style.opacity = '0.4';
                     this.payNowButton = button;
@@ -407,7 +404,7 @@ class RKFLPlugin {
                     }
                     break;
                 case FEATURE_AGE_VERIFICATION.feature:
-                    button.innerHTML = `<img src="https://ik.imagekit.io/rocketfuel/icons/button-image.png?tr=w-30,h-30,fo-auto,q-50" alt=""> Verification via Rocketfuel`;
+                    button.innerHTML = this.innerHtmlVerify;
                     button.onclick = () => this.ageVerification(this.enviornment);
                     button.id = '#age';
                     const container2 = document.getElementById(btnType.containerId || ContainerId);
@@ -425,6 +422,8 @@ class RKFLPlugin {
                     return;
             }
         });
+        // modal listner
+        window.addEventListener("message", this.handleMessage);
     }
     prepareOrder(uuid) {
         this.uuid = uuid;
@@ -433,16 +432,22 @@ class RKFLPlugin {
             this.payNowButton.style.opacity = '1';
         }
     }
+    handleMessage(event) {
+        const data = event.data;
+        if (data.type === EVENTS.CLOSE_MODAL) {
+            IframeUtiltites.closeIframe();
+        }
+    }
     setLoadingState(isLoading) {
         if (!this.payNowButton)
             return;
         if (isLoading) {
             this.payNowButton.disabled = true;
-            this.payNowButton.innerHTML = `<img src="https://ik.imagekit.io/rocketfuel/icons/button-image.png?tr=w-30,h-30,fo-auto,q-50" alt=""> Processing...`;
+            this.payNowButton.innerHTML = this.innerHtmlPayLoading;
         }
         else {
             this.payNowButton.disabled = false;
-            this.payNowButton.innerHTML = `<img src="https://ik.imagekit.io/rocketfuel/icons/button-image.png?tr=w-30,h-30,fo-auto,q-50" alt=""> Pay with Cryto Currency`;
+            this.payNowButton.innerHTML = this.innerHtmlPay;
         }
     }
     ageVerification(env) {

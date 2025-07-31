@@ -19,15 +19,8 @@ export class ZKP {
         if (this.redirect) {
             this.openRedirect(`${this.appUrl}?clientId=${this.clientId}`)
         } else {
-            IframeUtiltites.showOverlay(this.appUrl, false)
+            IframeUtiltites.showOverlay(this.appUrl)
             this.eventListnerConcodium();
-            window.addEventListener("message", this.handleMessage);
-        }
-    }
-    private handleMessage(event: MessageEvent) {
-        const data = event.data;
-        if (data.type === EVENTS.CLOSE_MODAL) {
-            IframeUtiltites.closeIframe();
         }
     }
 
@@ -55,6 +48,7 @@ export class ZKP {
                         event.origin
                     );
                 } else {
+
                     event.source.postMessage(
                         {
                             type: 'concordium_response',
@@ -65,6 +59,7 @@ export class ZKP {
                 }
             }
             if (event.data.type === 'concordium_requestVerifiablePresentation') {
+
                 const provider = window?.concordium;
 
                 if (provider) {
@@ -90,6 +85,11 @@ export class ZKP {
                     })
 
                 }
+            }
+            if (event.data?.eventType === "accountDisconnected") {
+                IframeUtiltites.iframe?.contentWindow?.postMessage('concordium_disconnected', 
+                    IframeUtiltites.iframe.src
+                )
             }
         });
     }

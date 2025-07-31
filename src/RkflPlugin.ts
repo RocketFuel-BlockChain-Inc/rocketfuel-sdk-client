@@ -1,6 +1,6 @@
 import { placeOrder } from './features/payin';
 import { initializeWidget, launchWidget } from './features/zkp';
-import { ContainerId, FEATURE_AGE_VERIFICATION, FEATURE_PAYIN } from './utils/constants';
+import { ContainerId, EVENTS, FEATURE_AGE_VERIFICATION, FEATURE_PAYIN } from './utils/constants';
 import IframeUtiltites from './utils/IframeUtilities';
 interface Buttons {
   feature: "PAYIN" | "AGE_VERIFICATION"; // Add other valid features
@@ -21,6 +21,9 @@ export class RKFLPlugin {
   private uuid: string;
   private payNowButton: HTMLButtonElement | null = null;
   private enviornment: "prod" | "qa" | "preprod" | "sandbox";
+  private innerHtmlPay: string = '<img src="https://ik.imagekit.io/rocketfuel/icons/rocketfuel-circular.svg?tr=w-30,h-30,fo-auto,q-50" alt="" style="width: 30px; height:30px;"> Pay with Cryto Currency';
+  private innerHtmlVerify: string = `<img src="https://ik.imagekit.io/rocketfuel/icons/rocketfuel-circular.svg?tr=w-30,h-30,fo-auto,q-50" alt="" style="width: 30px; height:30px;"> Verification via Rocketfuel`;
+  private innerHtmlPayLoading: string = `<img src="https://ik.imagekit.io/rocketfuel/icons/rocketfuel-circular.svg?tr=w-30,h-30,fo-auto,q-50" alt="" style="width: 30px; height:30px;"> Processing...`;
   constructor(config: SDKConfig) {
     this.clientId = config.clientId;
     this.buttons = config.plugins.length === 0 ? [FEATURE_PAYIN] : config.plugins;
@@ -34,7 +37,7 @@ export class RKFLPlugin {
     // to-do clientid verification
     if (isPayinEnabled) {
       if (!this.clientId) {
-        console.error('Client ID, Client Secret, and Merchant Id are required');
+        console.error('Client ID is required');
         return;
       }
     } else {
@@ -63,7 +66,7 @@ export class RKFLPlugin {
 
       switch (btnType.feature) {
         case FEATURE_PAYIN.feature:
-          button.innerHTML = `<img src="https://ik.imagekit.io/rocketfuel/icons/button-image.png?tr=w-30,h-30,fo-auto,q-50" alt=""> Pay with Cryto Currency`;
+          button.innerHTML = this.innerHtmlPay;
           button.disabled = true; // Initially disabled
           button.style.opacity = '0.4';
           this.payNowButton = button;
@@ -102,7 +105,7 @@ export class RKFLPlugin {
           break;
 
         case FEATURE_AGE_VERIFICATION.feature:
-          button.innerHTML = `<img src="https://ik.imagekit.io/rocketfuel/icons/button-image.png?tr=w-30,h-30,fo-auto,q-50" alt=""> Verification via Rocketfuel`;
+          button.innerHTML = this.innerHtmlVerify;
           button.onclick = () => this.ageVerification(this.enviornment);
           button.id = '#age'
           const container2 = document.getElementById(btnType.containerId || ContainerId);
@@ -122,6 +125,9 @@ export class RKFLPlugin {
       }
 
     });
+    // modal listner
+    window.addEventListener("message", this.handleMessage);
+
   }
 
   public prepareOrder(uuid: any): void {
@@ -129,7 +135,12 @@ export class RKFLPlugin {
     if (this.payNowButton) {
       this.payNowButton.disabled = false;
       this.payNowButton.style.opacity = '1';
-
+    }
+  }
+  private handleMessage(event: MessageEvent) {
+    const data = event.data;
+    if (data.type === EVENTS.CLOSE_MODAL) {
+      IframeUtiltites.closeIframe();
     }
   }
 
@@ -138,10 +149,10 @@ export class RKFLPlugin {
 
     if (isLoading) {
       this.payNowButton.disabled = true;
-      this.payNowButton.innerHTML = `<img src="https://ik.imagekit.io/rocketfuel/icons/button-image.png?tr=w-30,h-30,fo-auto,q-50" alt=""> Processing...`;
+      this.payNowButton.innerHTML = this.innerHtmlPayLoading;
     } else {
       this.payNowButton.disabled = false;
-      this.payNowButton.innerHTML = `<img src="https://ik.imagekit.io/rocketfuel/icons/button-image.png?tr=w-30,h-30,fo-auto,q-50" alt=""> Pay with Cryto Currency`;
+      this.payNowButton.innerHTML = this.innerHtmlPay;
     }
   }
   private ageVerification(env: any): void {

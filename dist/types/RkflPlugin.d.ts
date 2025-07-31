@@ -17,9 +17,13 @@ export declare class RKFLPlugin {
     private uuid;
     private payNowButton;
     private enviornment;
+    private innerHtmlPay;
+    private innerHtmlVerify;
+    private innerHtmlPayLoading;
     constructor(config: SDKConfig);
     init(): void;
     prepareOrder(uuid: any): void;
+    private handleMessage;
     private setLoadingState;
     private ageVerification;
 }

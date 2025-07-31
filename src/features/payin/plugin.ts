@@ -43,7 +43,7 @@ class RocketFuel {
 
   public async openIframe(uuid: string) {
     const open = `${this.domain}/${uuid}`
-    IframeUtiltites.showOverlay(open, true);
+    IframeUtiltites.showOverlay(open);
   }
 
 

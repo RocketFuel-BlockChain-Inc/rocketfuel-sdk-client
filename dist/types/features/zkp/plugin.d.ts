@@ -9,7 +9,6 @@ export declare class ZKP {
     private redirect;
     constructor(clientId: string, env: "prod" | "qa" | "preprod" | "sandbox", redirect: boolean);
     initialize(): void;
-    private handleMessage;
     private openRedirect;
     private eventListnerConcodium;
 }

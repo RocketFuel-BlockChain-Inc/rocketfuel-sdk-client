@@ -14,7 +14,7 @@ export default class IframeUtiltites {
         iframe.src = url;
         return iframe;
     }
-    public static showOverlay(url: string, showCross: boolean = false) {
+    public static showOverlay(url: string) {
         if (this.iframe) {
             this.iframe.src = url;
             return;
@@ -29,23 +29,39 @@ export default class IframeUtiltites {
         this.iframe.style.height = '800px';
         this.iframe.style.border = '1px solid #dddddd';
         this.iframe.style.borderRadius = '8px';
-        this.iframe.style.backgroundColor = '#F8F8F8';
+        this.iframe.style.background = '#F8F8F8';
 
-        // Add loader
         const iconUrl =
             "https://ik.imagekit.io/rocketfuel/icons/button-image.png?tr=w-100,h-100,fo-auto";
+
+        // Create overlay
+        const overlay = document.createElement("div");
+        overlay.id = "rkfl-loader-overlay";
+        overlay.style.position = "absolute";
+        overlay.style.top = "0";
+        overlay.style.left = "0";
+        overlay.style.width = "410px";
+        overlay.style.height = "100%";
+        overlay.style.border = '1px solid #dddddd';
+        overlay.style.borderRadius = '8px';
+        overlay.style.backgroundColor = "rgba(255, 255, 255, 1)";
+        overlay.style.display = "flex";
+        overlay.style.justifyContent = "center";
+        overlay.style.alignItems = "center";
+        overlay.style.zIndex = "9998";
+
+        // Create loader image
         const loader = document.createElement("img");
         loader.src = iconUrl;
         loader.alt = "Loading";
-        loader.style.position = "absolute";
-        loader.style.top = "49%";
-        loader.style.left = "58%";
-        loader.style.transform = "translate(-50%, -50%)";
         loader.style.width = "100px";
         loader.style.height = "100px";
-        loader.style.zIndex = "9999";
         loader.style.animation = "rkfl-pendulum 1s infinite ease-in-out alternate";
-
+        loader.style.transform = "translate(-50%, -50%)";
+        loader.style.position = "absolute";
+        loader.style.top = "50%";
+        loader.style.left = "50%";
+        // Append loader to overlay
         // Append animation CSS
         if (!document.getElementById("rkfl-spinner-style")) {
             const style = document.createElement("style");
@@ -62,33 +78,12 @@ export default class IframeUtiltites {
 
         // Remove loader on iframe load
         this.iframe.addEventListener("load", () => {
-            loader.remove();
+            overlay.remove();
         });
 
-        // Add close button
-        if (showCross) {
-            const closeBtn = document.createElement('div');
-            closeBtn.innerHTML = '&times;';
-            closeBtn.style.position = 'absolute';
-            closeBtn.style.top = '-6px';
-            closeBtn.style.right = '-37px';
-            closeBtn.style.fontSize = '30px';
-            closeBtn.style.cursor = 'pointer';
-            closeBtn.style.zIndex = '10000';
-
-            closeBtn.addEventListener('click', () => {
-                if (this.wrapper) {
-                    document.body.removeChild(this.wrapper);
-                    this.wrapper = null;
-                    this.iframe = null;
-                }
-            });
-
-            wrapper.appendChild(closeBtn);
-        }
-
+        overlay.appendChild(loader);
         wrapper.appendChild(this.iframe);
-        wrapper.appendChild(loader);
+        wrapper.appendChild(overlay);
         document.body.appendChild(wrapper);
     }
 
