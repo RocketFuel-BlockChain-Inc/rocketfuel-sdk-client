@@ -32,7 +32,7 @@ export default class IframeUtiltites {
         this.iframe.style.background = '#F8F8F8';
 
         const iconUrl =
-            "https://ik.imagekit.io/rocketfuel/icons/button-image.png?updatedAt=1754002605547&tr=w-100,h-100,fo-auto";
+            "https://ik.imagekit.io/rocketfuel/icons/Ripple%20loading%20animation.gif";
 
         // Create overlay
         const overlay = document.createElement("div");
@@ -44,7 +44,7 @@ export default class IframeUtiltites {
         overlay.style.height = "100%";
         overlay.style.border = '1px solid #dddddd';
         overlay.style.borderRadius = '8px';
-        overlay.style.backgroundColor = "rgba(255, 255, 255, 1)";
+        overlay.style.backgroundColor = "#000000";
         overlay.style.display = "flex";
         overlay.style.justifyContent = "center";
         overlay.style.alignItems = "center";
@@ -54,29 +54,10 @@ export default class IframeUtiltites {
         const loader = document.createElement("img");
         loader.src = iconUrl;
         loader.alt = "Loading";
-        loader.style.width = "100px";
-        loader.style.height = "100px";
-        loader.style.animation = "rkfl-pendulum 1s linear infinite";
         loader.style.transform = "translate(-50%, -50%)";
         loader.style.position = "absolute";
         loader.style.top = "50%";
         loader.style.left = "52%";
-        // Append loader to overlay
-        // Append animation CSS
-        if (!document.getElementById("rkfl-spinner-style")) {
-            const style = document.createElement("style");
-            style.id = "rkfl-spinner-style";
-            style.textContent = `
-            @keyframes rkfl-pendulum {
-                 0% {
-                        transform: translate(-50%, -50%) rotate(0deg);
-                    }
-                    100% {
-                        transform: translate(-50%, -50%) rotate(360deg);
-                    }
-            }`;
-            document.head.appendChild(style);
-        }
 
         // Remove loader on iframe load
         this.iframe.addEventListener("load", () => {
