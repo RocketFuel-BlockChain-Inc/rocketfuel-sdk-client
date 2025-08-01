@@ -10,7 +10,7 @@ export default class IframeUtiltites {
         iframe.style.display = 'none';
         iframe.style.backgroundColor = 'transparent';
         iframe.style.border = '0';
-        iframe.style.width = '410px';
+        iframe.style.width = '100%';
         iframe.src = url;
         return iframe;
     }
@@ -26,7 +26,7 @@ export default class IframeUtiltites {
         this.wrapper = wrapper;
 
         this.iframe.style.display = 'block';
-        this.iframe.style.height = '800px';
+        this.iframe.style.minHeight = '100%';
         this.iframe.style.border = '1px solid #dddddd';
         this.iframe.style.borderRadius = '8px';
         this.iframe.style.background = '#F8F8F8';
@@ -40,7 +40,7 @@ export default class IframeUtiltites {
         overlay.style.position = "absolute";
         overlay.style.top = "0";
         overlay.style.left = "0";
-        overlay.style.width = "410px";
+        overlay.style.width = "100%";
         overlay.style.height = "100%";
         overlay.style.border = '1px solid #dddddd';
         overlay.style.borderRadius = '8px';
