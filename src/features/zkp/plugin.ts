@@ -29,6 +29,30 @@ export class ZKP {
 
     private eventListnerConcodium() {
         window.addEventListener('message', async (event: any) => {
+
+            if(event.data.type === 'request_connected_account') {
+                const provider = window?.concordium;
+                 if (provider) {
+                    // Use the provider in parent and relay only usable data
+                    let account;
+                    account = await provider.getMostRecentlySelectedAccount();
+                    event.source.postMessage(
+                        {
+                            type: 'concordium_response',
+                            message: account || null,
+                        },
+                        event.origin
+                    );
+                 } else {
+                     event.source.postMessage(
+                        {
+                            type: 'concordium_response',
+                            message: { error: 'Provider not found' },
+                        },
+                        event.origin
+                    );
+                 }
+            }
             if (event.data.type === 'request_concordium') {
                 const provider = window?.concordium;
 

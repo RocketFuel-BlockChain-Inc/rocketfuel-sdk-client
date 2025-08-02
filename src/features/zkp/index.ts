@@ -4,6 +4,9 @@ let zkpInstance: ZKP;
 export const initializeWidget = (clientId: string, env: "prod" | "qa" | "preprod" | "sandbox", redirect: boolean): void => {
     zkpInstance = new ZKP(clientId, env, redirect);
 }
-export const launchWidget = (): void => {
+export const launchAgeVerificationWidget = (): void => {
+    if(!zkpInstance) {
+        throw new Error('SDK not initialized properly')
+    }
     zkpInstance.initialize();
 }

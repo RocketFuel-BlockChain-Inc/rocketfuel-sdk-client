@@ -1,5 +1,5 @@
 import { placeOrder } from './features/payin';
-import { initializeWidget, launchWidget } from './features/zkp';
+import { initializeWidget, launchAgeVerificationWidget } from './features/zkp';
 import { ContainerId, EVENTS, FEATURE_AGE_VERIFICATION, FEATURE_PAYIN } from './utils/constants';
 import IframeUtiltites from './utils/IframeUtilities';
 interface Buttons {
@@ -156,7 +156,7 @@ export class RKFLPlugin {
     }
   }
   private ageVerification(env: any): void {
-    launchWidget();
+    launchAgeVerificationWidget();
   }
 }
 

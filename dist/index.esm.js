@@ -28,40 +28,122 @@ typeof SuppressedError === "function" ? SuppressedError : function (error, suppr
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 };
 
+const FEATURE_PAYIN = {
+    feature: "PAYIN", // Add other valid features
+    style: 'default',
+    containerStyle: 'default',
+    containerId: 'default',
+};
+const FEATURE_AGE_VERIFICATION = {
+    feature: "AGE_VERIFICATION", // Add other valid features
+    style: 'default',
+    containerStyle: 'default',
+    containerId: 'default',
+};
+const paymentAppDomains = {
+    prod: "https://payments.rocketfuel.inc/select-currency",
+    qa: "https://qa-payment.rfdemo.co/select-currency",
+    preprod: "https://preprod-payment.rocketdemo.net/select-currency",
+    sandbox: "https://payments-sandbox.rocketfuelblockchain.com/select-currency",
+};
+const appDomains = {
+    prod: "http://localhost:3000",
+    qa: "http://localhost:3000",
+    preprod: "http://localhost:3000",
+    sandbox: "http://localhost:3000",
+};
+const ContainerId = 'sdk-buttons-container';
+const EVENTS = {
+    AGE_VERIFICATION: "AGE_VERIFICATION",
+    CLOSE_MODAL: "CLOSE_MODAL"
+};
+
 function dragElement() {
-    var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-    let iframeWrapper = document.createElement("div");
-    let iframeWrapperHeader = document.createElement("div");
+    const isMobile = window.innerWidth <= 768 || /Mobi|Android/i.test(navigator.userAgent);
+    const iframeWrapper = document.createElement("div");
+    const iframeWrapperHeader = document.createElement("div");
     iframeWrapper.id = "iframeWrapper";
     iframeWrapperHeader.id = "iframeWrapperHeader";
-    iframeWrapper.style.cssText = 'top: 15%; position: fixed; z-index: 2147483647; top: 10%; right: 2%; width: 450px; height: 800px;';
-    iframeWrapperHeader.style.cssText = 'padding: 3px;cursor: move;position: absolute;width: 387px;height: 2px;left: 10px;';
-    iframeWrapperHeader.onmousedown = dragMouseDown;
+    // Default styles (for desktop)
+    iframeWrapper.style.cssText = `
+  position: fixed;
+  z-index: 2147483647;
+  top: 10%;
+  right: 2%;
+  width: 450px;
+  height: 800px;
+  background: white;
+  box-shadow: 0 0 10px rgba(0,0,0,0.15);
+  border-radius: 8px;
+  overflow: hidden;
+`;
+    iframeWrapperHeader.style.cssText = `
+  height: 4px;
+  width: 40%;
+  cursor: move;
+  position: absolute;
+  background: #cecece;
+  top: 0;
+  left: 30%;
+  transform: translateY(0);
+  transition: all 0.3s ease;
+  border-radius: 4px;
+`;
+    iframeWrapperHeader.title = 'Drag to move';
+    // Hover effect (only for desktop)
+    iframeWrapperHeader.onmouseenter = () => {
+        if (!isMobile) {
+            iframeWrapperHeader.style.height = '14px';
+            iframeWrapperHeader.style.background = `#cecece`;
+        }
+    };
+    iframeWrapperHeader.onmouseleave = () => {
+        if (!isMobile) {
+            iframeWrapperHeader.style.height = '4px';
+            iframeWrapperHeader.style.background = '#cecece';
+        }
+        closeDragElement();
+    };
+    // Dragging only enabled for non-mobile
+    if (!isMobile) {
+        iframeWrapperHeader.onmousedown = dragMouseDown;
+    }
+    else {
+        // Fullscreen style for mobile
+        iframeWrapper.style.cssText = `
+    position: fixed;
+    z-index: 2147483647;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: white;
+  `;
+    }
+    // Attach header
     iframeWrapper.appendChild(iframeWrapperHeader);
+    // Dragging handlers
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
     function dragMouseDown(e) {
         e = e || window.event;
         e.preventDefault();
-        // get the mouse cursor position at startup:
         pos3 = e.clientX;
         pos4 = e.clientY;
         document.onmouseup = closeDragElement;
-        // call a function whenever the cursor moves:
         document.onmousemove = elementDrag;
     }
     function elementDrag(e) {
         e = e || window.event;
         e.preventDefault();
-        // calculate the new cursor position:
         pos1 = pos3 - e.clientX;
         pos2 = pos4 - e.clientY;
         pos3 = e.clientX;
         pos4 = e.clientY;
-        // set the element's new position:
         iframeWrapper.style.top = (iframeWrapper.offsetTop - pos2) + "px";
         iframeWrapper.style.left = (iframeWrapper.offsetLeft - pos1) + "px";
     }
     function closeDragElement() {
-        /* stop moving when mouse button is released:*/
         document.onmouseup = null;
         document.onmousemove = null;
     }
@@ -104,7 +186,7 @@ class IframeUtiltites {
         overlay.style.height = "100%";
         overlay.style.border = '1px solid #dddddd';
         overlay.style.borderRadius = '8px';
-        overlay.style.backgroundColor = "#000000";
+        overlay.style.backgroundColor = "#F8F8F8";
         overlay.style.display = "flex";
         overlay.style.justifyContent = "center";
         overlay.style.alignItems = "center";
@@ -119,6 +201,9 @@ class IframeUtiltites {
         loader.style.left = "52%";
         // Remove loader on iframe load
         this.iframe.addEventListener("load", () => {
+            var _a, _b;
+            const origin = window.location.origin;
+            (_b = (_a = this.iframe) === null || _a === void 0 ? void 0 : _a.contentWindow) === null || _b === void 0 ? void 0 : _b.postMessage({ type: 'parent_origin', origin }, '*');
             overlay.remove();
         });
         overlay.appendChild(loader);
@@ -137,34 +222,101 @@ class IframeUtiltites {
 IframeUtiltites.iframe = null;
 IframeUtiltites.wrapper = null;
 
-const FEATURE_PAYIN = {
-    feature: "PAYIN", // Add other valid features
-    style: 'default',
-    containerStyle: 'default',
-    containerId: 'default',
+class ZKP {
+    constructor(clientId, env, redirect) {
+        this.appUrl = appDomains[env];
+        this.clientId = clientId;
+        this.redirect = redirect;
+    }
+    initialize() {
+        if (this.redirect) {
+            this.openRedirect(`${this.appUrl}?clientId=${this.clientId}`);
+        }
+        else {
+            IframeUtiltites.showOverlay(this.appUrl);
+            this.eventListnerConcodium();
+        }
+    }
+    openRedirect(url) {
+        window.open(url, '_blank');
+    }
+    eventListnerConcodium() {
+        window.addEventListener('message', (event) => __awaiter(this, void 0, void 0, function* () {
+            var _a, _b, _c;
+            if (event.data.type === 'request_connected_account') {
+                const provider = window === null || window === void 0 ? void 0 : window.concordium;
+                if (provider) {
+                    // Use the provider in parent and relay only usable data
+                    let account;
+                    account = yield provider.getMostRecentlySelectedAccount();
+                    event.source.postMessage({
+                        type: 'concordium_response',
+                        message: account || null,
+                    }, event.origin);
+                }
+                else {
+                    event.source.postMessage({
+                        type: 'concordium_response',
+                        message: { error: 'Provider not found' },
+                    }, event.origin);
+                }
+            }
+            if (event.data.type === 'request_concordium') {
+                const provider = window === null || window === void 0 ? void 0 : window.concordium;
+                if (provider) {
+                    // Use the provider in parent and relay only usable data
+                    let account;
+                    account = yield provider.getMostRecentlySelectedAccount();
+                    if (!account) {
+                        account = yield provider.connect();
+                    }
+                    event.source.postMessage({
+                        type: 'concordium_response',
+                        message: account,
+                    }, event.origin);
+                }
+                else {
+                    event.source.postMessage({
+                        type: 'concordium_response',
+                        message: { error: 'Provider not found' },
+                    }, event.origin);
+                }
+            }
+            if (event.data.type === 'concordium_requestVerifiablePresentation') {
+                const provider = window === null || window === void 0 ? void 0 : window.concordium;
+                if (provider) {
+                    // Use the provider in parent and relay only usable data
+                    const { statement, challenge } = event.data.payload;
+                    provider.requestVerifiablePresentation(challenge, statement).then((data) => {
+                        event.source.postMessage({
+                            type: 'concordium_requestVerifiablePresentation_response',
+                            message: 'verified',
+                            data
+                        }, event.origin);
+                    }).catch((err) => {
+                        event.source.postMessage({
+                            type: 'concordium_requestVerifiablePresentation_error',
+                            error: err,
+                        }, event.origin);
+                    });
+                }
+            }
+            if (((_a = event.data) === null || _a === void 0 ? void 0 : _a.eventType) === "accountDisconnected") {
+                (_c = (_b = IframeUtiltites.iframe) === null || _b === void 0 ? void 0 : _b.contentWindow) === null || _c === void 0 ? void 0 : _c.postMessage('concordium_disconnected', IframeUtiltites.iframe.src);
+            }
+        }));
+    }
+}
+
+let zkpInstance;
+const initializeWidget = (clientId, env, redirect) => {
+    zkpInstance = new ZKP(clientId, env, redirect);
 };
-const FEATURE_AGE_VERIFICATION = {
-    feature: "AGE_VERIFICATION", // Add other valid features
-    style: 'default',
-    containerStyle: 'default',
-    containerId: 'default',
-};
-const paymentAppDomains = {
-    prod: "https://payments.rocketfuel.inc/select-currency",
-    qa: "https://qa-payment.rfdemo.co/select-currency",
-    preprod: "https://preprod-payment.rocketdemo.net/select-currency",
-    sandbox: "https://payments-sandbox.rocketfuelblockchain.com/select-currency",
-};
-const appDomains = {
-    prod: "http://localhost:3000",
-    qa: "https://rocketfuel-ccd.netlify.app",
-    preprod: "http://localhost:3000",
-    sandbox: "http://localhost:3000",
-};
-const ContainerId = 'sdk-buttons-container';
-const EVENTS = {
-    AGE_VERIFICATION: "AGE_VERIFICATION",
-    CLOSE_MODAL: "CLOSE_MODAL"
+const launchAgeVerificationWidget = () => {
+    if (!zkpInstance) {
+        throw new Error('SDK not initialized properly');
+    }
+    zkpInstance.initialize();
 };
 
 function getBaseUrl(env) {
@@ -226,82 +378,6 @@ function placeOrder(clientId_1) {
         }
     });
 }
-
-class ZKP {
-    constructor(clientId, env, redirect) {
-        this.appUrl = appDomains[env];
-        this.clientId = clientId;
-        this.redirect = redirect;
-    }
-    initialize() {
-        if (this.redirect) {
-            this.openRedirect(`${this.appUrl}?clientId=${this.clientId}`);
-        }
-        else {
-            IframeUtiltites.showOverlay(this.appUrl);
-            this.eventListnerConcodium();
-        }
-    }
-    openRedirect(url) {
-        window.open(url, '_blank');
-    }
-    eventListnerConcodium() {
-        window.addEventListener('message', (event) => __awaiter(this, void 0, void 0, function* () {
-            var _a, _b, _c;
-            if (event.data.type === 'request_concordium') {
-                const provider = window === null || window === void 0 ? void 0 : window.concordium;
-                if (provider) {
-                    // Use the provider in parent and relay only usable data
-                    let account;
-                    account = yield provider.getMostRecentlySelectedAccount();
-                    if (!account) {
-                        account = yield provider.connect();
-                    }
-                    event.source.postMessage({
-                        type: 'concordium_response',
-                        message: account,
-                    }, event.origin);
-                }
-                else {
-                    event.source.postMessage({
-                        type: 'concordium_response',
-                        message: { error: 'Provider not found' },
-                    }, event.origin);
-                }
-            }
-            if (event.data.type === 'concordium_requestVerifiablePresentation') {
-                const provider = window === null || window === void 0 ? void 0 : window.concordium;
-                if (provider) {
-                    // Use the provider in parent and relay only usable data
-                    const { statement, challenge } = event.data.payload;
-                    provider.requestVerifiablePresentation(challenge, statement).then((data) => {
-                        event.source.postMessage({
-                            type: 'concordium_requestVerifiablePresentation_response',
-                            message: 'verified',
-                            data
-                        }, event.origin);
-                    }).catch((err) => {
-                        event.source.postMessage({
-                            type: 'concordium_requestVerifiablePresentation_error',
-                            error: err,
-                        }, event.origin);
-                    });
-                }
-            }
-            if (((_a = event.data) === null || _a === void 0 ? void 0 : _a.eventType) === "accountDisconnected") {
-                (_c = (_b = IframeUtiltites.iframe) === null || _b === void 0 ? void 0 : _b.contentWindow) === null || _c === void 0 ? void 0 : _c.postMessage('concordium_disconnected', IframeUtiltites.iframe.src);
-            }
-        }));
-    }
-}
-
-let zkpInstance;
-const initializeWidget = (clientId, env, redirect) => {
-    zkpInstance = new ZKP(clientId, env, redirect);
-};
-const launchWidget = () => {
-    zkpInstance.initialize();
-};
 
 class RKFLPlugin {
     constructor(config) {
@@ -430,8 +506,8 @@ class RKFLPlugin {
         }
     }
     ageVerification(env) {
-        launchWidget();
+        launchAgeVerificationWidget();
     }
 }
 
-export { RKFLPlugin as RkflPlugin, RKFLPlugin as default };
+export { RKFLPlugin as RkflPlugin, RKFLPlugin as default, launchAgeVerificationWidget };

@@ -44,7 +44,7 @@ export default class IframeUtiltites {
         overlay.style.height = "100%";
         overlay.style.border = '1px solid #dddddd';
         overlay.style.borderRadius = '8px';
-        overlay.style.backgroundColor = "#000000";
+        overlay.style.backgroundColor = "#F8F8F8";
         overlay.style.display = "flex";
         overlay.style.justifyContent = "center";
         overlay.style.alignItems = "center";
@@ -61,6 +61,8 @@ export default class IframeUtiltites {
 
         // Remove loader on iframe load
         this.iframe.addEventListener("load", () => {
+            const origin = window.location.origin;
+            this.iframe?.contentWindow?.postMessage({ type: 'parent_origin', origin }, '*');
             overlay.remove();
         });
 
