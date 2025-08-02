@@ -46,7 +46,7 @@ export function dragElement() {
         }
     };
 
-    iframeWrapperHeader.onmouseleave = () => {
+    iframeWrapperHeader.onmouseup = () => {
         if (!isMobile) {
             iframeWrapperHeader.style.height = '4px';
             iframeWrapperHeader.style.background = '#cecece';

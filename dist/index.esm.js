@@ -50,7 +50,7 @@ const appDomains = {
     prod: "http://localhost:3000",
     qa: "https://rocketfuel-ccd.netlify.app",
     preprod: "http://localhost:3000",
-    sandbox: "http://localhost:3000",
+    sandbox: "https://rocketfuel-ccd.netlify.app",
 };
 const ContainerId = 'sdk-buttons-container';
 const EVENTS = {
@@ -97,7 +97,7 @@ function dragElement() {
             iframeWrapperHeader.style.background = `#cecece`;
         }
     };
-    iframeWrapperHeader.onmouseleave = () => {
+    iframeWrapperHeader.onmouseup = () => {
         if (!isMobile) {
             iframeWrapperHeader.style.height = '4px';
             iframeWrapperHeader.style.background = '#cecece';
