@@ -474,7 +474,7 @@ class RKFLPlugin {
                     }
                     initializeWidget(this.clientId, this.enviornment, this.redirect);
                     if (btnType.inject === undefined || btnType.inject === null || btnType.inject) {
-                        if (document.getElementById('#age')) {
+                        if (!document.getElementById('#age')) {
                             container2.appendChild(button);
                         }
                     }
