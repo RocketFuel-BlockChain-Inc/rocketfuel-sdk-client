@@ -1,6 +1,6 @@
 import { placeOrder } from './features/payin';
 import { initializeWidget, launchAgeVerificationWidget } from './features/zkp';
-import { ContainerId, EVENTS, FEATURE_AGE_VERIFICATION, FEATURE_PAYIN } from './utils/constants';
+import { appEnv, ContainerId, EVENTS, FEATURE_AGE_VERIFICATION, FEATURE_PAYIN } from './utils/constants';
 import IframeUtiltites from './utils/IframeUtilities';
 interface Buttons {
   feature: "PAYIN" | "AGE_VERIFICATION"; // Add other valid features
@@ -26,6 +26,13 @@ export class RKFLPlugin {
   private innerHtmlVerify: string = `<img src="https://ik.imagekit.io/rocketfuel/icons/rocketfuel-circular.svg?tr=w-30,h-30,fo-auto,q-50" alt="" style="width: 30px; height:30px;"> Verification via Rocketfuel`;
   private innerHtmlPayLoading: string = `<img src="https://ik.imagekit.io/rocketfuel/icons/rocketfuel-circular.svg?tr=w-30,h-30,fo-auto,q-50" alt="" style="width: 30px; height:30px;"> Processing...`;
   constructor(config: SDKConfig) {
+    const env = config.environment;
+    if (
+      appEnv === 'production' &&
+      (env && !(['prod', 'sandbox'].includes(env)))
+    ) {
+      throw new Error(`Invalid environment "${env}" in production mode.`);
+    }
     this.clientId = config.clientId;
     this.buttons = config.plugins.length === 0 ? [FEATURE_PAYIN] : config.plugins;
     this.redirect = config.redirect || false;

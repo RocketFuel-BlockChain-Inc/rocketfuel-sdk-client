@@ -22,6 +22,7 @@ const envVars = {
   'process.env.APP_DOMAIN_QA': JSON.stringify(process.env.APP_DOMAIN_QA),
   'process.env.APP_DOMAIN_PREPROD': JSON.stringify(process.env.APP_DOMAIN_PREPROD),
   'process.env.APP_DOMAIN_SANDBOX': JSON.stringify(process.env.APP_DOMAIN_SANDBOX),
+  'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
 };
 
 const commonPlugins = [

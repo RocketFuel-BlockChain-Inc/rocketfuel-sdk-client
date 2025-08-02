@@ -37,3 +37,4 @@ export const EVENTS = {
   AGE_VERIFICATION: "AGE_VERIFICATION",
   CLOSE_MODAL: "CLOSE_MODAL"
 }
+export const appEnv = process.env.NODE_ENV as string;

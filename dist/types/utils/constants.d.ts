@@ -33,3 +33,4 @@ export declare const EVENTS: {
     AGE_VERIFICATION: string;
     CLOSE_MODAL: string;
 };
+export declare const appEnv: string;
