@@ -52,7 +52,7 @@ const paymentAppDomains = {
 };
 const appDomains = {
     prod: "http://localhost:3000",
-    qa: "http://localhost:3000",
+    qa: "https://rocketfuel-ccd.netlify.app",
     preprod: "http://localhost:3000",
     sandbox: "http://localhost:3000",
 };
@@ -458,9 +458,7 @@ class RKFLPlugin {
                             this.setLoadingState(false);
                         }
                     });
-                    if (!document.getElementById('#pay')) {
-                        container.appendChild(button);
-                    }
+                    container.appendChild(button);
                     break;
                 case FEATURE_AGE_VERIFICATION.feature:
                     button.innerHTML = this.innerHtmlVerify;
@@ -472,7 +470,7 @@ class RKFLPlugin {
                         return;
                     }
                     initializeWidget(this.clientId, this.enviornment, this.redirect);
-                    if (!document.getElementById('#age')) {
+                    if (btnType.inject === undefined || btnType.inject === null || btnType.inject) {
                         container2.appendChild(button);
                     }
                     break;

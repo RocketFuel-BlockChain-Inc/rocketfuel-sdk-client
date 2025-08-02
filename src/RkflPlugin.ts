@@ -7,6 +7,7 @@ interface Buttons {
   style?: string;
   containerStyle?: string;
   containerId?: string;
+  inject?: boolean
 }
 export interface SDKConfig {
   clientId: string;
@@ -99,9 +100,7 @@ export class RKFLPlugin {
               this.setLoadingState(false);
             }
           };
-          if (!document.getElementById('#pay')) {
-            container.appendChild(button);
-          }
+          container.appendChild(button);
           break;
 
         case FEATURE_AGE_VERIFICATION.feature:
@@ -114,7 +113,7 @@ export class RKFLPlugin {
             return;
           }
           initializeWidget(this.clientId, this.enviornment, this.redirect);
-          if (!document.getElementById('#age')) {
+          if (btnType.inject === undefined || btnType.inject === null || btnType.inject) {
             container2.appendChild(button);
           }
           break;

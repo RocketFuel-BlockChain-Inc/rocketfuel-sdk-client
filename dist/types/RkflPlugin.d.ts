@@ -3,6 +3,7 @@ interface Buttons {
     style?: string;
     containerStyle?: string;
     containerId?: string;
+    inject?: boolean;
 }
 export interface SDKConfig {
     clientId: string;
