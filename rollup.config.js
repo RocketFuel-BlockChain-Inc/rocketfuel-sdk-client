@@ -5,11 +5,10 @@ import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import replace from '@rollup/plugin-replace';
 import dotenv from 'dotenv';
+import pkg from './package.json';
 
-dotenv.config(); // Load environment variables from .env
+dotenv.config();
 
-
-// Map of env variables you want to inject
 const envVars = {
   'process.env.API_DOMAIN_PROD': JSON.stringify(process.env.API_DOMAIN_PROD),
   'process.env.API_DOMAIN_QA': JSON.stringify(process.env.API_DOMAIN_QA),
@@ -39,6 +38,8 @@ const commonPlugins = [
   }),
 ];
 
+const versionBanner = `/*! @rocketfuel/client v${pkg.version} | (c) Rocketfuel | MIT License */`;
+
 export default defineConfig([
   {
     input: 'src/index.ts',
@@ -54,7 +55,8 @@ export default defineConfig([
     output: {
       file: 'dist/sdk.min.js',
       format: 'iife',
-      name: 'RkflPlugin', // This creates `window.RkflPlugin`
+      name: 'RkflPlugin',
+      banner: versionBanner,
       globals: {
         'crypto-js': 'CryptoJS',
       },

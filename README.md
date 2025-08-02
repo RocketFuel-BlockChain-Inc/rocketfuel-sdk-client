@@ -17,6 +17,15 @@ To initialize the SDK, create a new instance of `RkflPlugin` with your configura
 
 ---
 
+## installation
+Inport CDN
+```
+```
+or
+install via npm 
+```
+import { RKFLPlugin } from '@rocketfuel/client';
+```
 ## 🚀 Usage
 
 ```html
