@@ -459,7 +459,9 @@ class RKFLPlugin {
                             this.setLoadingState(false);
                         }
                     });
-                    container.appendChild(button);
+                    if (!document.getElementById('#pay')) {
+                        container.appendChild(button);
+                    }
                     break;
                 case FEATURE_AGE_VERIFICATION.feature:
                     button.innerHTML = this.innerHtmlVerify;
@@ -472,7 +474,9 @@ class RKFLPlugin {
                     }
                     initializeWidget(this.clientId, this.enviornment, this.redirect);
                     if (btnType.inject === undefined || btnType.inject === null || btnType.inject) {
-                        container2.appendChild(button);
+                        if (document.getElementById('#age')) {
+                            container2.appendChild(button);
+                        }
                     }
                     break;
                 default:

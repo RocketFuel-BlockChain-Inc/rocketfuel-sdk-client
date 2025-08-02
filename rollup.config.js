@@ -54,7 +54,7 @@ export default defineConfig([
   {
     input: 'src/standalone.ts',
     output: {
-      file: 'dist/sdk.min.js',
+      file: `dist/rocketfuel-client.min-${pkg.version}.js`,
       format: 'iife',
       name: 'RkflPlugin',
       banner: versionBanner,
