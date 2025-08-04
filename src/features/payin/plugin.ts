@@ -1,5 +1,6 @@
 // RocketFuel SDK - TypeScript Version
 
+import { FEATURE_PAYIN } from "../../utils/constants";
 import IframeUtiltites from "../../utils/IframeUtilities";
 import { getBaseUrl, RocketFuelOptions } from "./types";
 // Version: 1.0.1
@@ -43,7 +44,7 @@ class RocketFuel {
 
   public async openIframe(uuid: string) {
     const open = `${this.domain}/${uuid}`
-    IframeUtiltites.showOverlay(open);
+    IframeUtiltites.showOverlay(open, FEATURE_PAYIN.feature);
   }
 
 

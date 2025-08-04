@@ -1,4 +1,4 @@
-import { appDomains } from "../../utils/constants";
+import { appDomains, FEATURE_AGE_VERIFICATION } from "../../utils/constants";
 import IframeUtiltites from "../../utils/IframeUtilities";
 declare global {
     interface Window {
@@ -18,7 +18,7 @@ export class ZKP {
         if (this.redirect) {
             this.openRedirect(`${this.appUrl}?clientId=${this.clientId}`)
         } else {
-            IframeUtiltites.showOverlay(this.appUrl)
+            IframeUtiltites.showOverlay(this.appUrl, FEATURE_AGE_VERIFICATION.feature)
             this.eventListnerConcodium();
         }
     }

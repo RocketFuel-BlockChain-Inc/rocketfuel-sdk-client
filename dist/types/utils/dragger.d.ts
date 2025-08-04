@@ -1,1 +1,1 @@
-export declare function dragElement(): HTMLDivElement;
+export declare function dragElement(feature: string): HTMLDivElement;

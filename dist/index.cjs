@@ -52,7 +52,7 @@ const paymentAppDomains = {
 };
 const appDomains = {
     prod: "http://localhost:3000",
-    qa: "https://rocketfuel-ccd.netlify.app",
+    qa: "http://localhost:3000",
     preprod: "http://localhost:3000",
     sandbox: "https://rocketfuel-ccd.netlify.app",
 };
@@ -62,25 +62,41 @@ const EVENTS = {
     CLOSE_MODAL: "CLOSE_MODAL"
 };
 
-function dragElement() {
+function dragElement(feature) {
     const isMobile = window.innerWidth <= 768 || /Mobi|Android/i.test(navigator.userAgent);
     const iframeWrapper = document.createElement("div");
     const iframeWrapperHeader = document.createElement("div");
     iframeWrapper.id = "iframeWrapper";
     iframeWrapperHeader.id = "iframeWrapperHeader";
-    // Default styles (for desktop)
-    iframeWrapper.style.cssText = `
-  position: fixed;
-  z-index: 2147483647;
-  top: 10%;
-  right: 2%;
-  width: 450px;
-  height: 800px;
-  background: white;
-  box-shadow: 0 0 10px rgba(0,0,0,0.15);
-  border-radius: 8px;
-  overflow: hidden;
-`;
+    if (feature === FEATURE_AGE_VERIFICATION.feature) {
+        iframeWrapper.style.cssText = `
+      position: fixed;
+      z-index: 2147483647;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 450px;
+      height: 700px;
+      background: white;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0,0,0,0.15);
+      border-radius: 8px;
+    `;
+    }
+    else {
+        iframeWrapper.style.cssText = `
+      position: fixed;
+      z-index: 2147483647;
+      top: 10%;
+      right: 2%;
+      width: 450px;
+      height: 800px;
+      background: white;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0,0,0,0.15);
+      border-radius: 8px;
+    `;
+    }
     iframeWrapperHeader.style.cssText = `
   height: 4px;
   width: 40%;
@@ -162,17 +178,18 @@ class IframeUtiltites {
         iframe.style.backgroundColor = 'transparent';
         iframe.style.border = '0';
         iframe.style.width = '100%';
+        iframe.style.overflowY = 'auto';
         iframe.src = url;
         return iframe;
     }
-    static showOverlay(url) {
+    static showOverlay(url, feature) {
         if (this.iframe) {
             this.iframe.src = url;
             return;
         }
         // Create iframe and wrapper
         this.iframe = this.createIFrame(url);
-        const wrapper = dragElement();
+        const wrapper = dragElement(feature);
         this.wrapper = wrapper;
         this.iframe.style.display = 'block';
         this.iframe.style.minHeight = '100%';
@@ -237,7 +254,7 @@ class ZKP {
             this.openRedirect(`${this.appUrl}?clientId=${this.clientId}`);
         }
         else {
-            IframeUtiltites.showOverlay(this.appUrl);
+            IframeUtiltites.showOverlay(this.appUrl, FEATURE_AGE_VERIFICATION.feature);
             this.eventListnerConcodium();
         }
     }
@@ -359,7 +376,7 @@ class RocketFuel {
     openIframe(uuid) {
         return __awaiter(this, void 0, void 0, function* () {
             const open = `${this.domain}/${uuid}`;
-            IframeUtiltites.showOverlay(open);
+            IframeUtiltites.showOverlay(open, FEATURE_PAYIN.feature);
         });
     }
 }

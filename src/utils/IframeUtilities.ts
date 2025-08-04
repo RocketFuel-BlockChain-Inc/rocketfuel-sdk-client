@@ -1,3 +1,4 @@
+import { FEATURE_AGE_VERIFICATION } from "./constants";
 import { dragElement } from "./dragger";
 
 export default class IframeUtiltites {
@@ -11,18 +12,18 @@ export default class IframeUtiltites {
         iframe.style.backgroundColor = 'transparent';
         iframe.style.border = '0';
         iframe.style.width = '100%';
+        iframe.style.overflowY = 'auto';
         iframe.src = url;
         return iframe;
     }
-    public static showOverlay(url: string) {
+    public static showOverlay(url: string, feature: string) {
         if (this.iframe) {
             this.iframe.src = url;
             return;
         }
-
         // Create iframe and wrapper
         this.iframe = this.createIFrame(url);
-        const wrapper = dragElement();
+        const wrapper = dragElement(feature);
         this.wrapper = wrapper;
 
         this.iframe.style.display = 'block';

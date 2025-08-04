@@ -1,6 +1,7 @@
+import { FEATURE_AGE_VERIFICATION } from "./constants";
 
 
-export function dragElement() {
+export function dragElement(feature: string) {
     const isMobile = window.innerWidth <= 768 || /Mobi|Android/i.test(navigator.userAgent);
 
     const iframeWrapper = document.createElement("div");
@@ -8,20 +9,34 @@ export function dragElement() {
 
     iframeWrapper.id = "iframeWrapper";
     iframeWrapperHeader.id = "iframeWrapperHeader";
-
-    // Default styles (for desktop)
-    iframeWrapper.style.cssText = `
-  position: fixed;
-  z-index: 2147483647;
-  top: 10%;
-  right: 2%;
-  width: 450px;
-  height: 800px;
-  background: white;
-  box-shadow: 0 0 10px rgba(0,0,0,0.15);
-  border-radius: 8px;
-  overflow: hidden;
-`;
+    if (feature === FEATURE_AGE_VERIFICATION.feature) {
+        iframeWrapper.style.cssText = `
+      position: fixed;
+      z-index: 2147483647;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 450px;
+      height: 700px;
+      background: white;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0,0,0,0.15);
+      border-radius: 8px;
+    `;
+    } else {
+        iframeWrapper.style.cssText = `
+      position: fixed;
+      z-index: 2147483647;
+      top: 10%;
+      right: 2%;
+      width: 450px;
+      height: 800px;
+      background: white;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0,0,0,0.15);
+      border-radius: 8px;
+    `;
+    }
 
     iframeWrapperHeader.style.cssText = `
   height: 4px;
