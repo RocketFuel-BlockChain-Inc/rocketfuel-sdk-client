@@ -1,0 +1,10 @@
+src/
+public/
+*.log
+*.config.js
+*.test.js
+README.md
+!.npmignore
+!.gitignore
+.env
+.netlify
