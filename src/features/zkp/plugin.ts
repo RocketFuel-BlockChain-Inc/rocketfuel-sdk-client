@@ -18,7 +18,8 @@ export class ZKP {
         if (this.redirect) {
             this.openRedirect(`${this.appUrl}?clientId=${this.clientId}`)
         } else {
-            IframeUtiltites.showOverlay(this.appUrl, FEATURE_AGE_VERIFICATION.feature)
+            IframeUtiltites.showOverlay(`${this.appUrl}?clientId=${this.clientId}`,
+                 FEATURE_AGE_VERIFICATION.feature)
             this.eventListnerConcodium();
         }
     }
