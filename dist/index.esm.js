@@ -187,6 +187,24 @@ class IframeUtiltites {
         this.iframe = this.createIFrame(url);
         const wrapper = dragElement(feature);
         this.wrapper = wrapper;
+        // add backdrop
+        if (feature === FEATURE_AGE_VERIFICATION.feature) {
+            this.backdrop = document.createElement('div');
+            this.backdrop.style.backgroundColor = '#000000';
+            this.backdrop.style.position = 'fixed';
+            this.backdrop.style.width = '100%';
+            this.backdrop.style.height = '100%';
+            this.backdrop.style.top = '0';
+            this.backdrop.style.bottom = '0';
+            this.backdrop.style.left = '0';
+            this.backdrop.style.right = '0';
+            this.backdrop.style.zIndex = '2147483645';
+            this.backdrop.style.opacity = '0.6';
+            this.backdrop.id = 'backdrop-age-verification';
+        }
+        if (this.backdrop) {
+            document.body.appendChild(this.backdrop);
+        }
         this.iframe.style.display = 'block';
         this.iframe.style.minHeight = '100%';
         this.iframe.style.border = '1px solid #dddddd';
@@ -223,6 +241,9 @@ class IframeUtiltites {
             (_b = (_a = this.iframe) === null || _a === void 0 ? void 0 : _a.contentWindow) === null || _b === void 0 ? void 0 : _b.postMessage({ type: 'parent_origin', origin }, '*');
             overlay.remove();
         });
+        if (this.backdrop) {
+            document.body.appendChild(this.backdrop);
+        }
         overlay.appendChild(loader);
         wrapper.appendChild(this.iframe);
         wrapper.appendChild(overlay);
@@ -232,12 +253,16 @@ class IframeUtiltites {
         if (this.wrapper && this.wrapper.parentNode) {
             this.wrapper.parentNode.removeChild(this.wrapper);
         }
+        if (this.backdrop && this.backdrop.parentNode) {
+            this.backdrop.parentNode.removeChild(this.backdrop);
+        }
         this.iframe = null;
         this.wrapper = null;
     }
 }
 IframeUtiltites.iframe = null;
 IframeUtiltites.wrapper = null;
+IframeUtiltites.backdrop = null;
 
 class ZKP {
     constructor(clientId, env, redirect) {

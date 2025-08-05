@@ -4,6 +4,7 @@ import { dragElement } from "./dragger";
 export default class IframeUtiltites {
     public static iframe: HTMLIFrameElement | null = null;
     private static wrapper: HTMLDivElement | null = null;
+    private static backdrop: HTMLDivElement | null = null;
 
     private static createIFrame(url: string) {
         const iframe = document.createElement('iframe');
@@ -25,6 +26,25 @@ export default class IframeUtiltites {
         this.iframe = this.createIFrame(url);
         const wrapper = dragElement(feature);
         this.wrapper = wrapper;
+
+        // add backdrop
+        if (feature === FEATURE_AGE_VERIFICATION.feature) {
+            this.backdrop = document.createElement('div');
+            this.backdrop.style.backgroundColor = '#000000';
+            this.backdrop.style.position = 'fixed';
+            this.backdrop.style.width = '100%';
+            this.backdrop.style.height = '100%';
+            this.backdrop.style.top = '0';
+            this.backdrop.style.bottom = '0';
+            this.backdrop.style.left = '0';
+            this.backdrop.style.right = '0';
+            this.backdrop.style.zIndex = '2147483645';
+            this.backdrop.style.opacity = '0.6';
+            this.backdrop.id = 'backdrop-age-verification';
+        }
+        if (this.backdrop) {
+            document.body.appendChild(this.backdrop)
+        }
 
         this.iframe.style.display = 'block';
         this.iframe.style.minHeight = '100%';
@@ -67,6 +87,10 @@ export default class IframeUtiltites {
             overlay.remove();
         });
 
+
+        if (this.backdrop) {
+           document.body.appendChild(this.backdrop)
+        }
         overlay.appendChild(loader);
         wrapper.appendChild(this.iframe);
         wrapper.appendChild(overlay);
@@ -76,6 +100,9 @@ export default class IframeUtiltites {
     public static closeIframe() {
         if (this.wrapper && this.wrapper.parentNode) {
             this.wrapper.parentNode.removeChild(this.wrapper);
+        }
+        if (this.backdrop && this.backdrop.parentNode) {
+            this.backdrop.parentNode.removeChild(this.backdrop);
         }
 
         this.iframe = null;
