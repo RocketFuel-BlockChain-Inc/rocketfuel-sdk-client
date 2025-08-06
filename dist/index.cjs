@@ -51,9 +51,9 @@ const paymentAppDomains = {
     sandbox: "https://payments-sandbox.rocketfuelblockchain.com/select-currency",
 };
 const appDomains = {
-    prod: "http://localhost:3000",
-    qa: "http://localhost:3000",
-    preprod: "http://localhost:3000",
+    prod: "https://rocketfuel-ccd.netlify.app",
+    qa: "https://rocketfuel-ccd.netlify.app",
+    preprod: "https://rocketfuel-ccd.netlify.app",
     sandbox: "https://rocketfuel-ccd.netlify.app",
 };
 const ContainerId = 'sdk-buttons-container';
