@@ -506,13 +506,13 @@ class RKFLPlugin {
                     button.onclick = () => this.ageVerification(this.enviornment);
                     button.id = '#age';
                     const container2 = document.getElementById(btnType.containerId || ContainerId);
-                    if (!container2) {
+                    if (!container2 && btnType.inject) {
                         console.error(`Container not found.`);
                         return;
                     }
                     initializeWidget(this.clientId, this.enviornment, this.redirect);
                     if (btnType.inject === undefined || btnType.inject === null || btnType.inject) {
-                        if (!document.getElementById('#age')) {
+                        if (container2 && !document.getElementById('#age')) {
                             container2.appendChild(button);
                         }
                     }
