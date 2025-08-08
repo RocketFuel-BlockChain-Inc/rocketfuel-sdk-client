@@ -37,17 +37,7 @@ class ApiClient {
                 return { ok: false, error: data?.message }
             }
 
-            setTimeout(() => {
-                if (IframeUtiltites?.iframe?.contentWindow) {
-                    IframeUtiltites.iframe.contentWindow.postMessage(
-                        {
-                            type: 'initialize_widget',
-                            access: data.result.access_token,
-                        },
-                        '*'
-                    );
-                }
-            }, 5000)
+            localStorage.setItem('access', data.result.access_token)
 
 
             // Success

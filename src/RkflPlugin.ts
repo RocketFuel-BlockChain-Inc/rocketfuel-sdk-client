@@ -150,7 +150,6 @@ export class RKFLPlugin {
     window.addEventListener("message", this.handleMessage);
 
   }
-
   public prepareOrder(uuid: any): void {
     this.uuid = uuid;
     if (this.payNowButton) {
@@ -162,6 +161,18 @@ export class RKFLPlugin {
     const data = event.data;
     if (data.type === EVENTS.CLOSE_MODAL) {
       IframeUtiltites.closeIframe();
+    }
+    if (data.type === 'initialize_widget') {
+      const access = localStorage.getItem('access');
+      if (IframeUtiltites?.iframe?.contentWindow && access) {
+        IframeUtiltites.iframe.contentWindow.postMessage(
+          {
+            type: 'initialize_widget',
+            access
+          },
+          '*'
+        );
+      }
     }
   }
 

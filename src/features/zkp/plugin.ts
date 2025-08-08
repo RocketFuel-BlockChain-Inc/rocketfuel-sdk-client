@@ -19,7 +19,7 @@ export class ZKP {
             this.openRedirect(`${this.appUrl}?clientId=${btoa(this.clientId)}`)
         } else {
             IframeUtiltites.showOverlay(`${this.appUrl}`,
-                 FEATURE_AGE_VERIFICATION.feature)
+                FEATURE_AGE_VERIFICATION.feature)
             this.eventListnerConcodium();
         }
     }
@@ -30,10 +30,9 @@ export class ZKP {
 
     private eventListnerConcodium() {
         window.addEventListener('message', async (event: any) => {
-
-            if(event.data.type === 'request_connected_account') {
+            if (event.data.type === 'request_connected_account') {
                 const provider = window?.concordium;
-                 if (provider) {
+                if (provider) {
                     // Use the provider in parent and relay only usable data
                     let account;
                     account = await provider.getMostRecentlySelectedAccount();
@@ -44,15 +43,15 @@ export class ZKP {
                         },
                         event.origin
                     );
-                 } else {
-                     event.source.postMessage(
+                } else {
+                    event.source.postMessage(
                         {
                             type: 'concordium_response',
                             message: { error: 'Provider not found' },
                         },
                         event.origin
                     );
-                 }
+                }
             }
             if (event.data.type === 'request_concordium') {
                 const provider = window?.concordium;
@@ -111,7 +110,7 @@ export class ZKP {
                 }
             }
             if (event.data?.eventType === "accountDisconnected") {
-                IframeUtiltites.iframe?.contentWindow?.postMessage('concordium_disconnected', 
+                IframeUtiltites.iframe?.contentWindow?.postMessage('concordium_disconnected',
                     IframeUtiltites.iframe.src
                 )
             }

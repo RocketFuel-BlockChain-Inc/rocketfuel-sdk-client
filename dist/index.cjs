@@ -471,15 +471,7 @@ class ApiClient {
                 if (!response.ok || data.ok === false) {
                     return { ok: false, error: data === null || data === void 0 ? void 0 : data.message };
                 }
-                setTimeout(() => {
-                    var _a;
-                    if ((_a = IframeUtiltites === null || IframeUtiltites === void 0 ? void 0 : IframeUtiltites.iframe) === null || _a === void 0 ? void 0 : _a.contentWindow) {
-                        IframeUtiltites.iframe.contentWindow.postMessage({
-                            type: 'initialize_widget',
-                            access: data.result.access_token,
-                        }, '*');
-                    }
-                }, 5000);
+                localStorage.setItem('access', data.result.access_token);
                 // Success
                 return {
                     ok: true,
@@ -614,9 +606,19 @@ class RKFLPlugin {
         }
     }
     handleMessage(event) {
+        var _a;
         const data = event.data;
         if (data.type === EVENTS.CLOSE_MODAL) {
             IframeUtiltites.closeIframe();
+        }
+        if (data.type === 'initialize_widget') {
+            const access = localStorage.getItem('access');
+            if (((_a = IframeUtiltites === null || IframeUtiltites === void 0 ? void 0 : IframeUtiltites.iframe) === null || _a === void 0 ? void 0 : _a.contentWindow) && access) {
+                IframeUtiltites.iframe.contentWindow.postMessage({
+                    type: 'initialize_widget',
+                    access
+                }, '*');
+            }
         }
     }
     setLoadingState(isLoading) {
