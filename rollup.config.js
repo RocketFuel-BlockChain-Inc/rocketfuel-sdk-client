@@ -58,12 +58,8 @@ export default defineConfig([
       format: 'iife',
       name: 'RkflPlugin',
       banner: versionBanner,
-      globals: {
-        'crypto-js': 'CryptoJS',
-      },
       plugins: [terser()],
     },
-    external: ['crypto-js'],
     plugins: [...commonPlugins],
   },
 ]);

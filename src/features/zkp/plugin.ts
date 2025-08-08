@@ -16,9 +16,9 @@ export class ZKP {
     }
     public initialize() {
         if (this.redirect) {
-            this.openRedirect(`${this.appUrl}?clientId=${this.clientId}`)
+            this.openRedirect(`${this.appUrl}?clientId=${btoa(this.clientId)}`)
         } else {
-            IframeUtiltites.showOverlay(`${this.appUrl}?clientId=${this.clientId}`,
+            IframeUtiltites.showOverlay(`${this.appUrl}`,
                  FEATURE_AGE_VERIFICATION.feature)
             this.eventListnerConcodium();
         }

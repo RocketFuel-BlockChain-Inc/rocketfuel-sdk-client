@@ -1,5 +1,6 @@
 import { placeOrder } from './features/payin';
 import { initializeWidget, launchAgeVerificationWidget } from './features/zkp';
+import ApiClient from './utils/client';
 import { appEnv, ContainerId, EVENTS, FEATURE_AGE_VERIFICATION, FEATURE_PAYIN } from './utils/constants';
 import IframeUtiltites from './utils/IframeUtilities';
 interface Buttons {
@@ -40,20 +41,30 @@ export class RKFLPlugin {
     this.uuid = '';
   }
 
-  public init(): void {
-    const isPayinEnabled = this.buttons.find(v => v.feature === FEATURE_PAYIN.feature)
+  public async init(): Promise<void> {
     // to-do clientid verification
-    if (isPayinEnabled) {
-      if (!this.clientId) {
-        console.error('Client ID is required');
-        return;
-      }
-    } else {
-      if (!this.clientId) {
-        console.error('Client ID is required');
-        return;
-      }
+
+    if (!this.clientId) {
+      console.error('Client ID is required');
+      return;
     }
+    const client = new ApiClient(this.enviornment);
+    try {
+      const data = await client.verifyClient(this.clientId);
+      if (data.ok) {
+        //success
+      } else {
+        console.log('Client Id verificaiton failed', data.error)
+        return;
+      }
+    } catch (err) {
+      console.error('Client ID verificaiton failed', err);
+
+      return;
+    }
+
+    // verify client id
+
 
     this.buttons.forEach((btnType) => {
       const button = document.createElement('button');

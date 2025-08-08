@@ -8,3 +8,6 @@ type EnvKey = keyof typeof apiDomains;
 export function getBaseUrl(env: EnvKey): string {
   return paymentAppDomains[env];
 }
+export function getApiDomains(env: EnvKey): string {
+  return apiDomains[env];
+}

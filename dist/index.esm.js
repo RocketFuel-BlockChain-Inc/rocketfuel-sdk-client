@@ -1,3 +1,5 @@
+import CryptoJS from 'crypto-js';
+
 /******************************************************************************
 Copyright (c) Microsoft Corporation.
 
@@ -39,6 +41,12 @@ const FEATURE_AGE_VERIFICATION = {
     style: 'default',
     containerStyle: 'default',
     containerId: 'default',
+};
+const apiDomains = {
+    prod: "https://app.rocketfuel.inc/api",
+    qa: "https://qa-app.rfdemo.co/api",
+    preprod: "https://preprod-app.rocketdemo.net/api",
+    sandbox: "https://app-sandbox.rocketfuel.inc/api",
 };
 const paymentAppDomains = {
     prod: "https://payments.rocketfuel.inc/select-currency",
@@ -272,10 +280,10 @@ class ZKP {
     }
     initialize() {
         if (this.redirect) {
-            this.openRedirect(`${this.appUrl}?clientId=${this.clientId}`);
+            this.openRedirect(`${this.appUrl}?clientId=${btoa(this.clientId)}`);
         }
         else {
-            IframeUtiltites.showOverlay(`${this.appUrl}?clientId=${this.clientId}`, FEATURE_AGE_VERIFICATION.feature);
+            IframeUtiltites.showOverlay(`${this.appUrl}`, FEATURE_AGE_VERIFICATION.feature);
             this.eventListnerConcodium();
         }
     }
@@ -364,6 +372,9 @@ const launchAgeVerificationWidget = () => {
 function getBaseUrl(env) {
     return paymentAppDomains[env];
 }
+function getApiDomains(env) {
+    return apiDomains[env];
+}
 
 // RocketFuel SDK - TypeScript Version
 class RocketFuel {
@@ -421,6 +432,59 @@ function placeOrder(clientId_1) {
     });
 }
 
+class ApiClient {
+    constructor(env) {
+        this.domain = getApiDomains(env);
+    }
+    encrypt(data, clientId) {
+        return CryptoJS.AES.encrypt(data, clientId).toString();
+    }
+    ;
+    verifyClient(clientId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const data = {
+                clientUrl: window.location.protocol + '//' + window.location.host
+            };
+            const cipher = this.encrypt(JSON.stringify(data), clientId);
+            const payload = {
+                clientId,
+                encryptedReq: cipher
+            };
+            try {
+                const response = yield fetch(this.domain + '/sdk/generate-auth-token', {
+                    method: "POST",
+                    headers: {
+                        "x-sdk-version": '0.0.1',
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(payload),
+                });
+                const data = yield response.json();
+                if (!response.ok || data.ok === false) {
+                    return { ok: false, error: data === null || data === void 0 ? void 0 : data.message };
+                }
+                setTimeout(() => {
+                    var _a;
+                    if ((_a = IframeUtiltites === null || IframeUtiltites === void 0 ? void 0 : IframeUtiltites.iframe) === null || _a === void 0 ? void 0 : _a.contentWindow) {
+                        IframeUtiltites.iframe.contentWindow.postMessage({
+                            type: 'initialize_widget',
+                            access: data.result.access_token,
+                        }, '*');
+                    }
+                }, 5000);
+                // Success
+                return {
+                    ok: true,
+                };
+            }
+            catch (err) {
+                console.error("Request failed:", err);
+                return { ok: false, error: err === null || err === void 0 ? void 0 : err.message };
+            }
+        });
+    }
+}
+
 class RKFLPlugin {
     constructor(config) {
         this.redirect = false;
@@ -436,94 +500,103 @@ class RKFLPlugin {
         this.uuid = '';
     }
     init() {
-        const isPayinEnabled = this.buttons.find(v => v.feature === FEATURE_PAYIN.feature);
-        // to-do clientid verification
-        if (isPayinEnabled) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // to-do clientid verification
             if (!this.clientId) {
                 console.error('Client ID is required');
                 return;
             }
-        }
-        else {
-            if (!this.clientId) {
-                console.error('Client ID is required');
-                return;
-            }
-        }
-        this.buttons.forEach((btnType) => {
-            const button = document.createElement('button');
-            button.style.minWidth = '250px';
-            button.style.margin = '5px';
-            button.style.padding = '8px 16px';
-            button.style.border = '1px solid #e0e0e0';
-            button.style.borderRadius = '999px'; // fully rounded pill shape
-            button.style.backgroundColor = 'white';
-            button.style.display = 'flex';
-            button.style.alignItems = 'center';
-            button.style.gap = '8px';
-            button.style.fontFamily = 'sans-serif';
-            button.style.fontSize = '14px';
-            button.style.color = '#1a1a1a';
-            button.style.cursor = 'pointer';
-            button.style.boxShadow = '0 0 0 1px rgba(0,0,0,0.05)';
-            switch (btnType.feature) {
-                case FEATURE_PAYIN.feature:
-                    button.innerHTML = this.innerHtmlPay;
-                    button.disabled = true; // Initially disabled
-                    button.style.opacity = '0.4';
-                    this.payNowButton = button;
-                    button.id = '#pay';
-                    const container = document.getElementById(btnType.containerId || ContainerId);
-                    if (!container) {
-                        console.error(`Container not found.`);
-                        return;
-                    }
-                    button.onclick = () => __awaiter(this, void 0, void 0, function* () {
-                        if (IframeUtiltites.iframe) {
-                            return;
-                        }
-                        if (!this.uuid) {
-                            console.warn('Cart data is not prepared');
-                            return;
-                        }
-                        this.setLoadingState(true);
-                        try {
-                            yield placeOrder(this.clientId, this.redirect, this.uuid, this.enviornment);
-                        }
-                        catch (err) {
-                            console.error('Error during order placement:', err);
-                        }
-                        finally {
-                            this.setLoadingState(false);
-                        }
-                    });
-                    if (!document.getElementById('#pay')) {
-                        container.appendChild(button);
-                    }
-                    break;
-                case FEATURE_AGE_VERIFICATION.feature:
-                    button.innerHTML = this.innerHtmlVerify;
-                    button.onclick = () => this.ageVerification(this.enviornment);
-                    button.id = '#age';
-                    const container2 = document.getElementById(btnType.containerId || ContainerId);
-                    if (!container2 && btnType.inject) {
-                        console.error(`Container not found.`);
-                        return;
-                    }
-                    initializeWidget(this.clientId, this.enviornment, this.redirect);
-                    if (btnType.inject === undefined || btnType.inject === null || btnType.inject) {
-                        if (container2 && !document.getElementById('#age')) {
-                            container2.appendChild(button);
-                        }
-                    }
-                    break;
-                default:
-                    console.warn(`Unknown button: ${btnType}`);
+            const client = new ApiClient(this.enviornment);
+            try {
+                const data = yield client.verifyClient(this.clientId);
+                if (data.ok) {
+                    //success
+                }
+                else {
+                    console.log('Client Id verificaiton failed', data.error);
                     return;
+                }
             }
+            catch (err) {
+                console.error('Client ID verificaiton failed', err);
+                return;
+            }
+            // verify client id
+            this.buttons.forEach((btnType) => {
+                const button = document.createElement('button');
+                button.style.minWidth = '250px';
+                button.style.margin = '5px';
+                button.style.padding = '8px 16px';
+                button.style.border = '1px solid #e0e0e0';
+                button.style.borderRadius = '999px'; // fully rounded pill shape
+                button.style.backgroundColor = 'white';
+                button.style.display = 'flex';
+                button.style.alignItems = 'center';
+                button.style.gap = '8px';
+                button.style.fontFamily = 'sans-serif';
+                button.style.fontSize = '14px';
+                button.style.color = '#1a1a1a';
+                button.style.cursor = 'pointer';
+                button.style.boxShadow = '0 0 0 1px rgba(0,0,0,0.05)';
+                switch (btnType.feature) {
+                    case FEATURE_PAYIN.feature:
+                        button.innerHTML = this.innerHtmlPay;
+                        button.disabled = true; // Initially disabled
+                        button.style.opacity = '0.4';
+                        this.payNowButton = button;
+                        button.id = '#pay';
+                        const container = document.getElementById(btnType.containerId || ContainerId);
+                        if (!container) {
+                            console.error(`Container not found.`);
+                            return;
+                        }
+                        button.onclick = () => __awaiter(this, void 0, void 0, function* () {
+                            if (IframeUtiltites.iframe) {
+                                return;
+                            }
+                            if (!this.uuid) {
+                                console.warn('Cart data is not prepared');
+                                return;
+                            }
+                            this.setLoadingState(true);
+                            try {
+                                yield placeOrder(this.clientId, this.redirect, this.uuid, this.enviornment);
+                            }
+                            catch (err) {
+                                console.error('Error during order placement:', err);
+                            }
+                            finally {
+                                this.setLoadingState(false);
+                            }
+                        });
+                        if (!document.getElementById('#pay')) {
+                            container.appendChild(button);
+                        }
+                        break;
+                    case FEATURE_AGE_VERIFICATION.feature:
+                        button.innerHTML = this.innerHtmlVerify;
+                        button.onclick = () => this.ageVerification(this.enviornment);
+                        button.id = '#age';
+                        const container2 = document.getElementById(btnType.containerId || ContainerId);
+                        if (!container2 && btnType.inject) {
+                            console.error(`Container not found.`);
+                            return;
+                        }
+                        initializeWidget(this.clientId, this.enviornment, this.redirect);
+                        if (btnType.inject === undefined || btnType.inject === null || btnType.inject) {
+                            if (container2 && !document.getElementById('#age')) {
+                                container2.appendChild(button);
+                            }
+                        }
+                        break;
+                    default:
+                        console.warn(`Unknown button: ${btnType}`);
+                        return;
+                }
+            });
+            // modal listner
+            window.addEventListener("message", this.handleMessage);
         });
-        // modal listner
-        window.addEventListener("message", this.handleMessage);
     }
     prepareOrder(uuid) {
         this.uuid = uuid;

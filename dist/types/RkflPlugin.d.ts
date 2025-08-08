@@ -22,7 +22,7 @@ export declare class RKFLPlugin {
     private innerHtmlVerify;
     private innerHtmlPayLoading;
     constructor(config: SDKConfig);
-    init(): void;
+    init(): Promise<void>;
     prepareOrder(uuid: any): void;
     private handleMessage;
     private setLoadingState;
