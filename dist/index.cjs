@@ -87,8 +87,8 @@ function dragElement(feature) {
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 450px;
-      height: 700px;
+      width: 400px;
+      height: 70vh;
       background: white;
       overflow: hidden;
       box-shadow: 0 0 10px rgba(0,0,0,0.15);
@@ -99,10 +99,10 @@ function dragElement(feature) {
         iframeWrapper.style.cssText = `
       position: fixed;
       z-index: 2147483647;
-      top: 10%;
+      top: 10vh;
       right: 2%;
-      width: 450px;
-      height: 800px;
+      width: 400px;
+        height: 70vh;
       background: white;
       overflow: hidden;
       box-shadow: 0 0 10px rgba(0,0,0,0.15);
@@ -504,22 +504,23 @@ class RKFLPlugin {
             // to-do clientid verification
             if (!this.clientId) {
                 console.error('Client ID is required');
-                return;
+                return false;
             }
             const client = new ApiClient(this.enviornment);
             try {
                 const data = yield client.verifyClient(this.clientId);
                 if (data.ok) {
                     //success
+                    // return true;
                 }
                 else {
                     console.log('Client Id verificaiton failed', data.error);
-                    return;
+                    return false;
                 }
             }
             catch (err) {
                 console.error('Client ID verificaiton failed', err);
-                return;
+                return true;
             }
             // verify client id
             this.buttons.forEach((btnType) => {

@@ -41,26 +41,27 @@ export class RKFLPlugin {
     this.uuid = '';
   }
 
-  public async init(): Promise<void> {
+  public async init(): Promise<Boolean | void> {
     // to-do clientid verification
 
     if (!this.clientId) {
       console.error('Client ID is required');
-      return;
+      return false;
     }
     const client = new ApiClient(this.enviornment);
     try {
       const data = await client.verifyClient(this.clientId);
       if (data.ok) {
         //success
+        // return true;
       } else {
         console.log('Client Id verificaiton failed', data.error)
-        return;
+        return false;
       }
     } catch (err) {
       console.error('Client ID verificaiton failed', err);
 
-      return;
+      return true;
     }
 
     // verify client id
