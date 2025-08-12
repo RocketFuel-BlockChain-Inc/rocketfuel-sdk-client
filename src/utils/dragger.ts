@@ -16,8 +16,6 @@ export function dragElement(feature: string) {
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 400px;
-      height: 70vh;
       background: white;
       overflow: hidden;
       box-shadow: 0 0 10px rgba(0,0,0,0.15);
@@ -27,17 +25,14 @@ export function dragElement(feature: string) {
         iframeWrapper.style.cssText = `
       position: fixed;
       z-index: 2147483647;
-      top: 10vh;
-      right: 2%;
-      width: 400px;
-        height: 70vh;
+      top: '1%';
+      left: 75%;
       background: white;
       overflow: hidden;
       box-shadow: 0 0 10px rgba(0,0,0,0.15);
       border-radius: 8px;
     `;
     }
-
     iframeWrapperHeader.style.cssText = `
   height: 4px;
   width: 40%;

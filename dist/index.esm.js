@@ -79,8 +79,6 @@ function dragElement(feature) {
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 400px;
-      height: 70vh;
       background: white;
       overflow: hidden;
       box-shadow: 0 0 10px rgba(0,0,0,0.15);
@@ -91,10 +89,8 @@ function dragElement(feature) {
         iframeWrapper.style.cssText = `
       position: fixed;
       z-index: 2147483647;
-      top: 10vh;
-      right: 2%;
-      width: 400px;
-        height: 70vh;
+      top: '1%';
+      left: 75%;
       background: white;
       overflow: hidden;
       box-shadow: 0 0 10px rgba(0,0,0,0.15);
@@ -181,7 +177,8 @@ class IframeUtiltites {
         iframe.style.display = 'none';
         iframe.style.backgroundColor = 'transparent';
         iframe.style.border = '0';
-        iframe.style.width = '100%';
+        iframe.style.width = '365px';
+        iframe.style.minHeight = '500px';
         iframe.style.overflowY = 'auto';
         iframe.src = url;
         return iframe;
@@ -266,6 +263,11 @@ class IframeUtiltites {
         }
         this.iframe = null;
         this.wrapper = null;
+    }
+    static setIframeHeight(height) {
+        if (this.iframe) {
+            this.iframe.style.height = height;
+        }
     }
 }
 IframeUtiltites.iframe = null;
@@ -612,6 +614,9 @@ class RKFLPlugin {
                     access
                 }, '*');
             }
+        }
+        if (data.type === 'rocketfuel_change_height') {
+            IframeUtiltites.setIframeHeight(data.data);
         }
     }
     setLoadingState(isLoading) {

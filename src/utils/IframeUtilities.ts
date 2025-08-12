@@ -12,7 +12,8 @@ export default class IframeUtiltites {
         iframe.style.display = 'none';
         iframe.style.backgroundColor = 'transparent';
         iframe.style.border = '0';
-        iframe.style.width = '100%';
+        iframe.style.width = '365px';
+        iframe.style.minHeight = '500px'
         iframe.style.overflowY = 'auto';
         iframe.src = url;
         return iframe;
@@ -107,5 +108,11 @@ export default class IframeUtiltites {
 
         this.iframe = null;
         this.wrapper = null;
+    }
+
+    public static setIframeHeight(height: string) {
+        if(this.iframe) {
+            this.iframe.style.height = height;
+        }
     }
 }
