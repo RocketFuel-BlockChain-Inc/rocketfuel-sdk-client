@@ -25,8 +25,8 @@ export function dragElement(feature: string) {
         iframeWrapper.style.cssText = `
       position: fixed;
       z-index: 2147483647;
-      top: '1%';
-      left: 75%;
+      top: 1%;
+      left: 65%;
       background: white;
       overflow: hidden;
       box-shadow: 0 0 10px rgba(0,0,0,0.15);
