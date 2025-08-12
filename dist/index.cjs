@@ -274,6 +274,9 @@ class IframeUtiltites {
     }
     static setIframeHeight(height) {
         if (this.iframe) {
+            if (Number(height) >= window.innerHeight) {
+                height = window.innerHeight.toString();
+            }
             this.iframe.style.height = height;
         }
     }
