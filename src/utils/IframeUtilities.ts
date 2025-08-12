@@ -113,7 +113,7 @@ export default class IframeUtiltites {
     public static setIframeHeight(height: string) {
         if(this.iframe) {
             if(Number(height) >= window.innerHeight) {
-                height = window.innerHeight.toString();
+                height = (window.innerHeight - 20).toString();
 ;            }
             this.iframe.style.height = height;
         }

@@ -90,7 +90,7 @@ function dragElement(feature) {
       position: fixed;
       z-index: 2147483647;
       top: 1%;
-      left: 65%;
+      left: 75%;
       background: white;
       overflow: hidden;
       box-shadow: 0 0 10px rgba(0,0,0,0.15);
@@ -267,7 +267,7 @@ class IframeUtiltites {
     static setIframeHeight(height) {
         if (this.iframe) {
             if (Number(height) >= window.innerHeight) {
-                height = window.innerHeight.toString();
+                height = (window.innerHeight - 20).toString();
             }
             this.iframe.style.height = height;
         }
@@ -511,7 +511,7 @@ class RKFLPlugin {
                     // return true;
                 }
                 else {
-                    console.log('Client Id verificaiton failed', data.error);
+                    console.error('Client Id verificaiton failed', data.error);
                     return false;
                 }
             }

@@ -3,7 +3,6 @@ import { FEATURE_AGE_VERIFICATION } from "./constants";
 
 export function dragElement(feature: string) {
     const isMobile = window.innerWidth <= 768 || /Mobi|Android/i.test(navigator.userAgent);
-
     const iframeWrapper = document.createElement("div");
     const iframeWrapperHeader = document.createElement("div");
 
@@ -26,7 +25,7 @@ export function dragElement(feature: string) {
       position: fixed;
       z-index: 2147483647;
       top: 1%;
-      left: 65%;
+      left: 75%;
       background: white;
       overflow: hidden;
       box-shadow: 0 0 10px rgba(0,0,0,0.15);

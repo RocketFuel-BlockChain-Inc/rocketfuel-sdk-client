@@ -55,7 +55,7 @@ export class RKFLPlugin {
         //success
         // return true;
       } else {
-        console.log('Client Id verificaiton failed', data.error)
+        console.error('Client Id verificaiton failed', data.error)
         return false;
       }
     } catch (err) {
