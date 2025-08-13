@@ -116,6 +116,9 @@ export default class IframeUtiltites {
             if(Number(height) >= Number(window.innerHeight)) {
                 height = (window.innerHeight - 20).toString();
             }
+            if(Number(height) <= (Number(window.innerHeight) / 2)) {
+                height = (Number(window.innerHeight) / 2).toString();
+            }
             console.log("🚀 ~ IframeUtiltites ~ setIframeHeight ~ height:2", height, window.innerHeight)
             
             this.iframe.style.height = `${height}px`;
