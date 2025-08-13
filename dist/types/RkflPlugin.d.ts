@@ -1,3 +1,4 @@
+import { UserInfo } from './features/zkp/types';
 interface Buttons {
     feature: "PAYIN" | "AGE_VERIFICATION";
     style?: string;
@@ -17,12 +18,14 @@ export declare class RKFLPlugin {
     private redirect;
     private uuid;
     private payNowButton;
+    private userInfo;
     private enviornment;
     private innerHtmlPay;
     private innerHtmlVerify;
     private innerHtmlPayLoading;
     constructor(config: SDKConfig);
     init(): Promise<Boolean | void>;
+    setUserInfo(userInfo: UserInfo): void;
     prepareOrder(uuid: any): void;
     private handleMessage;
     private setLoadingState;

@@ -1,5 +1,6 @@
 import { placeOrder } from './features/payin';
 import { initializeWidget, launchAgeVerificationWidget } from './features/zkp';
+import { UserInfo } from './features/zkp/types';
 import ApiClient from './utils/client';
 import { appEnv, ContainerId, EVENTS, FEATURE_AGE_VERIFICATION, FEATURE_PAYIN } from './utils/constants';
 import IframeUtiltites from './utils/IframeUtilities';
@@ -22,6 +23,7 @@ export class RKFLPlugin {
   private redirect: boolean = false;
   private uuid: string;
   private payNowButton: HTMLButtonElement | null = null;
+  private userInfo: UserInfo;
   private enviornment: "prod" | "qa" | "preprod" | "sandbox";
   private innerHtmlPay: string = '<img src="https://ik.imagekit.io/rocketfuel/icons/rocketfuel-circular.svg?tr=w-30,h-30,fo-auto,q-50" alt="" style="width: 30px; height:30px;"> Pay with Cryto Currency';
   private innerHtmlVerify: string = `<img src="https://ik.imagekit.io/rocketfuel/icons/rocketfuel-circular.svg?tr=w-30,h-30,fo-auto,q-50" alt="" style="width: 30px; height:30px;"> Verification via Rocketfuel`;
@@ -39,6 +41,7 @@ export class RKFLPlugin {
     this.redirect = config.redirect || false;
     this.enviornment = config.environment || 'prod'
     this.uuid = '';
+    this.userInfo = { email: "", userId: "" };
   }
 
   public async init(): Promise<Boolean | void> {
@@ -126,7 +129,7 @@ export class RKFLPlugin {
 
         case FEATURE_AGE_VERIFICATION.feature:
           button.innerHTML = this.innerHtmlVerify;
-          button.onclick = () => this.ageVerification(this.enviornment);
+          button.onclick = () => this.ageVerification();
           button.id = '#age'
           const container2 = document.getElementById(btnType.containerId || ContainerId);
           if (!container2 && btnType.inject) {
@@ -148,8 +151,11 @@ export class RKFLPlugin {
 
     });
     // modal listner
-    window.addEventListener("message", this.handleMessage);
+    window.addEventListener("message", this.handleMessage.bind(this));
 
+  }
+  public setUserInfo(userInfo: UserInfo): void {
+    this.userInfo = userInfo;
   }
   public prepareOrder(uuid: any): void {
     this.uuid = uuid;
@@ -165,17 +171,23 @@ export class RKFLPlugin {
     }
     if (data.type === 'initialize_widget') {
       const access = localStorage.getItem('access');
+      const data = {
+        access,
+        clientId: this.clientId,
+        userInfo: this.userInfo
+      }
+      console.log('this.data', data)
       if (IframeUtiltites?.iframe?.contentWindow && access) {
         IframeUtiltites.iframe.contentWindow.postMessage(
           {
             type: 'initialize_widget',
-            access
+            data
           },
           '*'
         );
       }
     }
-    if (data.type === 'rocketfuel_change_height') {
+    if (data.type === 'rocketfuel_new_height') {
       IframeUtiltites.setIframeHeight(data.data)
     }
   }
@@ -191,7 +203,7 @@ export class RKFLPlugin {
       this.payNowButton.innerHTML = this.innerHtmlPay;
     }
   }
-  private ageVerification(env: any): void {
+  private ageVerification(): void {
     launchAgeVerificationWidget();
   }
 }

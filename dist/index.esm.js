@@ -74,47 +74,47 @@ function dragElement(feature) {
     iframeWrapperHeader.id = "iframeWrapperHeader";
     if (feature === FEATURE_AGE_VERIFICATION.feature) {
         iframeWrapper.style.cssText = `
-      position: fixed;
-      z-index: 2147483647;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: white;
-      overflow: hidden;
-      box-shadow: 0 0 10px rgba(0,0,0,0.15);
-      border-radius: 8px;
-    `;
+            position: fixed;
+            z-index: 2147483647;
+            top: 50%;
+            right: 50%;
+            transform: translate(50%, -50%);
+            background: white;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0,0,0,0.15);
+            border-radius: 8px;
+        `;
     }
     else {
         iframeWrapper.style.cssText = `
-      position: fixed;
-      z-index: 2147483647;
-      top: 1%;
-      left: 75%;
-      background: white;
-      overflow: hidden;
-      box-shadow: 0 0 10px rgba(0,0,0,0.15);
-      border-radius: 8px;
-    `;
+            position: fixed;
+            z-index: 2147483647;
+            top: 1%;
+            right: 1%;
+            background: white;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0,0,0,0.15);
+            border-radius: 8px;
+        `;
     }
     iframeWrapperHeader.style.cssText = `
-  height: 4px;
-  width: 40%;
-  cursor: move;
-  position: absolute;
-  background: #cecece;
-  top: 0;
-  left: 30%;
-  transform: translateY(0);
-  transition: all 0.3s ease;
-  border-radius: 4px;
-`;
+        height: 4px;
+        width: 40%;
+        cursor: move;
+        position: absolute;
+        background: #cecece;
+        top: 0;
+        left: 30%;
+        transform: translateY(0);
+        transition: all 0.3s ease;
+        border-radius: 4px;
+    `;
     iframeWrapperHeader.title = 'Drag to move';
-    // Hover effect (only for desktop)
+    // Hover effect (desktop only)
     iframeWrapperHeader.onmouseenter = () => {
         if (!isMobile) {
             iframeWrapperHeader.style.height = '14px';
-            iframeWrapperHeader.style.background = `#cecece`;
+            iframeWrapperHeader.style.background = '#cecece';
         }
     };
     iframeWrapperHeader.onmouseup = () => {
@@ -124,29 +124,25 @@ function dragElement(feature) {
         }
         closeDragElement();
     };
-    // Dragging only enabled for non-mobile
     if (!isMobile) {
         iframeWrapperHeader.onmousedown = dragMouseDown;
     }
     else {
-        // Fullscreen style for mobile
+        // Fullscreen for mobile
         iframeWrapper.style.cssText = `
-    position: fixed;
-    z-index: 2147483647;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: none;
-    background: white;
-  `;
+            position: fixed;
+            z-index: 2147483647;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+        `;
     }
-    // Attach header
     iframeWrapper.appendChild(iframeWrapperHeader);
-    // Dragging handlers
     let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
     function dragMouseDown(e) {
-        e = e || window.event;
         e.preventDefault();
         pos3 = e.clientX;
         pos4 = e.clientY;
@@ -154,14 +150,17 @@ function dragElement(feature) {
         document.onmousemove = elementDrag;
     }
     function elementDrag(e) {
-        e = e || window.event;
         e.preventDefault();
+        // Calculate movement deltas
         pos1 = pos3 - e.clientX;
         pos2 = pos4 - e.clientY;
         pos3 = e.clientX;
         pos4 = e.clientY;
+        // Vertical move
         iframeWrapper.style.top = (iframeWrapper.offsetTop - pos2) + "px";
-        iframeWrapper.style.left = (iframeWrapper.offsetLeft - pos1) + "px";
+        // Horizontal move using right
+        const currentRight = parseFloat(getComputedStyle(iframeWrapper).right || "0");
+        iframeWrapper.style.right = (currentRight + pos1) + "px";
     }
     function closeDragElement() {
         document.onmouseup = null;
@@ -265,11 +264,13 @@ class IframeUtiltites {
         this.wrapper = null;
     }
     static setIframeHeight(height) {
+        console.log("🚀 ~ IframeUtiltites ~ setIframeHeight ~ height:", height);
         if (this.iframe) {
-            if (Number(height) >= window.innerHeight) {
+            if (Number(height) >= Number(window.innerHeight)) {
                 height = (window.innerHeight - 20).toString();
             }
-            this.iframe.style.height = height;
+            console.log("🚀 ~ IframeUtiltites ~ setIframeHeight ~ height:2", height, window.innerHeight);
+            this.iframe.style.height = `${height}px`;
         }
     }
 }
@@ -495,6 +496,7 @@ class RKFLPlugin {
         this.redirect = config.redirect || false;
         this.enviornment = config.environment || 'prod';
         this.uuid = '';
+        this.userInfo = { email: "", userId: "" };
     }
     init() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -573,7 +575,7 @@ class RKFLPlugin {
                         break;
                     case FEATURE_AGE_VERIFICATION.feature:
                         button.innerHTML = this.innerHtmlVerify;
-                        button.onclick = () => this.ageVerification(this.enviornment);
+                        button.onclick = () => this.ageVerification();
                         button.id = '#age';
                         const container2 = document.getElementById(btnType.containerId || ContainerId);
                         if (!container2 && btnType.inject) {
@@ -593,8 +595,11 @@ class RKFLPlugin {
                 }
             });
             // modal listner
-            window.addEventListener("message", this.handleMessage);
+            window.addEventListener("message", this.handleMessage.bind(this));
         });
+    }
+    setUserInfo(userInfo) {
+        this.userInfo = userInfo;
     }
     prepareOrder(uuid) {
         this.uuid = uuid;
@@ -611,14 +616,20 @@ class RKFLPlugin {
         }
         if (data.type === 'initialize_widget') {
             const access = localStorage.getItem('access');
+            const data = {
+                access,
+                clientId: this.clientId,
+                userInfo: this.userInfo
+            };
+            console.log('this.data', data);
             if (((_a = IframeUtiltites === null || IframeUtiltites === void 0 ? void 0 : IframeUtiltites.iframe) === null || _a === void 0 ? void 0 : _a.contentWindow) && access) {
                 IframeUtiltites.iframe.contentWindow.postMessage({
                     type: 'initialize_widget',
-                    access
+                    data
                 }, '*');
             }
         }
-        if (data.type === 'rocketfuel_change_height') {
+        if (data.type === 'rocketfuel_new_height') {
             IframeUtiltites.setIframeHeight(data.data);
         }
     }
@@ -634,7 +645,7 @@ class RKFLPlugin {
             this.payNowButton.innerHTML = this.innerHtmlPay;
         }
     }
-    ageVerification(env) {
+    ageVerification() {
         launchAgeVerificationWidget();
     }
 }

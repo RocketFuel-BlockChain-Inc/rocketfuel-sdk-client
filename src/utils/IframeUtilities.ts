@@ -111,11 +111,14 @@ export default class IframeUtiltites {
     }
 
     public static setIframeHeight(height: string) {
+        console.log("🚀 ~ IframeUtiltites ~ setIframeHeight ~ height:", height)
         if(this.iframe) {
-            if(Number(height) >= window.innerHeight) {
+            if(Number(height) >= Number(window.innerHeight)) {
                 height = (window.innerHeight - 20).toString();
-;            }
-            this.iframe.style.height = height;
+            }
+            console.log("🚀 ~ IframeUtiltites ~ setIframeHeight ~ height:2", height, window.innerHeight)
+            
+            this.iframe.style.height = `${height}px`;
         }
     }
 }
