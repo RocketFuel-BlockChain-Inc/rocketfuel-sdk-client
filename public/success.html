@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Order Placed | StreamFlix</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <!-- Favicon, you may replace this with your logo -->
+  <link rel="icon" href="data:," />
+  <style>
+    body {
+      background: #f4f7fa;
+      min-height: 100vh;
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+    }
+    .brand-row {
+      padding: 2.3rem 0 0.8rem 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      justify-content: center;
+    }
+    .brand-logo {
+      font-size: 1.6rem;
+      color: #286ee6;
+    }
+    .brand-name {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #153468;
+      letter-spacing: 1px;
+    }
+    .top-actions {
+      max-width: 500px;
+      margin-left:auto; margin-right:auto;
+      margin-bottom: -0.7rem;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+    }
+    .back-btn {
+      border-radius: 23px;
+      border: 1.6px solid #2876e1;
+      color: #2876e1;
+      font-weight: 500;
+      background: #e7f1fa;
+      transition: background .19s, color .16s, box-shadow .15s;
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+      padding: 0.38em 1.45em;
+    }
+    .back-btn:active, .back-btn:focus {
+      background: #d9eafd;
+      color: #153468;
+      outline: none;
+      box-shadow: 0 2px 10px 0 #aad3f76a;
+    }
+    .success-main-card {
+      max-width: 500px;
+      margin: 0 auto;
+      margin-top: 1.2rem;
+      margin-bottom: 2rem;
+      background: #fff;
+      border-radius: 15px;
+      box-shadow: 0 12px 40px 0 #dbe8fd2b;
+      padding: 2.4rem 2rem 2rem 2rem;
+      overflow: hidden;
+      position: relative;
+    }
+    .checkmark {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: #e6f9ed;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.3rem;
+      position: relative;
+    }
+    .checkmark svg {
+      width: 60px;
+      height: 60px;
+      stroke: #2fae6e;
+      stroke-width: 6;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      animation: pop 0.6s cubic-bezier(.3,1.6,.6,1) forwards;
+    }
+    @keyframes pop {
+      0% { transform: scale(0.6); opacity: 0; }
+      60% { transform: scale(1.13); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+    hr { color: #e5edf8; margin: 1.6rem 0 1rem 0; }
+    .order-detail-row {
+      background: #f6f9fd;
+      border-radius: 8px;
+      margin-bottom: 1.3rem;
+      margin-top: 0.4rem;
+      padding: 1.2rem 1rem 1.1rem 1rem;
+      font-size: 1.07rem;
+      color: #485070;
+      box-shadow: 0 1px 3px #dae3f721;
+    }
+    .status-badge {
+      font-size: 0.92rem;
+      padding: 0.45em 1.3em;
+      border-radius: 50px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 600;
+    }
+    .status-badge.success { background: #24e469; color: #fff; }
+    .status-badge.pending { background: #fad160; color: #a4881b; }
+    .status-badge.failed  { background: #fd6767; color: #880a13; }
+    .json-label {
+      color: #8191a2;
+      font-size: .82rem;
+      margin-top: 1.4rem;
+      margin-bottom: 0.3rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .json-box {
+      background: #f8f9fa;
+      border-radius: 6px;
+      padding: 0.85rem 1.2rem;
+      font-family: monospace;
+      font-size: 0.93rem;
+      line-height: 1.56;
+      overflow-x: auto;
+      color: #365078;
+    }
+    .flat-btn {
+      border-radius: 23px;
+      font-weight: 500;
+      font-size: 1rem;
+      transition: box-shadow 0.14s;
+    }
+    .home-btn {
+      background: #24e469;
+      color: #fff;
+      border: none;
+      box-shadow: 0 2px 10px #56ea9d2e;
+      padding-left: 1.2em;
+      padding-right: 1.2em;
+    }
+    .home-btn:hover, .home-btn:focus { color: #fff;background: #17c367;outline:none;}
+    .copy-btn {
+      border: 1.5px solid #24e469;
+      color: #24e469;
+      background: #eafcf4;
+      font-size: .99rem;
+      padding-left: 1.2em;
+      padding-right: 1.2em;
+    }
+    .copy-btn:active { background: #dbf7e8;}
+    .copy-btn.copied, .copy-btn[aria-pressed="true"] {
+      color: #17a13a;
+      border-color: #17a13a;
+      background: #e4ffe3;
+      font-weight: 600;
+    }
+    @media (max-width: 600px) {
+      .success-main-card { padding: 1.35rem .5rem !important;}
+      .brand-row { padding: 1.2rem 0 0.6rem 0; }
+      .top-actions { max-width: 96vw; }
+    }
+    /* Center content on vertical for tall screens */
+    @media (min-height: 700px) {
+      body {
+        justify-content: flex-start;
+      }
+      .brand-row, .top-actions, .success-main-card {
+        margin-top: calc(1vh + 1.5rem) !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="brand-row">
+    <span class="brand-logo"><i class="fa-solid fa-clapperboard"></i></span>
+    <span class="brand-name">StreamFlix</span>
+  </div>
+  <div class="top-actions">
+    <a href="index.html" class="back-btn" tabindex="0">
+      <i class="fa fa-arrow-left me-1"></i> Back to Home
+    </a>
+  </div>
+  <div class="success-main-card">
+    <div class="text-center">
+      <div class="checkmark" aria-label="Success">
+        <svg viewBox="0 0 52 52" aria-hidden="true">
+          <path d="M14 27 l10 10 l14 -14" stroke-dasharray="70" stroke-dashoffset="70">
+            <animate attributeName="stroke-dashoffset" from="70" to="0" dur="0.63s" fill="freeze" />
+          </path>
+        </svg>
+      </div>
+      <h2 class="fw-bold mb-1" style="color:#15233c">Order Placed</h2>
+      <p class="text-muted mb-2">Your transaction was successful.</p>
+    </div>
+    <hr>
+    <div id="order-details" class="order-detail-row" style="display:none;"></div>
+    <!-- Button Row -->
+    <div class="d-flex justify-content-between flex-wrap gap-2 mb-3">
+      <button id="copy-json" type="button" class="flat-btn copy-btn btn px-4" aria-pressed="false">
+        <i class="fa fa-copy me-1"></i> Copy Raw Data
+      </button>
+      <a href="index.html" class="flat-btn home-btn btn px-4" tabindex="0">
+        <i class="fa fa-home me-1"></i> Go Home
+      </a>
+    </div>
+    <div class="json-label">Full Payload</div>
+    <div id="raw-json" class="json-box" aria-label="Raw response JSON"></div>
+    <div id="error-msg" style="display:none;">
+      <div class="alert alert-warning text-center mt-4">
+        Order data not found or the URL is malformed.
+      </div>
+    </div>
+  </div>
+  <!-- Bootstrap -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function parseQueryParam(name) {
+      const params = new URLSearchParams(window.location.search);
+      const v = params.get(name);
+      if (!v) return null;
+      try { return JSON.parse(decodeURIComponent(v)); }
+      catch (e) { return null; }
+    }
+    function formatAmount(amount, currency) {
+      if (amount === null || amount === undefined) return '—';
+      if (typeof amount === 'number') return amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 8 }) + ' ' + (currency || '');
+      return amount + (currency ? ' ' + currency : '');
+    }
+    function statusClass(status) {
+      status = (status || '').toLowerCase();
+      if (status === 'completed') return 'success';
+      if (status === 'pending') return 'pending';
+      return 'failed';
+    }
+    const data = parseQueryParam('data');
+    const orderEl = document.getElementById('order-details');
+    const rawEl = document.getElementById('raw-json');
+    const errorMsg = document.getElementById('error-msg');
+    if (!data) {
+      errorMsg.style.display = '';
+      rawEl.textContent = 'No valid data parsed from query string.';
+    } else {
+      orderEl.style.display = '';
+      const paymentMode = data.paymentMode || '—';
+      const status = data.status || 'unknown';
+      const receivedAmount = data.recievedAmount !== undefined ? data.recievedAmount : null;
+      const currency = data.currency || '';
+      orderEl.innerHTML = `
+        <div class="row g-3">
+          <div class="col-7 text-start"><b>Payment Mode:</b> <span>${paymentMode}</span></div>
+          <div class="col-5 text-end"><span class="status-badge ${statusClass(status)}">${status}</span></div>
+        </div>
+        <div class="row g-3 mt-2">
+          <div class="col-7 text-start"><b>Received Amount:</b> <span>${formatAmount(receivedAmount, currency)}</span></div>
+          <div class="col-5 text-end"><b>Currency:</b> <span>${currency}</span></div>
+        </div>
+      `;
+      rawEl.textContent = JSON.stringify(data, null, 2);
+    }
+    // Copy logic with accessibility
+    document.getElementById('copy-json').addEventListener('click', function() {
+      if (data) {
+        navigator.clipboard.writeText(JSON.stringify(data, null, 2)).then(() => {
+          this.textContent = 'Copied!';
+          this.classList.add('copied');
+          this.setAttribute('aria-pressed', 'true');
+          setTimeout(() => {
+            this.classList.remove('copied');
+            this.setAttribute('aria-pressed', 'false');
+            this.innerHTML = '<i class="fa fa-copy me-1"></i> Copy Raw Data';
+          }, 1400);
+        });
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Checkout | StreamFlix</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            background: #f4f7fa;
+            min-height: 100vh;
+        }
+
+        .brand-row {
+            display: flex;
+            align-items: center;
+            padding: 1.3rem 0 1rem 0;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            font-size: 1.6rem;
+            color: #286ee6;
+        }
+
+        .brand-name {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #153468;
+            letter-spacing: 1px;
+        }
+
+        .checkout-main-card {
+            max-width: 770px;
+            margin: 2.2rem auto 0;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 36px 0 #dbe8fd2b;
+            padding: 2.3rem 2rem 2rem 2rem;
+        }
+
+        .section-title {
+            font-size: 1.18rem;
+            font-weight: 600;
+            color: #365078;
+            margin-bottom: 1rem;
+        }
+
+        .checkout-table th,
+        .checkout-table td {
+            vertical-align: middle;
+            text-align: center;
+            padding: .8rem .6rem;
+        }
+
+        .checkout-table th {
+            background: #f4f8fd;
+            color: #8798af;
+            font-weight: 600;
+            border-bottom: 0;
+            font-size: 1rem;
+        }
+
+        .checkout-table td {
+            font-size: 1.04rem;
+            color: #15233c;
+            background: none !important;
+        }
+
+        .checkout-total-row {
+            border: none;
+            font-weight: bold;
+            color: #1c7c4b;
+        }
+
+        .flat-btn {
+            border-radius: 23px;
+            font-weight: 500;
+        }
+
+        .pay-btn {
+            width: 190px;
+            background: #24e469;
+            color: #fff;
+            border: none;
+            padding: .7rem 0;
+            font-size: 1.08rem;
+            transition: box-shadow 0.15s;
+            box-shadow: 0 2px 14px #5ae59544;
+        }
+
+        .pay-btn:active {
+            background: #16c952;
+            box-shadow: none;
+        }
+
+        .clear-btn {
+            border-radius: 23px;
+            border: none;
+            background: #f8d7da;
+            color: #d1516f;
+            font-weight: 500;
+            margin-right: .6rem;
+            padding: .5rem 1.1rem;
+            font-size: .99rem;
+            transition: background 0.18s;
+        }
+
+        .clear-btn:hover {
+            background: #f8c9d4;
+        }
+
+        /* Customer info section */
+        .checkout-customerinfo {
+            border-radius: 8px;
+            background: #f8fafb;
+            margin-top: 2.2rem;
+            padding: 1.2rem 1rem 1rem 1rem;
+            font-size: 1.04rem;
+            color: #566273;
+        }
+
+        /* Responsive tweaks */
+        @media (max-width: 768px) {
+            .checkout-main-card {
+                padding: 1.4rem .5rem;
+            }
+
+            .brand-row {
+                padding-left: .5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid px-0">
+        <!-- Navbar/Brandbar -->
+        <div class="container brand-row">
+            <span class="brand-logo"><i class="fa-solid fa-clapperboard"></i></span>
+            <span class="brand-name">StreamFlix</span>
+        </div>
+        <div class="container checkout-main-card">
+            <div class="mb-3">
+                <a href="index.html" class="btn btn-outline-primary rounded-pill px-4" style="font-weight:500;">
+                    <i class="fa fa-arrow-left me-1"></i>
+                    Back to Home
+                </a>
+            </div>
+            <!-- Main Checkout Card -->
+            <div class="checkout-main-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="section-title">Checkout</span>
+                    <button class="clear-btn flat-btn" onclick="removeCartItems()">
+                        <i class="fa fa-trash me-1"></i>Clear Cart
+                    </button>
+                </div>
+                <!-- Cart Table -->
+                <table class="table mb-2 checkout-table">
+                    <thead>
+                        <tr>
+                            <th style="text-align:left;">Item</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Sub-total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cartItems">
+                        <!-- Rendered from JS -->
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3" class="text-end checkout-total-row">Total</td>
+                            <td class="checkout-total-row" id="grandTotal">$0.00</td>
+                        </tr>
+                    </tfoot>
+                </table>
+                <!-- Pay Button -->
+                <div class="text-end mt-3" id="payNow">
+                    </button>
+                </div>
+
+                <!-- Customer Info -->
+                <div class="checkout-customerinfo mt-4" id="customerInfo" style="display:none;">
+                    <div class="mb-1"><strong>Name:</strong> <span id="customerName"></span></div>
+                    <div><strong>Email:</strong> <span id="customerEmail"></span></div>
+                </div>
+
+                <!-- Empty cart alert -->
+                <div class="alert alert-warning text-center mt-3" role="alert" id="emptyAlert" style="display:none;">
+                    No cart found.
+                </div>
+            </div>
+        </div>
+        <!-- SCRIPTS -->
+        <script src="https://rocketfuel-sdk.netlify.app/rkfl-transact-client.min-0.0.1.js" defer></script>
+        <!-- <script src="/dist/rkfl-transact-client.min-0.0.1.js" defer></script> -->
+
+        <script>
+            // ---- Replace this with your cart fetching/logic as per your app ----
+            // Faked example cart data for styling.
+            let cartData = JSON.parse(localStorage.getItem('cart') || '{}');
+            // Example fallback if testing standalone:
+            function renderCheckout() {
+                const tbody = document.getElementById('cartItems');
+                const alert = document.getElementById('emptyAlert');
+                const totalEl = document.getElementById('grandTotal');
+                const custInfo = document.getElementById('customerInfo');
+                const custName = document.getElementById('customerName');
+                const custEmail = document.getElementById('customerEmail');
+                if (!cartData || !cartData.cart || cartData.cart.length == 0) {
+                    tbody.innerHTML = '';
+                    totalEl.textContent = '$0.00';
+                    alert.style.display = '';
+                    custInfo.style.display = 'none';
+                    return;
+                }
+                alert.style.display = 'none';
+                let grandTotal = 0;
+                tbody.innerHTML = cartData.cart.map(item => {
+                    let subtotal = (parseFloat(item.price) * item.quantity);
+                    grandTotal += subtotal;
+                    return `<tr>
+          <td style="text-align:left">${item.name}</td>
+          <td>${item.quantity}</td>
+          <td>$${parseFloat(item.price).toFixed(2)}</td>
+          <td>$${subtotal.toFixed(2)}</td>
+        </tr>`;
+                }).join('');
+                totalEl.textContent = `$${grandTotal.toFixed(2)}`;
+                // Display customer info
+                if (cartData.customerInfo) {
+                    custName.textContent = cartData.customerInfo.name;
+                    custEmail.textContent = cartData.customerInfo.email;
+                    custInfo.style.display = '';
+                }
+            }
+            renderCheckout();
+
+            // Remove Cart
+            function removeCartItems() {
+                localStorage.removeItem('cart');
+                cartData = { cart: [] };
+                renderCheckout();
+            }
+            // Simulate navigation on pay click
+
+            const success_event = "rocketfuel_result_ok";
+
+            // Listen for SDK response to complete/redirect after payment
+            window.addEventListener('message', (event) => {
+                const data = event.data;
+                if (data.type === success_event && data.paymentCompleted === 1) {
+                    localStorage.removeItem('uuid');
+                    localStorage.removeItem('cart');
+                    const jsonStr = JSON.stringify(data?.response);
+                    window.location.href = `success.html?data=${encodeURIComponent(jsonStr)}`;
+                }
+            });
+
+            // Invoice backend function (unchanged)
+            async function fetchInvoice(payload) {
+                const url = 'https://invoicebackend.netlify.app/api/generateInvoice';
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await response.json();
+                return data?.result;
+            }
+
+            // ------ RKFL PLUGIN PAYMENT INIT --------
+
+            window.onload = () => {
+                renderCheckout();
+
+                // Configure the Payin widget
+                const payinFeature = { feature: "PAYIN", containerId: "payNow" };
+                const sdk = new RkflPlugin({
+                    plugins: [payinFeature],
+                    environment: 'qa',
+                    clientId: '931e948670dc119e6189bde004da9b1702e5fae810ff7831c0f3171f06d66081',
+                });
+                sdk.init().then((res) => {
+                    const cartPayload = localStorage.getItem('cart');
+                    if (!cartPayload) {
+                        document.getElementById('sdk-buttons-payin').innerHTML = '';
+                        return;
+                    }
+
+                    const uuid = localStorage.getItem('uuid');
+                    console.log("🚀 ~ uuid:", uuid)
+
+                    if (uuid) {
+                        sdk.prepareOrder(uuid);
+                    } else {
+                        fetchInvoice(JSON.parse(cartPayload))
+                            .then(res => {
+                                if (res && res.uuid) {
+                                    localStorage.setItem('uuid', res.uuid);
+                                    sdk.prepareOrder(res.uuid);
+                                }
+                            })
+                            .catch(err => {
+                                console.log(err)
+                            });
+                    }
+
+                }).catch(err => {
+                    //
+                })
+
+
+            }
+        </script>
+</body>
+
+</html>
