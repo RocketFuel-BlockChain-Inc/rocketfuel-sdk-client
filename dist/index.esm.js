@@ -169,6 +169,7 @@ function dragElement(feature) {
     return iframeWrapper;
 }
 
+const isMobile = window.innerWidth <= 768 || /Mobi|Android/i.test(navigator.userAgent);
 class IframeUtiltites {
     static createIFrame(url) {
         const iframe = document.createElement('iframe');
@@ -177,6 +178,9 @@ class IframeUtiltites {
         iframe.style.backgroundColor = 'transparent';
         iframe.style.border = '0';
         iframe.style.width = '365px';
+        if (isMobile) {
+            iframe.style.width = '100%';
+        }
         iframe.style.minHeight = '500px';
         iframe.style.overflowY = 'auto';
         iframe.src = url;

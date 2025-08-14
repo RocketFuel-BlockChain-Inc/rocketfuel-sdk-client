@@ -1,6 +1,6 @@
 import { FEATURE_AGE_VERIFICATION } from "./constants";
 import { dragElement } from "./dragger";
-
+const isMobile = window.innerWidth <= 768 || /Mobi|Android/i.test(navigator.userAgent);
 export default class IframeUtiltites {
     public static iframe: HTMLIFrameElement | null = null;
     private static wrapper: HTMLDivElement | null = null;
@@ -13,6 +13,9 @@ export default class IframeUtiltites {
         iframe.style.backgroundColor = 'transparent';
         iframe.style.border = '0';
         iframe.style.width = '365px';
+        if(isMobile) {
+            iframe.style.width = '100%';
+        }
         iframe.style.minHeight = '500px'
         iframe.style.overflowY = 'auto';
         iframe.src = url;
