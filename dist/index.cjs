@@ -272,7 +272,6 @@ class IframeUtiltites {
         this.wrapper = null;
     }
     static setIframeHeight(height) {
-        console.log("🚀 ~ IframeUtiltites ~ setIframeHeight ~ height:", height);
         if (this.iframe) {
             if (Number(height) >= Number(window.innerHeight)) {
                 height = (window.innerHeight - 20).toString();
@@ -280,7 +279,6 @@ class IframeUtiltites {
             if (Number(height) <= (Number(window.innerHeight) / 2)) {
                 height = (Number(window.innerHeight) / 2).toString();
             }
-            console.log("🚀 ~ IframeUtiltites ~ setIframeHeight ~ height:2", height, window.innerHeight);
             this.iframe.style.height = `${height}px`;
         }
     }
@@ -289,15 +287,82 @@ IframeUtiltites.iframe = null;
 IframeUtiltites.wrapper = null;
 IframeUtiltites.backdrop = null;
 
+function getBaseUrl(env) {
+    return paymentAppDomains[env];
+}
+function getApiDomains(env) {
+    return apiDomains[env];
+}
+
+// RocketFuel SDK - TypeScript Version
+class RocketFuel {
+    constructor(options) {
+        this.rkflToken = null;
+        this.success_event = "rocketfuel_result_ok";
+        this.clientId = options.clientId;
+        this.domain = getBaseUrl(options.environment);
+        this.initialize();
+    }
+    handleMessage(event) {
+        const eventData = event.data;
+        if (eventData.type === this.success_event) {
+            if (eventData.paymentCompleted === 1) {
+                const t = setTimeout(() => {
+                    IframeUtiltites.closeIframe();
+                    t !== null && t !== void 0 ? t : clearTimeout(t);
+                }, 5000);
+            }
+        }
+    }
+    initialize() {
+        window.addEventListener("message", this.handleMessage);
+    }
+    openRedirect(uuid) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const open = `${this.domain}/${uuid}`;
+            window.open(open, '_blank');
+        });
+    }
+    openIframe(uuid) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const open = `${this.domain}/${uuid}`;
+            IframeUtiltites.showOverlay(open, FEATURE_PAYIN.feature);
+        });
+    }
+}
+
+let rkflInstance;
+function placeOrder(clientId_1) {
+    return __awaiter(this, arguments, void 0, function* (clientId, redirect = false, uuid, environment) {
+        try {
+            // Create instance for reuse if needed later
+            rkflInstance = new RocketFuel({ clientId, environment });
+            if (redirect) {
+                rkflInstance.openRedirect(uuid);
+            }
+            else {
+                rkflInstance.openIframe(uuid);
+            }
+        }
+        catch (err) {
+            console.error("Failed to place order", err);
+        }
+    });
+}
+
 class ZKP {
     constructor(clientId, env, redirect) {
         this.appUrl = appDomains[env];
         this.clientId = clientId;
         this.redirect = redirect;
     }
-    initialize() {
+    initialize(userInfo) {
         if (this.redirect) {
-            this.openRedirect(`${this.appUrl}?clientId=${btoa(this.clientId)}`);
+            let params = null;
+            if (userInfo) {
+                params = new URLSearchParams(JSON.parse(JSON.stringify(userInfo))).toString();
+            }
+            this.openRedirect(`${this.appUrl}?clientId=${btoa(this.clientId)}&${params}`);
         }
         else {
             IframeUtiltites.showOverlay(`${this.appUrl}`, FEATURE_AGE_VERIFICATION.feature);
@@ -379,75 +444,12 @@ let zkpInstance;
 const initializeWidget = (clientId, env, redirect) => {
     zkpInstance = new ZKP(clientId, env, redirect);
 };
-const launchAgeVerificationWidget = () => {
+const launchAgeVerificationWidget = (userInfo) => {
     if (!zkpInstance) {
         throw new Error('SDK not initialized properly');
     }
-    zkpInstance.initialize();
+    zkpInstance.initialize(userInfo);
 };
-
-function getBaseUrl(env) {
-    return paymentAppDomains[env];
-}
-function getApiDomains(env) {
-    return apiDomains[env];
-}
-
-// RocketFuel SDK - TypeScript Version
-class RocketFuel {
-    constructor(options) {
-        this.rkflToken = null;
-        this.success_event = "rocketfuel_result_ok";
-        this.clientId = options.clientId;
-        this.domain = getBaseUrl(options.environment);
-        this.initialize();
-    }
-    handleMessage(event) {
-        const eventData = event.data;
-        if (eventData.type === this.success_event) {
-            if (eventData.paymentCompleted === 1) {
-                const t = setTimeout(() => {
-                    IframeUtiltites.closeIframe();
-                    t !== null && t !== void 0 ? t : clearTimeout(t);
-                }, 5000);
-            }
-        }
-    }
-    initialize() {
-        window.addEventListener("message", this.handleMessage);
-    }
-    openRedirect(uuid) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const open = `${this.domain}/${uuid}`;
-            window.open(open, '_blank');
-        });
-    }
-    openIframe(uuid) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const open = `${this.domain}/${uuid}`;
-            IframeUtiltites.showOverlay(open, FEATURE_PAYIN.feature);
-        });
-    }
-}
-
-let rkflInstance;
-function placeOrder(clientId_1) {
-    return __awaiter(this, arguments, void 0, function* (clientId, redirect = false, uuid, environment) {
-        try {
-            // Create instance for reuse if needed later
-            rkflInstance = new RocketFuel({ clientId, environment });
-            if (redirect) {
-                rkflInstance.openRedirect(uuid);
-            }
-            else {
-                rkflInstance.openIframe(uuid);
-            }
-        }
-        catch (err) {
-            console.error("Failed to place order", err);
-        }
-    });
-}
 
 class ApiClient {
     constructor(env) {
@@ -586,7 +588,7 @@ class RKFLPlugin {
                         break;
                     case FEATURE_AGE_VERIFICATION.feature:
                         button.innerHTML = this.innerHtmlVerify;
-                        button.onclick = () => this.ageVerification();
+                        button.onclick = () => launchAgeVerificationWidget(this.userInfo);
                         button.id = '#age';
                         const container2 = document.getElementById(btnType.containerId || ContainerId);
                         if (!container2 && btnType.inject) {
@@ -632,7 +634,6 @@ class RKFLPlugin {
                 clientId: this.clientId,
                 userInfo: this.userInfo
             };
-            console.log('this.data', data);
             if (((_a = IframeUtiltites === null || IframeUtiltites === void 0 ? void 0 : IframeUtiltites.iframe) === null || _a === void 0 ? void 0 : _a.contentWindow) && access) {
                 IframeUtiltites.iframe.contentWindow.postMessage({
                     type: 'initialize_widget',
@@ -656,11 +657,10 @@ class RKFLPlugin {
             this.payNowButton.innerHTML = this.innerHtmlPay;
         }
     }
-    ageVerification() {
-        launchAgeVerificationWidget();
+    launchAgeVerificationWidget() {
+        launchAgeVerificationWidget(this.userInfo);
     }
 }
 
 exports.RkflPlugin = RKFLPlugin;
 exports["default"] = RKFLPlugin;
-exports.launchAgeVerificationWidget = launchAgeVerificationWidget;

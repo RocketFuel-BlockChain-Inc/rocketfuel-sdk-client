@@ -29,6 +29,6 @@ export declare class RKFLPlugin {
     prepareOrder(uuid: any): void;
     private handleMessage;
     private setLoadingState;
-    private ageVerification;
+    launchAgeVerificationWidget(): void;
 }
 export {};

@@ -1,5 +1,6 @@
 import { appDomains, FEATURE_AGE_VERIFICATION } from "../../utils/constants";
 import IframeUtiltites from "../../utils/IframeUtilities";
+import { UserInfo } from "./types";
 declare global {
     interface Window {
         concordium: any;
@@ -14,9 +15,13 @@ export class ZKP {
         this.clientId = clientId;
         this.redirect = redirect;
     }
-    public initialize() {
+    public initialize(userInfo?: UserInfo) {
         if (this.redirect) {
-            this.openRedirect(`${this.appUrl}?clientId=${btoa(this.clientId)}`)
+            let params = null;
+            if(userInfo) {
+                params = new URLSearchParams(JSON.parse(JSON.stringify(userInfo))).toString()
+            }
+            this.openRedirect(`${this.appUrl}?clientId=${btoa(this.clientId)}&${params}`)
         } else {
             IframeUtiltites.showOverlay(`${this.appUrl}`,
                 FEATURE_AGE_VERIFICATION.feature)

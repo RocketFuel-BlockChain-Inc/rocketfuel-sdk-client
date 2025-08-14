@@ -129,7 +129,7 @@ export class RKFLPlugin {
 
         case FEATURE_AGE_VERIFICATION.feature:
           button.innerHTML = this.innerHtmlVerify;
-          button.onclick = () => this.ageVerification();
+          button.onclick = () => launchAgeVerificationWidget(this.userInfo);
           button.id = '#age'
           const container2 = document.getElementById(btnType.containerId || ContainerId);
           if (!container2 && btnType.inject) {
@@ -176,7 +176,6 @@ export class RKFLPlugin {
         clientId: this.clientId,
         userInfo: this.userInfo
       }
-      console.log('this.data', data)
       if (IframeUtiltites?.iframe?.contentWindow && access) {
         IframeUtiltites.iframe.contentWindow.postMessage(
           {
@@ -203,8 +202,8 @@ export class RKFLPlugin {
       this.payNowButton.innerHTML = this.innerHtmlPay;
     }
   }
-  private ageVerification(): void {
-    launchAgeVerificationWidget();
+  public launchAgeVerificationWidget(): void {
+    launchAgeVerificationWidget(this.userInfo);
   }
 }
 
