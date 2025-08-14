@@ -12,21 +12,21 @@ export const FEATURE_AGE_VERIFICATION = {
 } as const;
 
 export const apiDomains = {
-  prod: process.env.API_DOMAIN_PROD as string,
+  production: process.env.API_DOMAIN_PROD as string,
   qa: process.env.API_DOMAIN_QA as string,
   preprod: process.env.API_DOMAIN_PREPROD as string,
   sandbox: process.env.API_DOMAIN_SANDBOX as string,
 } as const;
 
 export const paymentAppDomains = {
-  prod: process.env.PAYMENT_APP_DOMAIN_PROD as string,
+  production: process.env.PAYMENT_APP_DOMAIN_PROD as string,
   qa: process.env.PAYMENT_APP_DOMAIN_QA as string,
   preprod: process.env.PAYMENT_APP_DOMAIN_PREPROD as string,
   sandbox: process.env.PAYMENT_APP_DOMAIN_SANDBOX as string,
 } as const;
 
 export const appDomains = {
-  prod: process.env.APP_DOMAIN_PROD as string,
+  production: process.env.APP_DOMAIN_PROD as string,
   qa: process.env.APP_DOMAIN_QA as string,
   preprod: process.env.APP_DOMAIN_PREPROD as string,
   sandbox: process.env.APP_DOMAIN_SANDBOX as string,

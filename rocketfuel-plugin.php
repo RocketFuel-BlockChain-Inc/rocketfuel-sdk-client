@@ -106,7 +106,7 @@ function rkfl_init_gateway_class() {
                         'options'     => [
                             'qa'      => 'QA',
                             'sandbox' => 'Sandbox',
-                            'prod'    => 'Production',
+                            'production'    => 'Production',
                         ],
                     ],
                 ];

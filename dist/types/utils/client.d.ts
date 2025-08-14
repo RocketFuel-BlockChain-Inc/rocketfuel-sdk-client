@@ -1,6 +1,6 @@
 declare class ApiClient {
     private domain;
-    constructor(env: "prod" | "qa" | "preprod" | "sandbox");
+    constructor(env: "production" | "qa" | "preprod" | "sandbox");
     encrypt(data: string, clientId: string): string;
     verifyClient(clientId: string): Promise<{
         ok: boolean;

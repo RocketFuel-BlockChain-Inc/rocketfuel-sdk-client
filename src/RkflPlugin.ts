@@ -13,7 +13,7 @@ interface Buttons {
 }
 export interface SDKConfig {
   clientId: string;
-  environment: "prod" | "qa" | "preprod" | "sandbox";
+  environment: "production" | "qa" | "preprod" | "sandbox";
   redirect?: boolean;
   plugins: Buttons[];
 }
@@ -24,7 +24,7 @@ export class RKFLPlugin {
   private uuid: string;
   private payNowButton: HTMLButtonElement | null = null;
   private userInfo: UserInfo;
-  private enviornment: "prod" | "qa" | "preprod" | "sandbox";
+  private enviornment: "production" | "qa" | "preprod" | "sandbox";
   private innerHtmlPay: string = '<img src="https://ik.imagekit.io/rocketfuel/icons/rocketfuel-circular.svg?tr=w-30,h-30,fo-auto,q-50" alt="" style="width: 30px; height:30px;"> Pay with Cryto Currency';
   private innerHtmlVerify: string = `<img src="https://ik.imagekit.io/rocketfuel/icons/rocketfuel-circular.svg?tr=w-30,h-30,fo-auto,q-50" alt="" style="width: 30px; height:30px;"> Verification via Rocketfuel`;
   private innerHtmlPayLoading: string = `<img src="https://ik.imagekit.io/rocketfuel/icons/rocketfuel-circular.svg?tr=w-30,h-30,fo-auto,q-50" alt="" style="width: 30px; height:30px;"> Processing...`;
@@ -32,14 +32,14 @@ export class RKFLPlugin {
     const env = config.environment;
     if (
       appEnv === 'production' &&
-      (env && !(['prod', 'sandbox'].includes(env)))
+      (env && !(['production', 'sandbox'].includes(env)))
     ) {
       throw new Error(`Invalid environment "${env}" in production mode.`);
     }
     this.clientId = config.clientId;
     this.buttons = config.plugins.length === 0 ? [FEATURE_PAYIN] : config.plugins;
     this.redirect = config.redirect || false;
-    this.enviornment = config.environment || 'prod'
+    this.enviornment = config.environment || 'production'
     this.uuid = '';
     this.userInfo = { email: "", userId: "" };
   }

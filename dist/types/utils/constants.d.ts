@@ -11,19 +11,19 @@ export declare const FEATURE_AGE_VERIFICATION: {
     readonly containerId: "default";
 };
 export declare const apiDomains: {
-    readonly prod: string;
+    readonly production: string;
     readonly qa: string;
     readonly preprod: string;
     readonly sandbox: string;
 };
 export declare const paymentAppDomains: {
-    readonly prod: string;
+    readonly production: string;
     readonly qa: string;
     readonly preprod: string;
     readonly sandbox: string;
 };
 export declare const appDomains: {
-    readonly prod: string;
+    readonly production: string;
     readonly qa: string;
     readonly preprod: string;
     readonly sandbox: string;

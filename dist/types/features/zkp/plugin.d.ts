@@ -8,7 +8,7 @@ export declare class ZKP {
     private appUrl;
     private clientId;
     private redirect;
-    constructor(clientId: string, env: "prod" | "qa" | "preprod" | "sandbox", redirect: boolean);
+    constructor(clientId: string, env: "production" | "qa" | "preprod" | "sandbox", redirect: boolean);
     initialize(userInfo?: UserInfo): void;
     private openRedirect;
     private eventListnerConcodium;

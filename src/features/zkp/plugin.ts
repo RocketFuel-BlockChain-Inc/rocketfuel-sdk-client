@@ -10,7 +10,7 @@ export class ZKP {
     private appUrl: string;
     private clientId: string;
     private redirect: boolean;
-    constructor(clientId: string, env: "prod" | "qa" | "preprod" | "sandbox", redirect: boolean) {
+    constructor(clientId: string, env: "production" | "qa" | "preprod" | "sandbox", redirect: boolean) {
         this.appUrl = appDomains[env];
         this.clientId = clientId;
         this.redirect = redirect;

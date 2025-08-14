@@ -51,19 +51,19 @@ const FEATURE_AGE_VERIFICATION = {
     containerId: 'default',
 };
 const apiDomains = {
-    prod: "https://app.rocketfuel.inc/api",
+    production: "https://app.rocketfuel.inc/api",
     qa: "https://qa-app.rfdemo.co/api",
     preprod: "https://preprod-app.rocketdemo.net/api",
     sandbox: "https://app-sandbox.rocketfuel.inc/api",
 };
 const paymentAppDomains = {
-    prod: "https://payments.rocketfuel.inc/select-currency",
+    production: "https://payments.rocketfuel.inc/select-currency",
     qa: "https://qa-payment.rfdemo.co/select-currency",
     preprod: "https://preprod-payment.rocketdemo.net/select-currency",
     sandbox: "https://payments-sandbox.rocketfuelblockchain.com/select-currency",
 };
 const appDomains = {
-    prod: "https://rocketfuel-ccd.netlify.app",
+    production: "https://rocketfuel-ccd.netlify.app",
     qa: "https://rocketfuel-ccd.netlify.app",
     preprod: "https://rocketfuel-ccd.netlify.app",
     sandbox: "https://rocketfuel-ccd.netlify.app",
@@ -507,7 +507,7 @@ class RKFLPlugin {
         this.clientId = config.clientId;
         this.buttons = config.plugins.length === 0 ? [FEATURE_PAYIN] : config.plugins;
         this.redirect = config.redirect || false;
-        this.enviornment = config.environment || 'prod';
+        this.enviornment = config.environment || 'production';
         this.uuid = '';
         this.userInfo = { email: "", userId: "" };
     }

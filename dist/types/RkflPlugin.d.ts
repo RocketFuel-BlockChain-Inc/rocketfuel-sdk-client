@@ -8,7 +8,7 @@ interface Buttons {
 }
 export interface SDKConfig {
     clientId: string;
-    environment: "prod" | "qa" | "preprod" | "sandbox";
+    environment: "production" | "qa" | "preprod" | "sandbox";
     redirect?: boolean;
     plugins: Buttons[];
 }

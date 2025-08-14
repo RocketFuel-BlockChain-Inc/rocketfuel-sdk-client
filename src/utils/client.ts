@@ -3,7 +3,7 @@ import CryptoJS from 'crypto-js';
 import IframeUtiltites from "./IframeUtilities";
 class ApiClient {
     private domain: string;
-    constructor(env: "prod" | "qa" | "preprod" | "sandbox") {
+    constructor(env: "production" | "qa" | "preprod" | "sandbox") {
         this.domain = getApiDomains(env)
     }
 
