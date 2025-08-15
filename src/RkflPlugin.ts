@@ -158,10 +158,16 @@ export class RKFLPlugin {
     this.userInfo = userInfo;
   }
   public prepareOrder(uuid: any): void {
-    this.uuid = uuid;
     if (this.payNowButton) {
-      this.payNowButton.disabled = false;
-      this.payNowButton.style.opacity = '1';
+      this.uuid = uuid;
+
+      if (uuid) {
+        this.payNowButton.disabled = false;
+        this.payNowButton.style.opacity = '1';
+      } else {
+        this.payNowButton.disabled = false;
+        this.payNowButton.style.opacity = '0.4';
+      }
     }
   }
   private handleMessage(event: MessageEvent) {
