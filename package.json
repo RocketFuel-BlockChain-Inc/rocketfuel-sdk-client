@@ -14,10 +14,8 @@
   ],
   "scripts": {
     "build": "rollup -c",
-    "postbuild": "rm -rf ./public/dist && cp -r ./dist ./public/",
     "build-wordpress": "rm -rf rocketfuel-wp-plugin.zip && npm run build && node build-wordpress.js",
     "deploy:cdn:dev": "npm run build && NETLIFY_SITE_ID=d1d53f49-fb96-429e-a99f-6d27aa55890c npx netlify deploy --dir=dist --prod",
-    "deploy:example": "rm -rf ./public/dist && NETLIFY_SITE_ID=d00767f2-0260-4376-98e5-02db665bcc4e npx netlify deploy --dir=public --prod",
     "serve": "npm run build && serve public/",
     "test": "echo \"Error: no test specified\" && exit 1",
     "npm:login": "npm login",

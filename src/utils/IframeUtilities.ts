@@ -12,7 +12,6 @@ export default class IframeUtiltites {
         iframe.style.display = 'none';
         iframe.style.backgroundColor = 'transparent';
         iframe.style.border = '0';
-        iframe.style.width = '365px';
         if(isMobile) {
             iframe.style.width = '100%';
         }
@@ -33,6 +32,7 @@ export default class IframeUtiltites {
 
         // add backdrop
         if (feature === FEATURE_AGE_VERIFICATION.feature) {
+            this.iframe.style.width = '365px';
             this.backdrop = document.createElement('div');
             this.backdrop.style.backgroundColor = '#000000';
             this.backdrop.style.position = 'fixed';
@@ -45,6 +45,8 @@ export default class IframeUtiltites {
             this.backdrop.style.zIndex = '2147483645';
             this.backdrop.style.opacity = '0.6';
             this.backdrop.id = 'backdrop-age-verification';
+        } else {
+            this.iframe.style.width = '400px';
         }
         if (this.backdrop) {
             document.body.appendChild(this.backdrop)
