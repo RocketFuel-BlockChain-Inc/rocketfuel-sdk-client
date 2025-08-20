@@ -380,68 +380,69 @@ class ZKP {
         window.open(url, '_blank');
     }
     eventListnerConcodium() {
+        const provider = () => window === null || window === void 0 ? void 0 : window.concordium;
+        const respond = (type, message, target, origin) => {
+            target.postMessage({ type, message }, origin);
+        };
         window.addEventListener('message', (event) => __awaiter(this, void 0, void 0, function* () {
-            var _a, _b, _c;
-            if (event.data.type === 'request_connected_account') {
-                const provider = window === null || window === void 0 ? void 0 : window.concordium;
-                if (provider) {
-                    // Use the provider in parent and relay only usable data
-                    let account;
-                    account = yield provider.getMostRecentlySelectedAccount();
-                    event.source.postMessage({
-                        type: 'concordium_response',
-                        message: account || null,
-                    }, event.origin);
-                }
-                else {
-                    event.source.postMessage({
-                        type: 'concordium_response',
-                        message: { error: 'Provider not found' },
-                    }, event.origin);
-                }
+            var _a, _b;
+            const { type, chain, payload, eventType } = event.data || {};
+            const target = event.source;
+            const origin = event.origin;
+            // Disconnect event
+            if (eventType === "accountDisconnected") {
+                (_b = (_a = IframeUtiltites.iframe) === null || _a === void 0 ? void 0 : _a.contentWindow) === null || _b === void 0 ? void 0 : _b.postMessage('concordium_disconnected', IframeUtiltites.iframe.src);
+                return;
             }
-            if (event.data.type === 'request_concordium') {
-                const provider = window === null || window === void 0 ? void 0 : window.concordium;
-                if (provider) {
-                    // Use the provider in parent and relay only usable data
-                    let account;
-                    account = yield provider.getMostRecentlySelectedAccount();
-                    if (!account) {
-                        account = yield provider.connect();
+            if (!type)
+                return; // skip if not a Concordium message
+            switch (type) {
+                case 'request_connected_account': {
+                    const prov = provider();
+                    if (!prov) {
+                        respond('concordium_response', { error: 'Provider not found' }, target, origin);
+                        return;
                     }
-                    event.source.postMessage({
-                        type: 'concordium_response',
-                        message: account,
-                    }, event.origin);
+                    const selectedChain = yield prov.getSelectedChain();
+                    if (!selectedChain.includes(chain)) {
+                        respond('concordium_response', { error: 'Invalid chain' }, target, origin);
+                        return;
+                    }
+                    const account = yield prov.getMostRecentlySelectedAccount();
+                    respond('concordium_response', account || null, target, origin);
+                    break;
                 }
-                else {
-                    event.source.postMessage({
-                        type: 'concordium_response',
-                        message: { error: 'Provider not found' },
-                    }, event.origin);
+                case 'request_concordium': {
+                    const prov = provider();
+                    if (!prov) {
+                        respond('concordium_response', { error: 'Provider not found' }, target, origin);
+                        return;
+                    }
+                    const selectedChain = yield prov.getSelectedChain();
+                    if (!selectedChain.includes(chain)) {
+                        respond('concordium_response', { error: 'Invalid chain' }, target, origin);
+                        return;
+                    }
+                    let account = yield prov.getMostRecentlySelectedAccount();
+                    if (!account)
+                        account = yield prov.connect();
+                    respond('concordium_response', account, target, origin);
+                    break;
                 }
-            }
-            if (event.data.type === 'concordium_requestVerifiablePresentation') {
-                const provider = window === null || window === void 0 ? void 0 : window.concordium;
-                if (provider) {
-                    // Use the provider in parent and relay only usable data
-                    const { statement, challenge } = event.data.payload;
-                    provider.requestVerifiablePresentation(challenge, statement).then((data) => {
-                        event.source.postMessage({
-                            type: 'concordium_requestVerifiablePresentation_response',
-                            message: 'verified',
-                            data
-                        }, event.origin);
-                    }).catch((err) => {
-                        event.source.postMessage({
-                            type: 'concordium_requestVerifiablePresentation_error',
-                            error: err,
-                        }, event.origin);
-                    });
+                case 'concordium_requestVerifiablePresentation': {
+                    const prov = provider();
+                    if (!prov)
+                        return;
+                    const { statement, challenge } = payload;
+                    try {
+                        const data = yield prov.requestVerifiablePresentation(challenge, statement);
+                        target.postMessage({ type: 'concordium_requestVerifiablePresentation_response', message: 'verified', data }, origin);
+                    }
+                    catch (err) {
+                        target.postMessage({ type: 'concordium_requestVerifiablePresentation_error', error: err }, origin);
+                    }
+                    break;
                 }
-            }
-            if (((_a = event.data) === null || _a === void 0 ? void 0 : _a.eventType) === "accountDisconnected") {
-                (_c = (_b = IframeUtiltites.iframe) === null || _b === void 0 ? void 0 : _b.contentWindow) === null || _c === void 0 ? void 0 : _c.postMessage('concordium_disconnected', IframeUtiltites.iframe.src);
             }
         }));
     }

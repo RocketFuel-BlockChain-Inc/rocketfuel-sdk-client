@@ -18,7 +18,7 @@ export class ZKP {
     public initialize(userInfo?: UserInfo) {
         if (this.redirect) {
             let params = null;
-            if(userInfo) {
+            if (userInfo) {
                 params = new URLSearchParams(JSON.parse(JSON.stringify(userInfo))).toString()
             }
             this.openRedirect(`${this.appUrl}?clientId=${btoa(this.clientId)}&${params}`)
@@ -32,95 +32,91 @@ export class ZKP {
     private openRedirect(url: string) {
         window.open(url, '_blank')
     }
-
     private eventListnerConcodium() {
-        window.addEventListener('message', async (event: any) => {
-            if (event.data.type === 'request_connected_account') {
-                const provider = window?.concordium;
-                if (provider) {
-                    // Use the provider in parent and relay only usable data
-                    let account;
-                    account = await provider.getMostRecentlySelectedAccount();
-                    event.source.postMessage(
-                        {
-                            type: 'concordium_response',
-                            message: account || null,
-                        },
-                        event.origin
-                    );
-                } else {
-                    event.source.postMessage(
-                        {
-                            type: 'concordium_response',
-                            message: { error: 'Provider not found' },
-                        },
-                        event.origin
-                    );
-                }
-            }
-            if (event.data.type === 'request_concordium') {
-                const provider = window?.concordium;
+        const provider = () => window?.concordium;
 
-                if (provider) {
-                    // Use the provider in parent and relay only usable data
-                    let account;
-                    account = await provider.getMostRecentlySelectedAccount()
-                    if (!account) {
-                        account = await provider.connect();
-                    }
-                    event.source.postMessage(
-                        {
-                            type: 'concordium_response',
-                            message: account,
-                        },
-                        event.origin
-                    );
-                } else {
+        const respond = (type: string, message: any, target: Window, origin: string) => {
+            target.postMessage({ type, message }, origin);
+        };
 
-                    event.source.postMessage(
-                        {
-                            type: 'concordium_response',
-                            message: { error: 'Provider not found' },
-                        },
-                        event.origin
-                    );
-                }
-            }
-            if (event.data.type === 'concordium_requestVerifiablePresentation') {
+        window.addEventListener('message', async (event: MessageEvent) => {
+            const { type, chain, payload, eventType } = event.data || {};
+            const target = event.source as Window;
+            const origin = event.origin;
 
-                const provider = window?.concordium;
-
-                if (provider) {
-                    // Use the provider in parent and relay only usable data
-                    const { statement, challenge } = event.data.payload;
-                    provider.requestVerifiablePresentation(challenge, statement).then((data: any) => {
-                        event.source.postMessage(
-                            {
-                                type: 'concordium_requestVerifiablePresentation_response',
-                                message: 'verified',
-                                data
-                            },
-                            event.origin
-                        );
-                    }).catch((err: any) => {
-                        event.source.postMessage(
-                            {
-                                type: 'concordium_requestVerifiablePresentation_error',
-                                error: err,
-                            },
-                            event.origin
-                        );
-                    })
-
-                }
-            }
-            if (event.data?.eventType === "accountDisconnected") {
-                IframeUtiltites.iframe?.contentWindow?.postMessage('concordium_disconnected',
+            // Disconnect event
+            if (eventType === "accountDisconnected") {
+                IframeUtiltites.iframe?.contentWindow?.postMessage(
+                    'concordium_disconnected',
                     IframeUtiltites.iframe.src
-                )
+                );
+                return;
+            }
+
+            if (!type) return; // skip if not a Concordium message
+
+            switch (type) {
+                case 'request_connected_account': {
+                    const prov = provider();
+                    if (!prov) {
+                        respond('concordium_response', { error: 'Provider not found' }, target, origin);
+                        return;
+                    }
+
+                    const selectedChain = await prov.getSelectedChain();
+                    if (!selectedChain.includes(chain)) {
+                        respond('concordium_response', { error: 'Invalid chain' }, target, origin);
+                        return;
+                    }
+
+                    const account = await prov.getMostRecentlySelectedAccount();
+                    respond('concordium_response', account || null, target, origin);
+                    break;
+                }
+
+                case 'request_concordium': {
+                    const prov = provider();
+                    if (!prov) {
+                        respond('concordium_response', { error: 'Provider not found' }, target, origin);
+                        return;
+                    }
+
+                    const selectedChain = await prov.getSelectedChain();
+                    if (!selectedChain.includes(chain)) {
+                        respond('concordium_response', { error: 'Invalid chain' }, target, origin);
+                        return;
+                    }
+
+                    let account = await prov.getMostRecentlySelectedAccount();
+                    if (!account) account = await prov.connect();
+
+                    respond('concordium_response', account, target, origin);
+                    break;
+                }
+
+                case 'concordium_requestVerifiablePresentation': {
+                    const prov = provider();
+                    if (!prov) return;
+
+                    const { statement, challenge } = payload;
+                    try {
+                        const data = await prov.requestVerifiablePresentation(challenge, statement);
+                        target.postMessage(
+                            { type: 'concordium_requestVerifiablePresentation_response', message: 'verified', data },
+                            origin
+                        );
+                    } catch (err) {
+                        target.postMessage(
+                            { type: 'concordium_requestVerifiablePresentation_error', error: err },
+                            origin
+                        );
+                    }
+                    break;
+                }
             }
         });
     }
+
 
 
 }

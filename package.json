@@ -22,8 +22,8 @@
     "npm:publish": "npm publish --access public",
     "npm:patch": "npm version patch",
     "npm:minor": "npm version minor",
-    "npm:major": "npm version major"
-
+    "npm:major": "npm version major",
+    "local": "npm run build && mkdir -p ../rocketfuel-netlify/dist && cp -r dist/* ../rocketfuel-netlify/dist/"
   },
   "author": "",
   "license": "ISC",
