@@ -56,8 +56,8 @@ const paymentAppDomains = {
 };
 const appDomains = {
     production: "https://rocketfuel-ccd.netlify.app",
-    qa: "https://rocketfuel-ccd.netlify.app",
-    preprod: "https://rocketfuel-ccd.netlify.app",
+    qa: "https://qa-age-verification.rfdemo.co",
+    preprod: "https://preprod-age-verification.rocketdemo.net/",
     sandbox: "https://rocketfuel-ccd.netlify.app",
 };
 const ContainerId = 'sdk-buttons-container';
@@ -177,9 +177,6 @@ class IframeUtiltites {
         iframe.style.display = 'none';
         iframe.style.backgroundColor = 'transparent';
         iframe.style.border = '0';
-        if (isMobile) {
-            iframe.style.width = '100%';
-        }
         iframe.style.minHeight = '500px';
         iframe.style.overflowY = 'auto';
         iframe.src = url;
@@ -221,6 +218,9 @@ class IframeUtiltites {
         this.iframe.style.border = '1px solid #dddddd';
         this.iframe.style.borderRadius = '8px';
         this.iframe.style.background = '#F8F8F8';
+        if (isMobile) {
+            this.iframe.style.width = '100%';
+        }
         const iconUrl = "https://ik.imagekit.io/rocketfuel/icons/Ripple%20loading%20animation.gif";
         // Create overlay
         const overlay = document.createElement("div");

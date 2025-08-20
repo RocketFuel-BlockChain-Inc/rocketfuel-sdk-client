@@ -12,9 +12,6 @@ export default class IframeUtiltites {
         iframe.style.display = 'none';
         iframe.style.backgroundColor = 'transparent';
         iframe.style.border = '0';
-        if(isMobile) {
-            iframe.style.width = '100%';
-        }
         iframe.style.minHeight = '500px'
         iframe.style.overflowY = 'auto';
         iframe.src = url;
@@ -57,6 +54,9 @@ export default class IframeUtiltites {
         this.iframe.style.border = '1px solid #dddddd';
         this.iframe.style.borderRadius = '8px';
         this.iframe.style.background = '#F8F8F8';
+        if (isMobile) {
+            this.iframe.style.width = '100%';
+        }
 
         const iconUrl =
             "https://ik.imagekit.io/rocketfuel/icons/Ripple%20loading%20animation.gif";
@@ -95,7 +95,7 @@ export default class IframeUtiltites {
 
 
         if (this.backdrop) {
-           document.body.appendChild(this.backdrop)
+            document.body.appendChild(this.backdrop)
         }
         overlay.appendChild(loader);
         wrapper.appendChild(this.iframe);
@@ -116,14 +116,14 @@ export default class IframeUtiltites {
     }
 
     public static setIframeHeight(height: string) {
-        if(this.iframe) {
-            if(Number(height) >= Number(window.innerHeight)) {
+        if (this.iframe) {
+            if (Number(height) >= Number(window.innerHeight)) {
                 height = (window.innerHeight - 20).toString();
             }
-            if(Number(height) <= (Number(window.innerHeight) / 2)) {
+            if (Number(height) <= (Number(window.innerHeight) / 2)) {
                 height = (Number(window.innerHeight) / 2).toString();
             }
-            
+
             this.iframe.style.height = `${height}px`;
         }
     }
