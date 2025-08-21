@@ -9,3 +9,10 @@ README.md
 .env
 .netlify
 dist-qa/
+build/
+.env.*
+build-wordpress.js
+rocketfuel-plugin.php
+*.zip
+tsconfig.json
+rollup.config.js
