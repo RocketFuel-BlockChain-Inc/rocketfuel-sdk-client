@@ -5,3 +5,5 @@
 .netlify
 rocketfuel-wp-plugin.zip
 build
+.env.*
+dist-qa

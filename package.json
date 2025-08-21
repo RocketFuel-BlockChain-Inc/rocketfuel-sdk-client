@@ -13,17 +13,16 @@
     "dist"
   ],
   "scripts": {
-    "build": "rollup -c",
+    "build": "dotenv -e .env -- rollup -c",
+    "build:local": "dotenv -e .env.local -- rollup -c && mkdir -p ../rocketfuel-netlify/dist && cp -r dist-qa/* ../rocketfuel-netlify/dist/",
+    "build:testing": "dotenv -e .env.testing -- rollup -c",
     "build-wordpress": "rm -rf rocketfuel-wp-plugin.zip && npm run build && node build-wordpress.js",
-    "deploy:cdn:dev": "npm run build && NETLIFY_SITE_ID=d1d53f49-fb96-429e-a99f-6d27aa55890c npx netlify deploy --dir=dist --prod",
-    "serve": "npm run build && serve public/",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy:cdn:dev": "npm run build:testing && NETLIFY_SITE_ID=d1d53f49-fb96-429e-a99f-6d27aa55890c npx netlify deploy --dir=dist-qa --prod",
     "npm:login": "npm login",
     "npm:publish": "npm publish --access public",
     "npm:patch": "npm version patch",
     "npm:minor": "npm version minor",
-    "npm:major": "npm version major",
-    "local": "npm run build && mkdir -p ../rocketfuel-netlify/dist && cp -r dist/* ../rocketfuel-netlify/dist/"
+    "npm:major": "npm version major"
   },
   "author": "",
   "license": "ISC",
@@ -37,6 +36,7 @@
     "@types/react": "^19.1.9",
     "@types/react-dom": "^19.1.7",
     "dotenv": "^17.2.1",
+    "dotenv-cli": "^10.0.0",
     "rollup": "^2.79.2",
     "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-typescript2": "^0.36.0",

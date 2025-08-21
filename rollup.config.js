@@ -40,13 +40,14 @@ const commonPlugins = [
 ];
 
 const versionBanner = `/*! @rocketfuel/client v${pkg.version} | (c) Rocketfuel | MIT License */`;
-
+const filePath = JSON.parse(envVars['process.env.NODE_ENV']) == 'production' ? 'dist': 'dist-qa';
+console.log("🚀 ~ filePath:", filePath)
 export default defineConfig([
   {
     input: 'src/index.ts',
     output: [
-      { file: 'dist/index.cjs', format: 'cjs' },
-      { file: 'dist/index.esm.js', format: 'esm' },
+      { file: `${filePath}/index.cjs`, format: 'cjs' },
+      { file: `${filePath}/index.esm.js`, format: 'esm' },
     ],
     external: ['crypto-js'],
     plugins: [...commonPlugins],
@@ -54,7 +55,7 @@ export default defineConfig([
   {
     input: 'src/standalone.ts',
     output: {
-      file: `dist/rkfl-transact-client.min-${pkg.version}.js`,
+      file: `${filePath}/rkfl-transact-client.min-${pkg.version}.js`,
       format: 'iife',
       name: 'RkflPlugin',
       banner: versionBanner,
