@@ -392,12 +392,12 @@ class ZKP {
                 case 'request_connected_account': {
                     const prov = provider();
                     if (!prov) {
-                        respond('concordium_response', { error: 'Provider not found' }, target, origin);
+                        respond('concordium_response', { error: 'No wallet detected. Please install a supported wallet to continue.' }, target, origin);
                         return;
                     }
                     const selectedChain = yield prov.getSelectedChain();
                     if (!selectedChain.includes(chain)) {
-                        respond('concordium_response', { error: 'Invalid chain' }, target, origin);
+                        respond('concordium_response', { error: 'You are connected to the wrong network. Please switch to the correct chain to continue.' }, target, origin);
                         return;
                     }
                     const account = yield prov.getMostRecentlySelectedAccount();
@@ -407,12 +407,12 @@ class ZKP {
                 case 'request_concordium': {
                     const prov = provider();
                     if (!prov) {
-                        respond('concordium_response', { error: 'Provider not found' }, target, origin);
+                        respond('concordium_response', { error: 'No wallet detected. Please install a supported wallet to continue.' }, target, origin);
                         return;
                     }
                     const selectedChain = yield prov.getSelectedChain();
                     if (!selectedChain.includes(chain)) {
-                        respond('concordium_response', { error: 'Invalid chain' }, target, origin);
+                        respond('concordium_response', { error: 'You are connected to the wrong network. Please switch to the correct chain to continue.' }, target, origin);
                         return;
                     }
                     let account = yield prov.getMostRecentlySelectedAccount();
