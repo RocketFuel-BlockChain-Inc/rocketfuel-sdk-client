@@ -63,8 +63,8 @@ export class ZKP {
                         return;
                     }
 
-                    const selectedChain = await prov.getSelectedChain();
-                    if (!selectedChain.includes(chain)) {
+                    const selectedChain = await prov?.getSelectedChain();
+                    if (!selectedChain?.includes(chain)) {
                         respond('concordium_response', { error: 'You are connected to the wrong network. Please switch to the correct chain to continue.' }, target, origin);
                         return;
                     }
@@ -81,8 +81,8 @@ export class ZKP {
                         return;
                     }
 
-                    const selectedChain = await prov.getSelectedChain();
-                    if (!selectedChain.includes(chain)) {
+                    const selectedChain = await prov?.getSelectedChain();
+                    if (!selectedChain?.includes(chain)) {
                         respond('concordium_response', { error: 'You are connected to the wrong network. Please switch to the correct chain to continue.' }, target, origin);
                         return;
                     }

@@ -403,8 +403,8 @@ class ZKP {
                         respond('concordium_response', { error: 'No wallet detected. Please install a supported wallet to continue.' }, target, origin);
                         return;
                     }
-                    const selectedChain = yield prov.getSelectedChain();
-                    if (!selectedChain.includes(chain)) {
+                    const selectedChain = yield (prov === null || prov === void 0 ? void 0 : prov.getSelectedChain());
+                    if (!(selectedChain === null || selectedChain === void 0 ? void 0 : selectedChain.includes(chain))) {
                         respond('concordium_response', { error: 'You are connected to the wrong network. Please switch to the correct chain to continue.' }, target, origin);
                         return;
                     }
@@ -418,8 +418,8 @@ class ZKP {
                         respond('concordium_response', { error: 'No wallet detected. Please install a supported wallet to continue.' }, target, origin);
                         return;
                     }
-                    const selectedChain = yield prov.getSelectedChain();
-                    if (!selectedChain.includes(chain)) {
+                    const selectedChain = yield (prov === null || prov === void 0 ? void 0 : prov.getSelectedChain());
+                    if (!(selectedChain === null || selectedChain === void 0 ? void 0 : selectedChain.includes(chain))) {
                         respond('concordium_response', { error: 'You are connected to the wrong network. Please switch to the correct chain to continue.' }, target, origin);
                         return;
                     }
