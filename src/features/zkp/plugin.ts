@@ -64,7 +64,7 @@ export class ZKP {
                     }
 
                     const selectedChain = await prov?.getSelectedChain();
-                    if (!selectedChain?.includes(chain)) {
+                    if (selectedChain && !selectedChain?.includes(chain)) {
                         respond('concordium_response', { error: 'You are connected to the wrong network. Please switch to the correct chain to continue.' }, target, origin);
                         return;
                     }
@@ -82,7 +82,7 @@ export class ZKP {
                     }
 
                     const selectedChain = await prov?.getSelectedChain();
-                    if (!selectedChain?.includes(chain)) {
+                    if (selectedChain && !selectedChain?.includes(chain)) {
                         respond('concordium_response', { error: 'You are connected to the wrong network. Please switch to the correct chain to continue.' }, target, origin);
                         return;
                     }
@@ -97,7 +97,6 @@ export class ZKP {
                 case 'concordium_requestVerifiablePresentation': {
                     const prov = provider();
                     if (!prov) return;
-
                     const { statement, challenge } = payload;
                     try {
                         const data = await prov.requestVerifiablePresentation(challenge, statement);

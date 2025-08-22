@@ -41,7 +41,7 @@ const commonPlugins = [
 
 const versionBanner = `/*! @rocketfuel/client v${pkg.version} | (c) Rocketfuel | MIT License */`;
 const filePath = JSON.parse(envVars['process.env.NODE_ENV']) == 'production' ? 'dist': 'dist-qa';
-console.log("🚀 ~ filePath:", filePath)
+console.debug("🚀 ~ filePath:", filePath)
 export default defineConfig([
   {
     input: 'src/index.ts',

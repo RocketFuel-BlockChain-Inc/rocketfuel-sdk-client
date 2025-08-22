@@ -340,7 +340,7 @@ function rkfl_init_gateway_class() {
                     window._rkflOnVerificationCallback = null;
                 }
             } else {
-                console.log('User failed age verification');
+                console.error('User failed age verification');
             }
             // Remove event listener after use to avoid multiple handlers
             window.removeEventListener('message', onAgeVerificationMessage);

@@ -34,7 +34,7 @@ const output = fs.createWriteStream(outputZip);
 const archive = archiver('zip', { zlib: { level: 9 } });
 
 output.on('close', () => {
-  console.log(`✅ Build complete. Created: ${outputZip} (${archive.pointer()} bytes)`);
+  console.debug(`✅ Build complete. Created: ${outputZip} (${archive.pointer()} bytes)`);
 });
 
 archive.on('error', err => { throw err; });
