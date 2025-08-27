@@ -1,63 +1,53 @@
-.rkfl-age-restricted:not(.verified) img {
-    filter: blur(10px) !important;
-    transition: filter 0.3s ease;
-}
-
-.rkfl-age-restricted.verified img {
-    filter: none !important;
-}
-
-.rkfl-age-verify {
-    display: inline-block;
-    margin: 10px 0;
-    padding: 10px 20px;
-    background: #007cba;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    text-decoration: none;
-}
-
-.rkfl-age-verify:hover {
-    background: #005a87;
-    color: white;
-}
-
-.rkfl-age-verify:disabled {
-    background: #28a745;
-    cursor: not-allowed;
-}
-
-.rkfl-age-verify-container {
-    margin: 10px 0;
-    text-align: center;
-}
-
-/* Hide add to cart for unverified age-restricted products */
-.rkfl-age-restricted:not(.verified) .add_to_cart_button,
-.rkfl-age-restricted:not(.verified) .single_add_to_cart_button {
-    display: none !important;
-}
-
-/* Product gallery blur for age restricted */
-.rkfl-age-restricted:not(.verified) .woocommerce-product-gallery__image img,
-.rkfl-age-restricted:not(.verified) .attachment-woocommerce_thumbnail {
-    filter: blur(10px) !important;
-}
-
-/* Shop loop blur */
-.woocommerce-loop-product__link .rkfl-age-restricted:not(.verified) img {
-    filter: blur(10px) !important;
-}
 .display-none {
     display: none !important;
 }
+
 .transparent {
     background-color: transparent !important;
     width: 100% !important;
     display: flex !important;
     flex-direction: row !important;
     justify-content: flex-end !important;
+}
+
+.rkfl-age-verify-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.rkfl-age-verify {
+    min-width: 250px;
+    margin: 5px;
+    padding: 16px 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 999px;
+    /* fully rounded pill shape */
+    background-color: white;
+    font-family: sans-serif, Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    color: #1a1a1a;
+    cursor: pointer;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    display: inline-block;
+    line-height: 1;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.rkfl-age-verify:hover,
+.rkfl-age-verify:focus {
+    border-color: #004a70;
+    box-shadow: 0 0 6px rgba(0, 90, 135, 0.6);
+    outline: none;
+}
+
+.rkfl-age-verify:disabled,
+.rkfl-age-verify[disabled] {
+    background-color: #28a745;
+    color: #ffffff;
+    cursor: not-allowed;
+    border-color: #22863a;
+    opacity: 0.7;
+    box-shadow: none;
 }

@@ -40,7 +40,7 @@ class RFWC_Assets
             'redirect' => !empty($options['redirect']),
             'restUrl' => esc_url(rest_url('rkfl/v1')),
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('rfwc_nonce'),
+            'nonce' => wp_create_nonce('wp_rest'),
         ]);
     }
 

@@ -19,9 +19,11 @@
         headers: { 'Content-Type': 'application/json' },
       });
       const data = await response.json();
+      console.log("🚀 ~ checkIfBillingAddressEntered ~ data:", data)
 
       // The 'billing_address' property holds the relevant data.
       const billingAddress = data.billing_address;
+      console.log("🚀 ~ checkIfBillingAddressEntered ~ billingAddress:", billingAddress)
 
       // Check if the address object exists and if a key field is not empty.
       if (billingAddress && billingAddress.address_1) {
@@ -38,8 +40,8 @@
       return false;
     }
   }
-  const handleCheckout = () => {
-    const response_data = checkIfBillingAddressEntered()
+  const handleCheckout = async () => {
+    const response_data = await checkIfBillingAddressEntered()
     console.log("🚀 ~ handleCheckout ~ customer:", response_data)
     if (typeof window.prepareRocketfuelOrder === 'function') {
       window.prepareRocketfuelOrder('rocketfuel-button');
@@ -47,6 +49,7 @@
       console.warn('prepareRocketfuelOrder function not found on window');
     }
   }
+  let rocketfuelInitialized = false;
   subscribe(() => {
     const currentMethod = select('wc/store/payment').getActivePaymentMethod();
 
@@ -64,8 +67,11 @@
         } else {
           console.debug('#rocketfuel-button already exists');
         }
-        window?.initializeSdk?.();
-        handleCheckout()
+        if (!rocketfuelInitialized) {
+          rocketfuelInitialized = true;
+          window?.initializeSdk?.();
+          handleCheckout();
+        }
       } else {
         console.debug('Place order button element or its child not found');
       }

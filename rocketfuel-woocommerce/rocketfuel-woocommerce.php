@@ -9,6 +9,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+
 define('RFWC_VERSION', '1.0.2');
 define('RFWC_PATH', plugin_dir_path(__FILE__));
 define('RFWC_URL', plugin_dir_url(__FILE__));
@@ -34,6 +35,9 @@ require_once RFWC_PATH . 'includes/class-rfwc-ajax.php';
 require_once RFWC_PATH . 'includes/helpers.php';
 
 add_action('init', function () {
+    if (!session_id()) {
+        session_start();
+    }
     // Only bootstrap for REST requests (optional check).
     if (defined('REST_REQUEST') && REST_REQUEST) {
         if (class_exists('WC_Session_Handler')) {

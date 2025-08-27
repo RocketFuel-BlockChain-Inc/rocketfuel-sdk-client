@@ -6,37 +6,59 @@
       console.error('Rocketfuel settings not loaded');
       return;
     }
-
+    var agePlugin = new window.RkflPlugin({
+      plugins: [{ feature: "AGE_VERIFICATION", inject: false }],
+      environment: rkflSettings.environment || 'qa',
+      clientId: rkflSettings.clientId || '',
+    });
+    agePlugin.init();
     window.addEventListener('message', function (event) {
       console.log(event);
       const data = event.data;
 
       if (data.type === 'AGE_VERIFICATION') {
         if (data.verified === true) {
-          alert('Age verified successfully ✅');
-          $('.rkfl-age-restricted').addClass('verified');
-          $('.rkfl-age-verify').text('Age Verified').prop('disabled', true);
-          $('.add_to_cart_button, .single_add_to_cart_button').show();
 
-          const pid = $('.rkfl-age-verify').data('product-id');
-          if (pid) {
-            $.post(rkflSettings.ajaxUrl, {
+          fetch(rkflSettings.restUrl + '/set-age-verified', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-WP-Nonce': rkflSettings.nonce
+            },
+            body: JSON.stringify({
               action: 'rfwc_set_age_verified',
-              product_id: pid,
               verified: 1,
-              nonce: rkflSettings.nonce,
-            });
-          }
+              nonce: rkflSettings.nonce           // optional if you check nonce in args in PHP
+            }),
+            credentials: 'include',
+          })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                this.window.location.reload();
+                console.log('Age verified:', data.data.message);
+              } else {
+                console.error('Verification failed:', data);
+              }
+            })
+            .catch(error => console.error('Error:', error));
         } else {
           alert('Age Verification Failed ❌');
         }
       }
 
+
       if (data.type === 'rocketfuel_result_ok' && data.paymentCompleted === 1) {
 
       }
     });
-    function initializeSdk () {
+    function initializeSdk() {
+      const data = document.querySelector('.wc-block-checkout, form.checkout') !== null;
+      console.log("🚀 ~ initializeSdk ~ data:", data)
+      if (!data) {
+        return;
+      }
+      console.log('sdk payin initialized')
       window.payinSdk = new window.RkflPlugin({
         plugins: [{ feature: 'PAYIN', containerId: 'rocketfuel-button' }],
         environment: rkflSettings.environment || 'qa',
@@ -50,13 +72,13 @@
       fetch(rkflSettings.restUrl + '/cart-payload', {
         method: 'GET',
         credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json',  'X-WP-Nonce': rkflSettings.nonce },
       });
 
       fetch(rkflSettings.restUrl + '/create-order', {
         method: 'POST',
         credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json',  'X-WP-Nonce': rkflSettings.nonce },
       })
         .then(r => r.json())
         .then(data => {
@@ -70,6 +92,9 @@
 
     window.prepareRocketfuelOrder = window.initializePayment;
     window.initializeSdk = initializeSdk();
-
+    window.agePlugin = agePlugin;
+    window.handleAgeVerification = function () {
+      agePlugin.launchAgeVerificationWidget();
+    }
   });
 })(jQuery);

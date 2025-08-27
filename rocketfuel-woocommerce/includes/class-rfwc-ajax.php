@@ -7,9 +7,10 @@ class RFWC_Ajax
 {
     public static function init()
     {
-        add_action('rest_api_init', [__CLASS__, 'register_rest_routes']);
         add_action('wp_ajax_rfwc_set_age_verified', [__CLASS__, 'set_age_verified']);
         add_action('wp_ajax_nopriv_rfwc_set_age_verified', [__CLASS__, 'set_age_verified']);
+        add_action('rest_api_init', [__CLASS__, 'register_rest_routes']);
+
     }
 
     public static function register_rest_routes()
@@ -23,6 +24,11 @@ class RFWC_Ajax
             'methods' => 'POST',
             'callback' => [__CLASS__, 'create_order'],
             'permission_callback' => '__return_true',
+        ]);
+        register_rest_route('rkfl/v1', '/set-age-verified', [
+            'methods' => 'POST',
+            'callback' => [__CLASS__, 'set_age_verified'],
+            'permission_callback' => '__return_true', // change if permission needed
         ]);
     }
 
@@ -72,21 +78,35 @@ class RFWC_Ajax
             ];
         }
 
-        return [
+        $cartObj = [
             'amount' => wc_format_decimal(WC()->cart->get_total('edit'), 2),
             'currency' => get_woocommerce_currency(),
             'cart' => $items,
             'customerInfo' => [
                 'name' => trim(string: WC()->customer->get_billing_first_name() . ' ' . WC()->customer->get_billing_last_name()),
                 'email' => WC()->customer->get_billing_email(),
+                'phone' => WC()->customer->get_billing_phone(),
+                'address' => WC()->customer->get_billing_address() . WC()->customer->get_billing_address_1() . ',' .
+                    WC()->customer->get_billing_address_2() . ',' . WC()->customer->get_billing_city() . ',' .
+                    WC()->customer->get_billing_state() . ',' . WC()->customer->get_billing_country() . ' - ' . WC()->customer->get_billing_postcode(),
             ],
-            'customParameter' => [
-                'returnMethod' => 'GET',
-                'params' => [
-                    ['name' => 'submerchant', 'value' => get_bloginfo('name')],
-                ],
+            'shippingAddress' => [
+                'firstname' => WC()->customer->get_shipping_first_name(),
+                'lastname' => WC()->customer->get_shipping_last_name(),
+                'phoneNo' => WC()->customer->get_shipping_phone(),
+                'address1' => WC()->customer->get_shipping_address_1(),
+                'address2' => WC()->customer->get_shipping_address_2(),
+                'state' => WC()->customer->get_shipping_state(),
+                'city' => WC()->customer->get_shipping_city(),
+                'zipcode' => WC()->customer->get_shipping_postcode(),
+                'country' => WC()->customer->get_shipping_country(),
+                'landmark' => WC()->customer->get_shipping_address(),
+                'email' => WC()->customer->get_billing_email(),
             ],
+
         ];
+        return $cartObj;
+
     }
 
     public static function create_order($request)
@@ -156,16 +176,18 @@ class RFWC_Ajax
 
     public static function set_age_verified()
     {
-        check_ajax_referer('rfwc_nonce', 'nonce');
-        if (!session_id()) {
-            session_start();
+        if (is_user_logged_in()) {
+            update_user_meta(get_current_user_id(), 'rfwc_age_verified', '1');
+        } else {
+            if (!session_id()) {
+                session_start();
+            }
+            $_SESSION['rfwc_age_verified'] = true;
+            setcookie('rfwc_age_verified', '1', time() + DAY_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN);
         }
-        $product_id = intval($_POST['product_id']);
-        $verified = !empty($_POST['verified']);
-        $_SESSION['rfwc_verified_products'] = $_SESSION['rfwc_verified_products'] ?? [];
-        if ($verified && !in_array($product_id, $_SESSION['rfwc_verified_products'], true)) {
-            $_SESSION['rfwc_verified_products'][] = $product_id;
-        }
-        wp_send_json_success(['verified' => $verified, 'product_id' => $product_id]);
+        return rest_ensure_response(['success' => true, 'message' => 'Age verified']);
     }
+
+
+
 }
