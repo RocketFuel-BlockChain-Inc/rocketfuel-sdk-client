@@ -94,7 +94,7 @@ export class RKFLPlugin {
           button.style.opacity = '0.4';
           this.payNowButton = button;
           button.id = '#pay'
-          if(!btnType.inject) {
+          if(typeof btnType.inject === 'boolean' && !btnType.inject) {
             return;
           }
           const container = document.getElementById(btnType.containerId || ContainerId);
