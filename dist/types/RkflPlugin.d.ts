@@ -30,5 +30,6 @@ export declare class RKFLPlugin {
     private handleMessage;
     private setLoadingState;
     launchAgeVerificationWidget(): void;
+    launchPaymentWidget(uuid: string): Promise<void>;
 }
 export {};

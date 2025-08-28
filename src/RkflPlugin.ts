@@ -211,5 +211,25 @@ export class RKFLPlugin {
   public launchAgeVerificationWidget(): void {
     launchAgeVerificationWidget(this.userInfo);
   }
+  public async launchPaymentWidget(uuid: string): Promise<void> {
+    if (IframeUtiltites.iframe) {
+      return;
+    }
+    if (!uuid) {
+      console.warn('Cart data is not prepared');
+      return;
+    }
+
+    try {
+      await placeOrder(
+        this.clientId,
+        this.redirect,
+        uuid,
+        this.enviornment
+      );
+    } catch (err) {
+      console.error('Error during order placement:', err);
+    }
+  }
 }
 
