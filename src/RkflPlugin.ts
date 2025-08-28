@@ -94,6 +94,9 @@ export class RKFLPlugin {
           button.style.opacity = '0.4';
           this.payNowButton = button;
           button.id = '#pay'
+          if(!btnType.inject) {
+            return;
+          }
           const container = document.getElementById(btnType.containerId || ContainerId);
           if (!container) {
             console.error(`Container not found.`);
