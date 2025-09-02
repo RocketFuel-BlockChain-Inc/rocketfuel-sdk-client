@@ -5,8 +5,6 @@ export function dragElement(feature: string) {
     const iframeWrapper = document.createElement("div");
     const iframeWrapperHeader = document.createElement("div");
 
-    iframeWrapper.id = "iframeWrapper";
-    iframeWrapperHeader.id = "iframeWrapperHeader";
 
     if (feature === FEATURE_AGE_VERIFICATION.feature) {
         iframeWrapper.style.cssText = `
