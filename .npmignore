@@ -16,3 +16,4 @@ rocketfuel-plugin.php
 *.zip
 tsconfig.json
 rollup.config.js
+build-wordpress.js

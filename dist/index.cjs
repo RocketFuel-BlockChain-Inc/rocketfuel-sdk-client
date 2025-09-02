@@ -63,10 +63,10 @@ const paymentAppDomains = {
     sandbox: "https://payments-sandbox.rocketfuelblockchain.com/select-currency",
 };
 const appDomains = {
-    production: "https://rocketfuel-ccd.netlify.app",
+    production: "https://zkp.rocketfuel.inc",
     qa: "https://qa-age-verification.rfdemo.co",
-    preprod: "https://preprod-age-verification.rocketdemo.net/",
-    sandbox: "https://rocketfuel-ccd.netlify.app",
+    preprod: "https://zkp-preprod.rocketdemo.net",
+    sandbox: "https://zkp-sandbox.rocketfuel.inc",
 };
 const ContainerId = 'sdk-buttons-container';
 const EVENTS = {
@@ -404,7 +404,7 @@ class ZKP {
                         return;
                     }
                     const selectedChain = yield (prov === null || prov === void 0 ? void 0 : prov.getSelectedChain());
-                    if (!(selectedChain === null || selectedChain === void 0 ? void 0 : selectedChain.includes(chain))) {
+                    if (selectedChain && !(selectedChain === null || selectedChain === void 0 ? void 0 : selectedChain.includes(chain))) {
                         respond('concordium_response', { error: 'You are connected to the wrong network. Please switch to the correct chain to continue.' }, target, origin);
                         return;
                     }
@@ -419,7 +419,7 @@ class ZKP {
                         return;
                     }
                     const selectedChain = yield (prov === null || prov === void 0 ? void 0 : prov.getSelectedChain());
-                    if (!(selectedChain === null || selectedChain === void 0 ? void 0 : selectedChain.includes(chain))) {
+                    if (selectedChain && !(selectedChain === null || selectedChain === void 0 ? void 0 : selectedChain.includes(chain))) {
                         respond('concordium_response', { error: 'You are connected to the wrong network. Please switch to the correct chain to continue.' }, target, origin);
                         return;
                     }
@@ -569,6 +569,9 @@ class RKFLPlugin {
                         button.style.opacity = '0.4';
                         this.payNowButton = button;
                         button.id = '#pay';
+                        if (typeof btnType.inject === 'boolean' && !btnType.inject) {
+                            return;
+                        }
                         const container = document.getElementById(btnType.containerId || ContainerId);
                         if (!container) {
                             console.error(`Container not found.`);
@@ -676,6 +679,23 @@ class RKFLPlugin {
     }
     launchAgeVerificationWidget() {
         launchAgeVerificationWidget(this.userInfo);
+    }
+    launchPaymentWidget(uuid) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (IframeUtiltites.iframe) {
+                return;
+            }
+            if (!uuid) {
+                console.warn('Cart data is not prepared');
+                return;
+            }
+            try {
+                yield placeOrder(this.clientId, this.redirect, uuid, this.enviornment);
+            }
+            catch (err) {
+                console.error('Error during order placement:', err);
+            }
+        });
     }
 }
 
