@@ -38,3 +38,5 @@ export const EVENTS = {
   CLOSE_MODAL: "CLOSE_MODAL"
 }
 export const appEnv = process.env.NODE_ENV as string;
+
+export const version = '1.0.2'

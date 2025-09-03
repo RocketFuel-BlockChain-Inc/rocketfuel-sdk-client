@@ -34,3 +34,4 @@ export declare const EVENTS: {
     CLOSE_MODAL: string;
 };
 export declare const appEnv: string;
+export declare const version = "1.0.2";
