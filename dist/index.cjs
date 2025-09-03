@@ -78,8 +78,6 @@ function dragElement(feature) {
     const isMobile = window.innerWidth <= 768 || /Mobi|Android/i.test(navigator.userAgent);
     const iframeWrapper = document.createElement("div");
     const iframeWrapperHeader = document.createElement("div");
-    iframeWrapper.id = "iframeWrapper";
-    iframeWrapperHeader.id = "iframeWrapperHeader";
     if (feature === FEATURE_AGE_VERIFICATION.feature) {
         iframeWrapper.style.cssText = `
             position: fixed;
