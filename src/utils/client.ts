@@ -1,6 +1,7 @@
 import { getApiDomains } from "../features/payin/types";
 import CryptoJS from 'crypto-js';
 import IframeUtiltites from "./IframeUtilities";
+import { version } from "./constants";
 class ApiClient {
     private domain: string;
     constructor(env: "production" | "qa" | "preprod" | "sandbox") {
@@ -25,7 +26,7 @@ class ApiClient {
             const response = await fetch(this.domain + '/sdk/generate-auth-token', {
                 method: "POST",
                 headers: {
-                    "x-sdk-version": '0.0.1',
+                    "x-sdk-version": version,
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(payload),

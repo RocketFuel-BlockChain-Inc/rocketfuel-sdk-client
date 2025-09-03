@@ -65,6 +65,7 @@ const EVENTS = {
     AGE_VERIFICATION: "AGE_VERIFICATION",
     CLOSE_MODAL: "CLOSE_MODAL"
 };
+const version = '1.0.2';
 
 function dragElement(feature) {
     const isMobile = window.innerWidth <= 768 || /Mobi|Android/i.test(navigator.userAgent);
@@ -471,7 +472,7 @@ class ApiClient {
                 const response = yield fetch(this.domain + '/sdk/generate-auth-token', {
                     method: "POST",
                     headers: {
-                        "x-sdk-version": '0.0.1',
+                        "x-sdk-version": version,
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify(payload),
