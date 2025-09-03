@@ -1,2 +1,9 @@
 /node_modules
 .env
+/public
+# Local Netlify folder
+.netlify
+rocketfuel-wp-plugin.zip
+build
+.env.*
+dist-qa
