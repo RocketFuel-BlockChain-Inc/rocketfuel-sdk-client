@@ -1,6 +1,6 @@
 {
   "name": "@rkfl/transact-client",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
@@ -9,7 +9,9 @@
     "import": "./dist/index.esm.js",
     "require": "./dist/index.cjs.js"
   },
-  "files": ["dist/**"],
+  "files": [
+    "dist/**"
+  ],
   "scripts": {
     "build": "dotenv -e .env -- rollup -c",
     "build:local": "dotenv -e .env.local -- rollup -c && mkdir -p ../rocketfuel-netlify/dist && cp -r dist-qa/* ../rocketfuel-netlify/dist/",
