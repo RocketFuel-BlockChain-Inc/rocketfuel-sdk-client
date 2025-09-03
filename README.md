@@ -4,19 +4,6 @@
 
 To initialize the SDK, create a new instance of `RkflPlugin` with your configuration.
 
-### ✅ Configuration Options
-
-| Option        | Type     | Description                                                  |
-|---------------|----------|--------------------------------------------------------------|
-| `clientId`    | `string` | Your RocketFuel Client ID                                    |
-| `clientSecret`| `string` | Your RocketFuel Client Secret                                |
-| `merchantId`  | `string` | Your RocketFuel Merchant ID                                  |
-| `containerId` | `string` | The ID of the DOM element where the buttons will be shown    |
-| `buttons`     | `string[]` | Features to enable: `'payin'`, `'age_verification'`        |
-| `redirect`    | `boolean`| Whether to redirect to `redirectUrl` after payment success   |
-
----
-
 ## installation
 Inport CDN
 ```
@@ -24,7 +11,7 @@ Inport CDN
 or
 install via npm 
 ```
-import { RKFLPlugin } from '@rocketfuel/client';
+import { RkflPlugin } from '@rkfl/transact-client';
 ```
 ## 🚀 Usage
 
@@ -33,17 +20,17 @@ import { RKFLPlugin } from '@rocketfuel/client';
 <div id="sdk-buttons-container"></div>
 
 <script>
-  const sdk = new RkflPlugin({
-    clientId: 'YOUR_CLIENT_ID',
-    clientSecret: 'YOUR_CLIENT_SECRET',
-    merchantId: 'YOUR_MERCHANT_ID',
-    buttons: ['payin', 'age_verification'],
-    containerId: 'sdk-buttons-container',
-    redirect: true
-  });
-
-  // Initialize buttons
-  sdk.init();
+    const ageplugin = { feature: "AGE_VERIFICATION", containerId: "verification-container" };
+    const payPlugin = { feature: "PAYIN", containerId: "payNow" };
+    const sdkConfig = {
+      plugins: [ageplugin, payPlugin],
+      environment: 'sandbox', // @default - 'production'
+      clientId: '<Your-client-Id>',
+      redirect: (localRedirectStored === 'true') // default false if not set
+    };
+    
+    const sdk = new window.RkflPlugin(sdkConfig);
+    sdk.init() // async process returns true or false
   // for more follow the documentation below
 
 </script>
