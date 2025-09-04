@@ -46,7 +46,7 @@ export default defineConfig([
   {
     input: 'src/index.ts',
     output: [
-      { file: `${filePath}/index.cjs`, format: 'cjs' },
+      { file: `${filePath}/index.cjs.js`, format: 'cjs' },
       { file: `${filePath}/index.esm.js`, format: 'esm' },
     ],
     external: ['crypto-js'],
