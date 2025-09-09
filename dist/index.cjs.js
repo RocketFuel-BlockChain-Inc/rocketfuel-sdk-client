@@ -503,6 +503,27 @@ class ApiClient {
     }
 }
 
+const verifier = (auditId, env) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const domain = getApiDomains(env);
+        const data = yield fetch(`${domain}/user/audit/${auditId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('access')}`,
+            },
+        });
+        if (!data.ok) {
+            throw new Error('Verification failed');
+        }
+        return { data: yield data.json() };
+    }
+    catch (err) {
+        console.error('Verification failed', err);
+        return { error: err };
+    }
+});
+
 class RKFLPlugin {
     constructor(config) {
         this.redirect = false;
@@ -694,6 +715,11 @@ class RKFLPlugin {
             catch (err) {
                 console.error('Error during order placement:', err);
             }
+        });
+    }
+    verifyAgeVerification(auditId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return verifier(auditId, this.enviornment);
         });
     }
 }
