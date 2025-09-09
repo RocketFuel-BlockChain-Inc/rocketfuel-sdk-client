@@ -432,8 +432,17 @@ class ZKP {
                     const prov = provider();
                     if (!prov)
                         return;
-                    const { statement, challenge } = payload;
+                    const { statement, challenge, chain } = payload;
                     try {
+                        const selectedChain = yield (prov === null || prov === void 0 ? void 0 : prov.getSelectedChain());
+                        if (selectedChain && !(selectedChain === null || selectedChain === void 0 ? void 0 : selectedChain.includes(chain))) {
+                            target.postMessage({
+                                type: 'concordium_requestVerifiablePresentation_error', error: {
+                                    message: 'You are connected to the wrong network. Please switch to the correct chain to continue.'
+                                }
+                            }, origin);
+                            return;
+                        }
                         const data = yield prov.requestVerifiablePresentation(challenge, statement);
                         target.postMessage({ type: 'concordium_requestVerifiablePresentation_response', message: 'verified', data }, origin);
                     }
