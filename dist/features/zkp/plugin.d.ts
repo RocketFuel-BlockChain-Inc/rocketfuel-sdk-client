@@ -11,5 +11,6 @@ export declare class ZKP {
     constructor(clientId: string, env: "production" | "qa" | "preprod" | "sandbox", redirect: boolean);
     initialize(userInfo?: UserInfo): void;
     private openRedirect;
+    private handler;
     private eventListnerConcodium;
 }
