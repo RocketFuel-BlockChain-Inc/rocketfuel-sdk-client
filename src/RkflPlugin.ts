@@ -4,6 +4,7 @@ import { UserInfo } from './features/zkp/types';
 import ApiClient from './utils/client';
 import { appEnv, ContainerId, EVENTS, FEATURE_AGE_VERIFICATION, FEATURE_PAYIN } from './utils/constants';
 import IframeUtiltites from './utils/IframeUtilities';
+import { verifier } from './utils/verifier';
 interface Buttons {
   feature: "PAYIN" | "AGE_VERIFICATION"; // Add other valid features
   style?: string;
@@ -233,6 +234,9 @@ export class RKFLPlugin {
     } catch (err) {
       console.error('Error during order placement:', err);
     }
+  }
+  public async verifyAgeVerification(auditId: string): Promise<any> {
+    return verifier(auditId, this.enviornment);
   }
 }
 

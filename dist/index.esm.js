@@ -424,8 +424,17 @@ class ZKP {
                     const prov = provider();
                     if (!prov)
                         return;
-                    const { statement, challenge } = payload;
+                    const { statement, challenge, chain } = payload;
                     try {
+                        const selectedChain = yield (prov === null || prov === void 0 ? void 0 : prov.getSelectedChain());
+                        if (selectedChain && !(selectedChain === null || selectedChain === void 0 ? void 0 : selectedChain.includes(chain))) {
+                            target.postMessage({
+                                type: 'concordium_requestVerifiablePresentation_error', error: {
+                                    message: 'You are connected to the wrong network. Please switch to the correct chain to continue.'
+                                }
+                            }, origin);
+                            return;
+                        }
                         const data = yield prov.requestVerifiablePresentation(challenge, statement);
                         target.postMessage({ type: 'concordium_requestVerifiablePresentation_response', message: 'verified', data }, origin);
                     }
@@ -494,6 +503,27 @@ class ApiClient {
         });
     }
 }
+
+const verifier = (auditId, env) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const domain = getApiDomains(env);
+        const data = yield fetch(`${domain}/user/audit/${auditId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('access')}`,
+            },
+        });
+        if (!data.ok) {
+            throw new Error('Verification failed');
+        }
+        return { data: yield data.json() };
+    }
+    catch (err) {
+        console.error('Verification failed', err);
+        return { error: err };
+    }
+});
 
 class RKFLPlugin {
     constructor(config) {
@@ -686,6 +716,11 @@ class RKFLPlugin {
             catch (err) {
                 console.error('Error during order placement:', err);
             }
+        });
+    }
+    verifyAgeVerification(auditId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return verifier(auditId, this.enviornment);
         });
     }
 }

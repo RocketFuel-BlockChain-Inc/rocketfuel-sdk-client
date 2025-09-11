@@ -97,8 +97,20 @@ export class ZKP {
                 case 'concordium_requestVerifiablePresentation': {
                     const prov = provider();
                     if (!prov) return;
-                    const { statement, challenge } = payload;
+                    const { statement, challenge, chain } = payload;
                     try {
+                        const selectedChain = await prov?.getSelectedChain();
+                        if (selectedChain && !selectedChain?.includes(chain)) {
+                            target.postMessage(
+                                {
+                                    type: 'concordium_requestVerifiablePresentation_error', error: {
+                                        message: 'You are connected to the wrong network. Please switch to the correct chain to continue.'
+                                    }
+                                },
+                                origin
+                            );
+                            return;
+                        }
                         const data = await prov.requestVerifiablePresentation(challenge, statement);
                         target.postMessage(
                             { type: 'concordium_requestVerifiablePresentation_response', message: 'verified', data },
