@@ -370,13 +370,13 @@ class ZKP {
     openRedirect(url) {
         window.open(url, '_blank');
     }
-    eventListnerConcodium() {
-        const provider = () => window === null || window === void 0 ? void 0 : window.concordium;
-        const respond = (type, message, target, origin) => {
-            target.postMessage({ type, message }, origin);
-        };
-        window.addEventListener('message', (event) => __awaiter(this, void 0, void 0, function* () {
+    handler(event) {
+        return __awaiter(this, void 0, void 0, function* () {
             var _a, _b;
+            const provider = () => window === null || window === void 0 ? void 0 : window.concordium;
+            const respond = (type, message, target, origin) => {
+                target.postMessage({ type, message }, origin);
+            };
             const { type, chain, payload, eventType } = event.data || {};
             const target = event.source;
             const origin = event.origin;
@@ -444,7 +444,13 @@ class ZKP {
                     break;
                 }
             }
-        }));
+        });
+    }
+    eventListnerConcodium() {
+        window.addEventListener('message', this.handler);
+        window.addEventListener('beforeunload', () => {
+            window.removeEventListener('message', this.handler);
+        });
     }
 }
 
