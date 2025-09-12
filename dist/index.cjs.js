@@ -455,10 +455,16 @@ class ZKP {
         });
     }
     eventListnerConcodium() {
+        // remove handler
+        window.removeEventListener('message', this.handler);
         window.addEventListener('message', this.handler);
-        window.addEventListener('beforeunload', () => {
+        // use a named cleanup function to avoid stacking
+        const cleanup = () => {
             window.removeEventListener('message', this.handler);
-        });
+            window.removeEventListener('beforeunload', cleanup);
+        };
+        window.removeEventListener('beforeunload', cleanup);
+        window.addEventListener('beforeunload', cleanup);
     }
 }
 
