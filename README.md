@@ -36,7 +36,7 @@ import { RkflPlugin } from '@rkfl/transact-client';
 </script>
 ```
 ## Documentation
-Click here for more detailed [Documentation](https://rocketfuel-gitbook.gitbook.io/rocketfuel-sdks/)
+Click here for more detailed [Documentation](https://docs.rocketfuel.inc/plug-ins-and-sdks/javascript-js/rocketfuel-sdk-client)
 
 ## 🚀 Supported Button Types
 
