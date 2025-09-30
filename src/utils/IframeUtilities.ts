@@ -5,15 +5,14 @@ export default class IframeUtiltites {
     public static iframe: HTMLIFrameElement | null = null;
     private static wrapper: HTMLDivElement | null = null;
     private static backdrop: HTMLDivElement | null = null;
-
+    private static feature: string = '';
     private static createIFrame(url: string) {
         const iframe = document.createElement('iframe');
         iframe.title = 'Rocketfuel';
         iframe.style.display = 'none';
         iframe.style.backgroundColor = 'transparent';
         iframe.style.border = '0';
-        iframe.style.minHeight = '500px'
-        iframe.style.overflowY = 'auto';
+        iframe.style.overflow = 'hidden';
         iframe.src = url;
         return iframe;
     }
@@ -29,7 +28,8 @@ export default class IframeUtiltites {
 
         // add backdrop
         if (feature === FEATURE_AGE_VERIFICATION.feature) {
-            this.iframe.style.width = '365px';
+            this.feature = feature;
+            this.iframe.style.width = '420px';
             this.backdrop = document.createElement('div');
             this.backdrop.style.backgroundColor = '#000000';
             this.backdrop.style.position = 'fixed';
@@ -43,6 +43,7 @@ export default class IframeUtiltites {
             this.backdrop.style.opacity = '0.6';
             this.backdrop.id = 'backdrop-age-verification';
         } else {
+            this.feature = feature;
             this.iframe.style.width = '400px';
         }
         if (this.backdrop) {
@@ -50,7 +51,7 @@ export default class IframeUtiltites {
         }
 
         this.iframe.style.display = 'block';
-        this.iframe.style.minHeight = '100%';
+        this.iframe.style.height = '100%';
         this.iframe.style.border = '1px solid #dddddd';
         this.iframe.style.borderRadius = '8px';
         this.iframe.style.background = '#F8F8F8';
@@ -117,14 +118,17 @@ export default class IframeUtiltites {
 
     public static setIframeHeight(height: string) {
         if (this.iframe) {
-            if (Number(height) >= Number(window.innerHeight)) {
-                height = (window.innerHeight - 20).toString();
-            }
-            if (Number(height) <= (Number(window.innerHeight) / 2)) {
-                height = (Number(window.innerHeight) / 2).toString();
-            }
+            // if the feature is not age verification 
+            if (this.feature !== FEATURE_AGE_VERIFICATION.feature) {
+                if (Number(height) >= Number(window.innerHeight)) {
+                    height = (window.innerHeight - 20).toString();
+                }
+                if (Number(height) <= (Number(window.innerHeight) / 2)) {
+                    height = (Number(window.innerHeight) / 2).toString();
+                }
 
-            this.iframe.style.height = `${height}px`;
+                this.iframe.style.height = height;
+            }
         }
     }
 }

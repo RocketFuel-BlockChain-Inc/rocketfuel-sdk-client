@@ -176,8 +176,7 @@ class IframeUtiltites {
         iframe.style.display = 'none';
         iframe.style.backgroundColor = 'transparent';
         iframe.style.border = '0';
-        iframe.style.minHeight = '500px';
-        iframe.style.overflowY = 'auto';
+        iframe.style.overflow = 'hidden';
         iframe.src = url;
         return iframe;
     }
@@ -192,7 +191,8 @@ class IframeUtiltites {
         this.wrapper = wrapper;
         // add backdrop
         if (feature === FEATURE_AGE_VERIFICATION.feature) {
-            this.iframe.style.width = '365px';
+            this.feature = feature;
+            this.iframe.style.width = '420px';
             this.backdrop = document.createElement('div');
             this.backdrop.style.backgroundColor = '#000000';
             this.backdrop.style.position = 'fixed';
@@ -207,13 +207,14 @@ class IframeUtiltites {
             this.backdrop.id = 'backdrop-age-verification';
         }
         else {
+            this.feature = feature;
             this.iframe.style.width = '400px';
         }
         if (this.backdrop) {
             document.body.appendChild(this.backdrop);
         }
         this.iframe.style.display = 'block';
-        this.iframe.style.minHeight = '100%';
+        this.iframe.style.height = '100%';
         this.iframe.style.border = '1px solid #dddddd';
         this.iframe.style.borderRadius = '8px';
         this.iframe.style.background = '#F8F8F8';
@@ -271,19 +272,23 @@ class IframeUtiltites {
     }
     static setIframeHeight(height) {
         if (this.iframe) {
-            if (Number(height) >= Number(window.innerHeight)) {
-                height = (window.innerHeight - 20).toString();
+            // if the feature is not age verification 
+            if (this.feature !== FEATURE_AGE_VERIFICATION.feature) {
+                if (Number(height) >= Number(window.innerHeight)) {
+                    height = (window.innerHeight - 20).toString();
+                }
+                if (Number(height) <= (Number(window.innerHeight) / 2)) {
+                    height = (Number(window.innerHeight) / 2).toString();
+                }
+                this.iframe.style.height = height;
             }
-            if (Number(height) <= (Number(window.innerHeight) / 2)) {
-                height = (Number(window.innerHeight) / 2).toString();
-            }
-            this.iframe.style.height = `${height}px`;
         }
     }
 }
 IframeUtiltites.iframe = null;
 IframeUtiltites.wrapper = null;
 IframeUtiltites.backdrop = null;
+IframeUtiltites.feature = '';
 
 function getBaseUrl(env) {
     return paymentAppDomains[env];
