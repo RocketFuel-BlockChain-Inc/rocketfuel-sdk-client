@@ -191,11 +191,13 @@ class IframeUtiltites {
         this.wrapper = wrapper;
         // add backdrop
         if (feature === FEATURE_AGE_VERIFICATION.feature) {
+            this.feature = feature;
             this.iframe.style.width = '420px';
             this.backdrop = document.createElement('div');
             this.backdrop.style.backgroundColor = '#000000';
             this.backdrop.style.position = 'fixed';
             this.backdrop.style.width = '100%';
+            this.backdrop.style.height = '100%';
             this.backdrop.style.top = '0';
             this.backdrop.style.bottom = '0';
             this.backdrop.style.left = '0';
@@ -205,6 +207,7 @@ class IframeUtiltites {
             this.backdrop.id = 'backdrop-age-verification';
         }
         else {
+            this.feature = feature;
             this.iframe.style.width = '400px';
         }
         if (this.backdrop) {
@@ -226,7 +229,7 @@ class IframeUtiltites {
         overlay.style.top = "0";
         overlay.style.left = "0";
         overlay.style.width = "100%";
-        overlay.style.height = "100%";
+        overlay.style.height = '100%';
         overlay.style.border = '1px solid #dddddd';
         overlay.style.borderRadius = '8px';
         overlay.style.backgroundColor = "#F8F8F8";
@@ -269,6 +272,15 @@ class IframeUtiltites {
     }
     static setIframeHeight(height) {
         if (this.iframe) {
+            // if the feature is not age verification 
+            if (this.feature !== FEATURE_AGE_VERIFICATION.feature) {
+                if (Number(height) >= Number(window.innerHeight)) {
+                    height = (window.innerHeight - 20).toString();
+                }
+                if (Number(height) <= (Number(window.innerHeight) / 2)) {
+                    height = (Number(window.innerHeight) / 2).toString();
+                }
+            }
             this.iframe.style.height = height;
         }
     }
@@ -276,6 +288,7 @@ class IframeUtiltites {
 IframeUtiltites.iframe = null;
 IframeUtiltites.wrapper = null;
 IframeUtiltites.backdrop = null;
+IframeUtiltites.feature = '';
 
 function getBaseUrl(env) {
     return paymentAppDomains[env];
@@ -686,7 +699,7 @@ class RKFLPlugin {
                 }, '*');
             }
         }
-        if (data.type === 'rocketfuel_new_height') {
+        if (data.type === 'rocketfuel_change_height') {
             IframeUtiltites.setIframeHeight(data.data);
         }
     }
