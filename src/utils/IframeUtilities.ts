@@ -69,7 +69,7 @@ export default class IframeUtiltites {
         overlay.style.top = "0";
         overlay.style.left = "0";
         overlay.style.width = "100%";
-        overlay.style.height = "100%";
+        overlay.style.height = '100%';
         overlay.style.border = '1px solid #dddddd';
         overlay.style.borderRadius = '8px';
         overlay.style.backgroundColor = "#F8F8F8";
@@ -126,9 +126,8 @@ export default class IframeUtiltites {
                 if (Number(height) <= (Number(window.innerHeight) / 2)) {
                     height = (Number(window.innerHeight) / 2).toString();
                 }
-
-                this.iframe.style.height = height;
             }
+            this.iframe.style.height = height;
         }
     }
 }

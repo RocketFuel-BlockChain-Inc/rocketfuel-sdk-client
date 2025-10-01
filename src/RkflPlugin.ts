@@ -196,7 +196,7 @@ export class RKFLPlugin {
         );
       }
     }
-    if (data.type === 'rocketfuel_new_height') {
+    if (data.type === 'rocketfuel_change_height') {
       IframeUtiltites.setIframeHeight(data.data)
     }
   }
