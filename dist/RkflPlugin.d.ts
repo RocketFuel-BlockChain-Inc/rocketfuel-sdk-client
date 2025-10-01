@@ -5,6 +5,7 @@ interface Buttons {
     containerStyle?: string;
     containerId?: string;
     inject?: boolean;
+    countries?: string[];
 }
 export interface SDKConfig {
     clientId: string;

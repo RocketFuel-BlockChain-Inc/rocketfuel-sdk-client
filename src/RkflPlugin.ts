@@ -10,7 +10,8 @@ interface Buttons {
   style?: string;
   containerStyle?: string;
   containerId?: string;
-  inject?: boolean
+  inject?: boolean,
+  countries?: string[]
 }
 export interface SDKConfig {
   clientId: string;
@@ -184,7 +185,8 @@ export class RKFLPlugin {
       const data = {
         access,
         clientId: this.clientId,
-        userInfo: this.userInfo
+        userInfo: this.userInfo,
+        countries: this.buttons.map((btn) => btn.countries).filter((country) => country !== undefined)
       }
       if (IframeUtiltites?.iframe?.contentWindow && access) {
         IframeUtiltites.iframe.contentWindow.postMessage(
