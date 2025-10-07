@@ -204,7 +204,6 @@ export default class IframeUtiltites {
                 this.wrapper.style.height = '500px'; // You can adjust this height as needed
                 this.wrapper.style.width = '96%';
                 this.wrapper.style.borderRadius = '24px';
-                this.wrapper.style.margin = '2.5px';
                 this.wrapper.style.position = 'fixed';
                 this.wrapper.style.top = '50%';
                 this.wrapper.style.left = '50%';
