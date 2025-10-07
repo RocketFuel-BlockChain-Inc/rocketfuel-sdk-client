@@ -16,4 +16,19 @@ export default class IframeUtiltites {
     private static stopPathChangeMonitoring;
     private static setupPathMessageListener;
     private static removePathMessageListener;
+    private static addCacheBusting;
+    private static clearBrowserCaches;
+    private static clearHTMLAndCSSCaches;
+    private static forceIframeReload;
+    static clearCacheAndReload(): void;
+    static clearCaches(): void;
+    static clearHTMLAndCSSCachesPublic(): void;
+    static forceNoCacheLoad(url: string): void;
+    static lightCacheClear(): void;
+    private static addNoCacheHeaders;
+    private static handleCrash;
+    private static attemptRecovery;
+    private static forceCleanup;
+    static isHealthy(): boolean;
+    static recover(): void;
 }
