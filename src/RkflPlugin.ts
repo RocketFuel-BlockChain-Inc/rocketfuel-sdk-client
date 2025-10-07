@@ -26,7 +26,7 @@ export class RKFLPlugin {
   private payNowButton: HTMLButtonElement | null = null;
   private userInfo: UserInfo;
   private enviornment: "production" | "qa" | "preprod" | "sandbox";
-  private innerHtmlPay: string = '<img src="https://ik.imagekit.io/rocketfuel/icons/rocketfuel-circular.svg?tr=w-30,h-30,fo-auto,q-50" alt="" style="width: 30px; height:30px;"> Pay with Cryto Currency';
+  private innerHtmlPay: string = '<img src="https://ik.imagekit.io/rocketfuel/icons/rocketfuel-circular.svg?tr=w-30,h-30,fo-auto,q-50" alt="" style="width: 30px; height:30px;"> Pay with Crypto Currency';
   private innerHtmlVerify: string = `<img src="https://ik.imagekit.io/rocketfuel/icons/rocketfuel-circular.svg?tr=w-30,h-30,fo-auto,q-50" alt="" style="width: 30px; height:30px;"> Verification via Rocketfuel`;
   private innerHtmlPayLoading: string = `<img src="https://ik.imagekit.io/rocketfuel/icons/rocketfuel-circular.svg?tr=w-30,h-30,fo-auto,q-50" alt="" style="width: 30px; height:30px;"> Processing...`;
   constructor(config: SDKConfig) {
