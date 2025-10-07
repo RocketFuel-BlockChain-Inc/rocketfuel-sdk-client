@@ -182,11 +182,12 @@ export class RKFLPlugin {
     }
     if (data.type === 'initialize_widget') {
       const access = localStorage.getItem('access');
+     
       const data = {
         access,
         clientId: this.clientId,
         userInfo: this.userInfo,
-        countries: this.buttons.map((btn) => btn.countries).filter((country) => country !== undefined)
+        countries: this.buttons.map((btn) => btn.countries).filter((country) => country !== undefined)[0]
       }
       if (IframeUtiltites?.iframe?.contentWindow && access) {
         IframeUtiltites.iframe.contentWindow.postMessage(

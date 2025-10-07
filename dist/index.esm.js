@@ -1141,7 +1141,7 @@ class RKFLPlugin {
                 access,
                 clientId: this.clientId,
                 userInfo: this.userInfo,
-                countries: this.buttons.map((btn) => btn.countries).filter((country) => country !== undefined)
+                countries: this.buttons.map((btn) => btn.countries).filter((country) => country !== undefined)[0]
             };
             if (((_a = IframeUtiltites === null || IframeUtiltites === void 0 ? void 0 : IframeUtiltites.iframe) === null || _a === void 0 ? void 0 : _a.contentWindow) && access) {
                 IframeUtiltites.iframe.contentWindow.postMessage({
