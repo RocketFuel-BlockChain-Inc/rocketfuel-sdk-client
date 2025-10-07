@@ -200,6 +200,10 @@ export class RKFLPlugin {
     }
     if (data.type === 'rocketfuel_change_height') {
       IframeUtiltites.setIframeHeight(data.data)
+      IframeUtiltites.iframe?.contentWindow?.postMessage({
+        type: 'rocketfuel_return_width',
+        data: window.outerWidth
+      }, '*');
     }
   }
 
