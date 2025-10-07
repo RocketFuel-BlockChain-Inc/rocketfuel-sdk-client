@@ -126,7 +126,7 @@ export class ZKP {
                 }
             }
         } catch (err: any) {
-            respond('concordium_response', { error: err.message }, target, origin);
+            respond('concordium_response', { error: err?.message || 'Something went wrong'}, target, origin);
         }
     }
     private eventListnerConcodium() {
