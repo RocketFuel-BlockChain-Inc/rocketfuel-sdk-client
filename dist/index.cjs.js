@@ -884,6 +884,10 @@ class ZKP {
                         if (!prov)
                             return;
                         const { statement, challenge, chain } = payload;
+                        const verificationAnchor = {
+                            challenge,
+                            credentialStatements: statement,
+                        };
                         try {
                             const selectedChain = yield (prov === null || prov === void 0 ? void 0 : prov.getSelectedChain());
                             if (selectedChain && !(selectedChain === null || selectedChain === void 0 ? void 0 : selectedChain.includes(chain))) {
@@ -895,6 +899,10 @@ class ZKP {
                                 return;
                             }
                             const data = yield prov.requestVerifiablePresentation(challenge, statement);
+                            const response = {
+                                logData: { verifiablePresentationJson: JSON.stringify(data) },
+                                verificationAnchor
+                            };
                             target.postMessage({ type: 'concordium_requestVerifiablePresentation_response', message: 'verified', data }, origin);
                         }
                         catch (err) {

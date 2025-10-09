@@ -98,6 +98,10 @@ export class ZKP {
                     const prov = provider();
                     if (!prov) return;
                     const { statement, challenge, chain } = payload;
+                    const verificationAnchor = {
+                        challenge,
+                        credentialStatements: statement,
+                    }
                     try {
                         const selectedChain = await prov?.getSelectedChain();
                         if (selectedChain && !selectedChain?.includes(chain)) {
@@ -112,6 +116,10 @@ export class ZKP {
                             return;
                         }
                         const data = await prov.requestVerifiablePresentation(challenge, statement);
+                        const response = {
+                            logData: { verifiablePresentationJson: JSON.stringify(data) },
+                            verificationAnchor
+                        }
                         target.postMessage(
                             { type: 'concordium_requestVerifiablePresentation_response', message: 'verified', data },
                             origin
