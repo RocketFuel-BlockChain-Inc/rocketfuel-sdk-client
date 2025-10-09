@@ -903,7 +903,7 @@ class ZKP {
                                 logData: { verifiablePresentationJson: JSON.stringify(data) },
                                 verificationAnchor
                             };
-                            target.postMessage({ type: 'concordium_requestVerifiablePresentation_response', message: 'verified', data }, origin);
+                            target.postMessage({ type: 'concordium_requestVerifiablePresentation_response', message: 'verified', response }, origin);
                         }
                         catch (err) {
                             target.postMessage({ type: 'concordium_requestVerifiablePresentation_error', error: err }, origin);
