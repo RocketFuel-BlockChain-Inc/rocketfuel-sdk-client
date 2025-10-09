@@ -121,7 +121,7 @@ export class ZKP {
                             verificationAnchor
                         }
                         target.postMessage(
-                            { type: 'concordium_requestVerifiablePresentation_response', message: 'verified', response },
+                            { type: 'concordium_requestVerifiablePresentation_response', message: 'verified', data: response },
                             origin
                         );
                     } catch (err) {
