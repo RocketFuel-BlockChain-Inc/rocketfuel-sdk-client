@@ -10,7 +10,8 @@ interface Buttons {
   style?: string;
   containerStyle?: string;
   containerId?: string;
-  inject?: boolean
+  inject?: boolean,
+  countries?: string[]
 }
 export interface SDKConfig {
   clientId: string;
@@ -181,10 +182,12 @@ export class RKFLPlugin {
     }
     if (data.type === 'initialize_widget') {
       const access = localStorage.getItem('access');
+     
       const data = {
         access,
         clientId: this.clientId,
-        userInfo: this.userInfo
+        userInfo: this.userInfo,
+        countries: this.buttons.map((btn) => btn.countries).filter((country) => country !== undefined)[0]
       }
       if (IframeUtiltites?.iframe?.contentWindow && access) {
         IframeUtiltites.iframe.contentWindow.postMessage(
@@ -196,8 +199,12 @@ export class RKFLPlugin {
         );
       }
     }
-    if (data.type === 'rocketfuel_new_height') {
+    if (data.type === 'rocketfuel_change_height') {
       IframeUtiltites.setIframeHeight(data.data)
+      IframeUtiltites.iframe?.contentWindow?.postMessage({
+        type: 'rocketfuel_return_width',
+        data: window.outerWidth
+      }, '*');
     }
   }
 

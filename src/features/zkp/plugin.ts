@@ -34,7 +34,6 @@ export class ZKP {
     }
 
     private async handler(event: MessageEvent) {
-
         const provider = () => window?.concordium;
 
         const respond = (type: string, message: any, target: Window, origin: string) => {
@@ -43,87 +42,99 @@ export class ZKP {
         const { type, chain, payload, eventType } = event.data || {};
         const target = event.source as Window;
         const origin = event.origin;
+        try {
 
-        // Disconnect event
-        if (eventType === "accountDisconnected") {
-            IframeUtiltites.iframe?.contentWindow?.postMessage(
-                'concordium_disconnected',
-                IframeUtiltites.iframe.src
-            );
-            return;
-        }
-
-        if (!type) return; // skip if not a Concordium message
-
-        switch (type) {
-            case 'request_connected_account': {
-                const prov = provider();
-                if (!prov) {
-                    respond('concordium_response', { error: 'No wallet detected. Please install a supported wallet to continue.' }, target, origin);
-                    return;
-                }
-
-                const selectedChain = await prov?.getSelectedChain();
-                if (selectedChain && !selectedChain?.includes(chain)) {
-                    respond('concordium_response', { error: 'You are connected to the wrong network. Please switch to the correct chain to continue.' }, target, origin);
-                    return;
-                }
-
-                const account = await prov.getMostRecentlySelectedAccount();
-                respond('concordium_response', account || null, target, origin);
-                break;
+            // Disconnect event
+            if (eventType === "accountDisconnected") {
+                IframeUtiltites.iframe?.contentWindow?.postMessage(
+                    'concordium_disconnected',
+                    IframeUtiltites.iframe.src
+                );
+                return;
             }
 
-            case 'request_concordium': {
-                const prov = provider();
-                if (!prov) {
-                    respond('concordium_response', { error: 'No wallet detected. Please install a supported wallet to continue.' }, target, origin);
-                    return;
-                }
+            if (!type) return; // skip if not a Concordium message
 
-                const selectedChain = await prov?.getSelectedChain();
-                if (selectedChain && !selectedChain?.includes(chain)) {
-                    respond('concordium_response', { error: 'You are connected to the wrong network. Please switch to the correct chain to continue.' }, target, origin);
-                    return;
-                }
-
-                let account = await prov.getMostRecentlySelectedAccount();
-                if (!account) account = await prov.connect();
-
-                respond('concordium_response', account, target, origin);
-                break;
-            }
-
-            case 'concordium_requestVerifiablePresentation': {
-                const prov = provider();
-                if (!prov) return;
-                const { statement, challenge, chain } = payload;
-                try {
-                    const selectedChain = await prov?.getSelectedChain();
-                    if (selectedChain && !selectedChain?.includes(chain)) {
-                        target.postMessage(
-                            {
-                                type: 'concordium_requestVerifiablePresentation_error', error: {
-                                    message: 'You are connected to the wrong network. Please switch to the correct chain to continue.'
-                                }
-                            },
-                            origin
-                        );
+            switch (type) {
+                case 'request_connected_account': {
+                    const prov = provider();
+                    if (!prov) {
+                        respond('concordium_response', { error: 'No wallet detected. Please install a supported wallet to continue.' }, target, origin);
                         return;
                     }
-                    const data = await prov.requestVerifiablePresentation(challenge, statement);
-                    target.postMessage(
-                        { type: 'concordium_requestVerifiablePresentation_response', message: 'verified', data },
-                        origin
-                    );
-                } catch (err) {
-                    target.postMessage(
-                        { type: 'concordium_requestVerifiablePresentation_error', error: err },
-                        origin
-                    );
+
+                    const selectedChain = await prov?.getSelectedChain();
+                    if (selectedChain && !selectedChain?.includes(chain)) {
+                        respond('concordium_response', { error: 'You are connected to the wrong network. Please switch to the correct chain to continue.' }, target, origin);
+                        return;
+                    }
+
+                    const account = await prov.getMostRecentlySelectedAccount();
+                    respond('concordium_response', account || null, target, origin);
+                    break;
                 }
-                break;
+
+                case 'request_concordium': {
+                    const prov = provider();
+                    if (!prov) {
+                        respond('concordium_response', { error: 'No wallet detected. Please install a supported wallet to continue.' }, target, origin);
+                        return;
+                    }
+
+                    const selectedChain = await prov?.getSelectedChain();
+                    if (selectedChain && !selectedChain?.includes(chain)) {
+                        respond('concordium_response', { error: 'You are connected to the wrong network. Please switch to the correct chain to continue.' }, target, origin);
+                        return;
+                    }
+
+                    let account = await prov.getMostRecentlySelectedAccount();
+                    if (!account) account = await prov.connect();
+
+                    respond('concordium_response', account, target, origin);
+                    break;
+                }
+
+                case 'concordium_requestVerifiablePresentation': {
+                    const prov = provider();
+                    if (!prov) return;
+                    const { statement, challenge, chain } = payload;
+                    const verificationAnchor = {
+                        challenge,
+                        credentialStatements: statement,
+                    }
+                    try {
+                        const selectedChain = await prov?.getSelectedChain();
+                        if (selectedChain && !selectedChain?.includes(chain)) {
+                            target.postMessage(
+                                {
+                                    type: 'concordium_requestVerifiablePresentation_error', error: {
+                                        message: 'You are connected to the wrong network. Please switch to the correct chain to continue.'
+                                    }
+                                },
+                                origin
+                            );
+                            return;
+                        }
+                        const data = await prov.requestVerifiablePresentation(challenge, statement);
+                        const response = {
+                            logData: { verifiablePresentationJson: JSON.stringify(data) },
+                            verificationAnchor
+                        }
+                        target.postMessage(
+                            { type: 'concordium_requestVerifiablePresentation_response', message: 'verified', data: response },
+                            origin
+                        );
+                    } catch (err) {
+                        target.postMessage(
+                            { type: 'concordium_requestVerifiablePresentation_error', error: err },
+                            origin
+                        );
+                    }
+                    break;
+                }
             }
+        } catch (err: any) {
+            respond('concordium_response', { error: err?.message || 'Something went wrong'}, target, origin);
         }
     }
     private eventListnerConcodium() {
