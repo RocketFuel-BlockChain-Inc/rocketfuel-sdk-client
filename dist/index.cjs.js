@@ -766,7 +766,7 @@ class RocketFuel {
                 const t = setTimeout(() => {
                     IframeUtiltites.closeIframe();
                     t !== null && t !== void 0 ? t : clearTimeout(t);
-                }, 5000);
+                }, 30000);
             }
         }
     }
