@@ -40,7 +40,7 @@ const commonPlugins = [
 ];
 
 const versionBanner = `/*! @rocketfuel/client v${pkg.version} | (c) Rocketfuel | MIT License */`;
-const filePath = JSON.parse(envVars['process.env.NODE_ENV']) == 'production' ? 'dist': 'dist-qa';
+const filePath = 'dist';
 console.debug("🚀 ~ filePath:", filePath)
 export default defineConfig([
   {
