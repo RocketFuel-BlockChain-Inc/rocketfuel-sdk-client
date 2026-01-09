@@ -1015,7 +1015,10 @@ class RKFLPlugin {
         this.innerHtmlPay = '<img src="https://ik.imagekit.io/rocketfuel/icons/rocketfuel-circular.svg?tr=w-30,h-30,fo-auto,q-50" alt="" style="width: 30px; height:30px;"> Pay with Crypto Currency';
         this.innerHtmlVerify = `<img src="https://ik.imagekit.io/rocketfuel/icons/rocketfuel-circular.svg?tr=w-30,h-30,fo-auto,q-50" alt="" style="width: 30px; height:30px;"> Verification via Rocketfuel`;
         this.innerHtmlPayLoading = `<img src="https://ik.imagekit.io/rocketfuel/icons/rocketfuel-circular.svg?tr=w-30,h-30,fo-auto,q-50" alt="" style="width: 30px; height:30px;"> Processing...`;
-        config.environment;
+        const env = config.environment;
+        if ((env && !(['production', 'sandbox'].includes(env)))) {
+            throw new Error(`Invalid environment "${env}" in production mode.`);
+        }
         this.clientId = config.clientId;
         this.buttons = config.plugins.length === 0 ? [FEATURE_PAYIN] : config.plugins;
         this.redirect = config.redirect || false;
