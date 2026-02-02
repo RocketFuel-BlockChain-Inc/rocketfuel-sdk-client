@@ -1008,8 +1008,8 @@ class RKFLPlugin {
         this.innerHtmlVerify = `<img src="https://ik.imagekit.io/rocketfuel/icons/rocketfuel-circular.svg?tr=w-30,h-30,fo-auto,q-50" alt="" style="width: 30px; height:30px;"> Verification via Rocketfuel`;
         this.innerHtmlPayLoading = `<img src="https://ik.imagekit.io/rocketfuel/icons/rocketfuel-circular.svg?tr=w-30,h-30,fo-auto,q-50" alt="" style="width: 30px; height:30px;"> Processing...`;
         const env = config.environment;
-        if ((env && !(['production', 'sandbox'].includes(env)))) {
-            throw new Error(`Invalid environment "${env}" in production mode.`);
+        if (!(['production', 'sandbox', 'qa', 'preprod'].includes(env))) {
+            throw new Error(`Invalid environment "${env}"`);
         }
         this.clientId = config.clientId;
         this.buttons = config.plugins.length === 0 ? [FEATURE_PAYIN] : config.plugins;

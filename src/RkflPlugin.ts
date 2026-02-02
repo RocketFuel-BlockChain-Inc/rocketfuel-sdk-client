@@ -33,10 +33,9 @@ export class RKFLPlugin {
   constructor(config: SDKConfig) {
     const env = config.environment;
     if (
-      appEnv === 'production' &&
-      (env && !(['production', 'sandbox'].includes(env)))
+      !(['production', 'sandbox', 'qa', 'preprod'].includes(env))
     ) {
-      throw new Error(`Invalid environment "${env}" in production mode.`);
+      throw new Error(`Invalid environment "${env}"`);
     }
     this.clientId = config.clientId;
     this.buttons = config.plugins.length === 0 ? [FEATURE_PAYIN] : config.plugins;
