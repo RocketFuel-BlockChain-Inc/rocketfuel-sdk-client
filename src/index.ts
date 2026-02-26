@@ -1,4 +1,4 @@
 import { RKFLPlugin } from './RkflPlugin';
 
 export { RKFLPlugin as RkflPlugin };
-export default RKFLPlugin;
+export type { SDKConfig, UserInfo } from './core/types';

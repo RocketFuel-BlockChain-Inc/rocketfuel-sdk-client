@@ -1,8 +1,8 @@
 // RocketFuel SDK - TypeScript Version
 
-import { FEATURE_PAYIN } from "../../utils/constants";
-import IframeUtiltites from "../../utils/IframeUtilities";
-import { getBaseUrl, RocketFuelOptions } from "./types";
+import { FEATURE_PAYIN } from '../../utils/constants';
+import IframeUtiltites from '../../utils/IframeUtilities';
+import { getBaseUrl, RocketFuelOptions } from './types';
 // Version: 1.0.1
 declare global {
   interface Window {
@@ -13,14 +13,14 @@ declare global {
 
 class RocketFuel {
   private domain: string;
-  public rkflToken: any = null;
-  private success_event: string = "rocketfuel_result_ok";
+  public rkflToken: string | null = null;
+  private success_event: string = 'rocketfuel_result_ok';
   clientId: string;
 
   constructor(options: RocketFuelOptions) {
     this.clientId = options.clientId;
-    this.domain = getBaseUrl(options.environment)
-    this.initialize()
+    this.domain = getBaseUrl(options.environment);
+    this.initialize();
   }
   handleMessage(event: MessageEvent) {
     const eventData = event.data;
@@ -28,26 +28,24 @@ class RocketFuel {
       if (eventData.paymentCompleted === 1) {
         const t = setTimeout(() => {
           IframeUtiltites.closeIframe();
-          t ?? clearTimeout(t)
-        }, 30000)
+          clearTimeout(t);
+        }, 30000);
       }
     }
   }
   private initialize() {
-    window.addEventListener("message", this.handleMessage);
+    window.addEventListener('message', this.handleMessage);
   }
 
   public async openRedirect(uuid: string) {
-    const open = `${this.domain}/${uuid}`
-    window.open(open, '_blank')
+    const open = `${this.domain}/${uuid}`;
+    window.open(open, '_blank');
   }
 
   public async openIframe(uuid: string) {
-    const open = `${this.domain}/${uuid}`
+    const open = `${this.domain}/${uuid}`;
     IframeUtiltites.showOverlay(open, FEATURE_PAYIN.feature);
   }
-
-
 }
 
 // Export RocketFuel

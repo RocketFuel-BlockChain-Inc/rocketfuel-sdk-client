@@ -1,18 +1,6 @@
-import { UserInfo } from './features/zkp/types';
-interface Buttons {
-    feature: "PAYIN" | "AGE_VERIFICATION";
-    style?: string;
-    containerStyle?: string;
-    containerId?: string;
-    inject?: boolean;
-    countries?: string[];
-}
-export interface SDKConfig {
-    clientId: string;
-    environment: "production" | "qa" | "preprod" | "sandbox";
-    redirect?: boolean;
-    plugins: Buttons[];
-}
+import type { IIframeService } from './core/IIframeService';
+import type { SDKConfig, UserInfo } from './core/types';
+export type { SDKConfig, UserInfo } from './core/types';
 export declare class RKFLPlugin {
     private clientId;
     private buttons;
@@ -20,18 +8,19 @@ export declare class RKFLPlugin {
     private uuid;
     private payNowButton;
     private userInfo;
-    private enviornment;
-    private innerHtmlPay;
-    private innerHtmlVerify;
-    private innerHtmlPayLoading;
-    constructor(config: SDKConfig);
-    init(): Promise<Boolean | void>;
+    private environment;
+    private iframeService;
+    private zkpInitialized;
+    private readonly innerHtmlPay;
+    private readonly innerHtmlVerify;
+    private readonly innerHtmlPayLoading;
+    constructor(config: SDKConfig, iframeService?: IIframeService);
+    init(): Promise<boolean | void>;
     setUserInfo(userInfo: UserInfo): void;
-    prepareOrder(uuid: any): void;
+    prepareOrder(uuid: string): void;
     private handleMessage;
     private setLoadingState;
-    launchAgeVerificationWidget(): void;
+    launchAgeVerificationWidget(): Promise<void>;
     launchPaymentWidget(uuid: string): Promise<void>;
-    verifyAgeVerification(auditId: string): Promise<any>;
+    verifyAgeVerification(auditId: string): Promise<unknown>;
 }
-export {};

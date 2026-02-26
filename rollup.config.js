@@ -23,6 +23,7 @@ const envVars = {
   'process.env.APP_DOMAIN_PREPROD': JSON.stringify(process.env.APP_DOMAIN_PREPROD),
   'process.env.APP_DOMAIN_SANDBOX': JSON.stringify(process.env.APP_DOMAIN_SANDBOX),
   'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+  'process.env.SDK_VERSION': JSON.stringify(pkg.version),
 };
 
 const commonPlugins = [
@@ -40,25 +41,49 @@ const commonPlugins = [
 ];
 
 const versionBanner = `/*! @rocketfuel/client v${pkg.version} | (c) Rocketfuel | MIT License */`;
-const filePath = 'dist';
+const filePath = JSON.parse(envVars['process.env.NODE_ENV']) == 'production' ? 'dist': 'dist-qa';
 console.debug("🚀 ~ filePath:", filePath)
 export default defineConfig([
   {
     input: 'src/index.ts',
     output: [
-      { file: `${filePath}/index.cjs.js`, format: 'cjs' },
-      { file: `${filePath}/index.esm.js`, format: 'esm' },
+      {
+        dir: filePath,
+        format: 'cjs',
+        exports: 'named',
+        entryFileNames: 'index.cjs.js',
+        chunkFileNames: '[name]-[hash].cjs.js',
+        manualChunks: (id) => {
+          if (id.includes('features/payin')) return 'payin';
+          if (id.includes('features/zkp')) return 'zkp';
+          return null;
+        },
+      },
+      {
+        dir: filePath,
+        format: 'esm',
+        exports: 'named',
+        entryFileNames: 'index.esm.js',
+        chunkFileNames: '[name]-[hash].esm.js',
+        manualChunks: (id) => {
+          if (id.includes('features/payin')) return 'payin';
+          if (id.includes('features/zkp')) return 'zkp';
+          return null;
+        },
+      },
     ],
     external: ['crypto-js'],
     plugins: [...commonPlugins],
   },
   {
     input: 'src/standalone.ts',
+    preserveEntrySignatures: false,
     output: {
-      file: `${filePath}/rkfl-transact-client.min-${pkg.version}.js`,
+      file: `${filePath}/rkfl-transact-client.min.js`,
       format: 'iife',
       name: 'RkflPlugin',
       banner: versionBanner,
+      inlineDynamicImports: true,
       plugins: [terser()],
     },
     plugins: [...commonPlugins],

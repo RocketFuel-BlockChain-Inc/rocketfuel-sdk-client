@@ -1,11 +1,11 @@
 export const FEATURE_PAYIN = {
-  feature: "PAYIN", // Add other valid features
+  feature: 'PAYIN', // Add other valid features
   style: 'default',
   containerStyle: 'default',
   containerId: 'default',
 } as const;
 export const FEATURE_AGE_VERIFICATION = {
-  feature: "AGE_VERIFICATION", // Add other valid features
+  feature: 'AGE_VERIFICATION', // Add other valid features
   style: 'default',
   containerStyle: 'default',
   containerId: 'default',
@@ -34,9 +34,10 @@ export const appDomains = {
 export const ContainerId = 'sdk-buttons-container' as const;
 
 export const EVENTS = {
-  AGE_VERIFICATION: "AGE_VERIFICATION",
-  CLOSE_MODAL: "CLOSE_MODAL"
-}
+  AGE_VERIFICATION: 'AGE_VERIFICATION',
+  CLOSE_MODAL: 'CLOSE_MODAL',
+};
 export const appEnv = process.env.NODE_ENV as string;
 
-export const version = '1.0.2'
+/** Injected at build time via rollup replace (package.json version). */
+export const version = process.env.SDK_VERSION as string;

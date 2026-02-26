@@ -1,4 +1,4 @@
-import { RocketFuelOptions } from "./types";
+import { RocketFuelOptions } from './types';
 declare global {
     interface Window {
         token: string;
@@ -7,7 +7,7 @@ declare global {
 }
 declare class RocketFuel {
     private domain;
-    rkflToken: any;
+    rkflToken: string | null;
     private success_event;
     clientId: string;
     constructor(options: RocketFuelOptions);

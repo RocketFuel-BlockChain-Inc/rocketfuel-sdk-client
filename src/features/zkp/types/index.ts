@@ -1,4 +1,1 @@
-export interface UserInfo {
-    email?: string;
-    userId?: string;
-}
+export type { UserInfo } from '../../../core/types';

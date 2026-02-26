@@ -6,6 +6,7 @@ export default class IframeUtiltites {
     private static feature;
     private static currentPath;
     private static pathCheckInterval;
+    private static pathMessageHandler;
     private static createIFrame;
     static showOverlay(url: string, feature: string): void;
     static closeIframe(): void;

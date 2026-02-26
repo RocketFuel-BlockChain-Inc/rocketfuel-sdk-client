@@ -34,4 +34,5 @@ export declare const EVENTS: {
     CLOSE_MODAL: string;
 };
 export declare const appEnv: string;
-export declare const version = "1.0.2";
+/** Injected at build time via rollup replace (package.json version). */
+export declare const version: string;
