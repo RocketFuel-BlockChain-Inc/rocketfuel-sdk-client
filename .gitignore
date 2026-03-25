@@ -7,3 +7,5 @@ rocketfuel-wp-plugin.zip
 build
 .env.*
 dist-qa
+dist-cdn
+dist
