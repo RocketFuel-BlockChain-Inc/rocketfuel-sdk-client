@@ -44,7 +44,6 @@ const ROCKETFUEL_LOADER_SVG = `<svg class="rkfl-loader-svg" width="200" height="
   />
 </svg>`;
 
-const IFRAME_VERTICAL_PADDING_PX = 16;
 export default class IframeUtiltites {
   public static iframe: HTMLIFrameElement | null = null;
   private static wrapper: HTMLDivElement | null = null;
@@ -208,18 +207,6 @@ export default class IframeUtiltites {
 
     return iframe;
   }
-
-  private static applyIframeVerticalPadding() {
-    if (!this.wrapper || !this.iframe) {
-      return;
-    }
-
-    this.wrapper.style.boxSizing = 'border-box';
-    this.wrapper.style.paddingTop = `${IFRAME_VERTICAL_PADDING_PX}px`;
-    this.wrapper.style.paddingBottom = `${IFRAME_VERTICAL_PADDING_PX}px`;
-    this.iframe.style.height = `calc(100% - ${IFRAME_VERTICAL_PADDING_PX * 2}px)`;
-  }
-
   public static showOverlay(url: string, feature: string) {
     try {
       if (this.iframe) {
@@ -269,13 +256,13 @@ export default class IframeUtiltites {
 
     try {
       this.iframe.style.display = 'block';
+      this.iframe.style.height = '100%';
       this.iframe.style.border = '1px solid #dddddd';
       this.iframe.style.borderRadius = '8px';
       this.iframe.style.background = '#F8F8F8';
       if (isMobile) {
         this.iframe.style.width = '100%';
       }
-      this.applyIframeVerticalPadding();
     } catch (error) {
       console.error('Error styling iframe:', error);
       this.handleCrash('iframe_styling', error);
@@ -368,7 +355,7 @@ export default class IframeUtiltites {
     if (Number(convHeight) >= Number(window.innerHeight)) {
       height = window.innerHeight.toString() + 'px';
     }
-    if (this.iframe && this.wrapper) {
+    if (this.iframe) {
       // if the feature is not age verification
       if (this.feature !== FEATURE_AGE_VERIFICATION.feature) {
         if (Number(height) >= Number(window.innerHeight)) {
@@ -378,8 +365,7 @@ export default class IframeUtiltites {
           height = (Number(window.innerHeight) / 2).toString();
         }
       }
-      this.wrapper.style.height = height;
-      this.applyIframeVerticalPadding();
+      this.iframe.style.height = height;
     }
   }
 
