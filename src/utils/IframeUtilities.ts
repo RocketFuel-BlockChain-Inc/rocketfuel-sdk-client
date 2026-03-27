@@ -1,6 +1,48 @@
 import { FEATURE_AGE_VERIFICATION } from './constants';
 import { dragElement } from './dragger';
 export const isMobile = window.innerWidth <= 768 || /Mobi|Android/i.test(navigator.userAgent);
+
+const ROCKETFUEL_LOADER_SVG = `<svg class="rkfl-loader-svg" width="200" height="200" viewBox="0 0 84 84" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="paint0_rkfl_loader" cx="0" cy="0" r="1" gradientTransform="rotate(53.661 34.411 -57.959) scale(168.007)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#B1D0FF" stop-opacity="0.8" />
+      <stop offset="1" stop-color="#0088F5" />
+    </radialGradient>
+  </defs>
+  <circle class="rkfl-loader-bg" cx="42" cy="42" r="42" fill="url(#paint0_rkfl_loader)" />
+
+  <path
+    class="rkfl-loader-fill rkfl-loader-fill-h"
+    fill="#fff"
+    d="M38.802 40.932H24.908V27.979h4.815l-4.313-6.116h-7.574V62.65h7.072V47.095h18.207l-4.313-6.163Z"
+  />
+  <path
+    class="rkfl-loader-stroke rkfl-loader-stroke-h"
+    pathLength="1"
+    fill="none"
+    stroke="#fff"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    d="M38.802 40.932H24.908V27.979h4.815l-4.313-6.116h-7.574V62.65h7.072V47.095h18.207l-4.313-6.163Z"
+  />
+
+  <path
+    class="rkfl-loader-fill rkfl-loader-fill-r"
+    fill="#fff"
+    d="M59.016 45.458a10.971 10.971 0 0 0 3.51-2.408 10.318 10.318 0 0 0 2.308-3.563c.566-1.53.838-3.145.802-4.767 0-3.997-1.253-7.127-3.761-9.39-2.508-2.311-6.02-3.419-10.533-3.419H29.523l4.364 6.067h15.8c5.868 0 8.777 2.215 8.777 6.694 0 2.022-.702 3.563-2.107 4.67-1.404 1.108-3.41 1.59-6.069 1.59h-7.272L58.314 62.6h7.724L54.652 46.758a20.733 20.733 0 0 0 4.364-1.3Z"
+  />
+  <path
+    class="rkfl-loader-stroke rkfl-loader-stroke-r"
+    pathLength="1"
+    fill="none"
+    stroke="#fff"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    d="M59.016 45.458a10.971 10.971 0 0 0 3.51-2.408 10.318 10.318 0 0 0 2.308-3.563c.566-1.53.838-3.145.802-4.767 0-3.997-1.253-7.127-3.761-9.39-2.508-2.311-6.02-3.419-10.533-3.419H29.523l4.364 6.067h15.8c5.868 0 8.777 2.215 8.777 6.694 0 2.022-.702 3.563-2.107 4.67-1.404 1.108-3.41 1.59-6.069 1.59h-7.272L58.314 62.6h7.724L54.652 46.758a20.733 20.733 0 0 0 4.364-1.3Z"
+  />
+</svg>`;
 export default class IframeUtiltites {
   public static iframe: HTMLIFrameElement | null = null;
   private static wrapper: HTMLDivElement | null = null;
@@ -9,6 +51,147 @@ export default class IframeUtiltites {
   private static currentPath: string = '';
   private static pathCheckInterval: NodeJS.Timeout | null = null;
   private static pathMessageHandler: ((event: MessageEvent) => void) | null = null;
+  private static loaderStylesInjected = false;
+
+  private static ensureLoaderStyles() {
+    if (this.loaderStylesInjected || document.getElementById('rkfl-loader-styles')) {
+      this.loaderStylesInjected = true;
+      return;
+    }
+
+    const style = document.createElement('style');
+    style.id = 'rkfl-loader-styles';
+    style.textContent = `
+      @keyframes rkflLoaderContainerPulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.02); opacity: 0.96; }
+      }
+
+      @keyframes rkflLoaderBackdropPulse {
+        0%, 100% { transform: scale(0.94); opacity: 0.12; }
+        50% { transform: scale(1.08); opacity: 0.28; }
+      }
+
+      @keyframes rkflLoaderCircleReveal {
+        0%, 10% { transform: scale(0); opacity: 0; }
+        18%, 82% { transform: scale(1); opacity: 1; }
+        100% { transform: scale(1); opacity: 1; }
+      }
+
+      @keyframes rkflLoaderStrokeH {
+        0%, 8% {
+          stroke-dashoffset: 1;
+          opacity: 0;
+        }
+        12% {
+          opacity: 1;
+        }
+        45%, 100% {
+          stroke-dashoffset: 0;
+          opacity: 1;
+        }
+      }
+
+      @keyframes rkflLoaderStrokeR {
+        0%, 18% {
+          stroke-dashoffset: 1;
+          opacity: 0;
+        }
+        22% {
+          opacity: 1;
+        }
+        62%, 100% {
+          stroke-dashoffset: 0;
+          opacity: 1;
+        }
+      }
+
+      @keyframes rkflLoaderFillH {
+        0%, 42% { opacity: 0; }
+        58%, 100% { opacity: 1; }
+      }
+
+      @keyframes rkflLoaderFillR {
+        0%, 58% { opacity: 0; }
+        78%, 100% { opacity: 1; }
+      }
+
+      .rkfl-loader-shell {
+        position: relative;
+        width: 80px;
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: rkflLoaderContainerPulse 3.5s ease-in-out infinite;
+      }
+
+      .rkfl-loader-shell::before {
+        content: '';
+        position: absolute;
+        inset: 14px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(0, 136, 245, 0.24) 0%, rgba(0, 136, 245, 0.08) 45%, rgba(0, 136, 245, 0) 74%);
+        filter: blur(4px);
+        animation: rkflLoaderBackdropPulse 3.5s ease-in-out infinite;
+      }
+
+      .rkfl-loader-svg {
+        position: relative;
+        z-index: 1;
+        width: 80px;
+        height: 80px;
+        overflow: visible;
+        filter: drop-shadow(0 6px 12px rgba(0, 136, 245, 0.18));
+      }
+
+      .rkfl-loader-bg {
+        transform-origin: 42px 42px;
+        animation: rkflLoaderCircleReveal 3.5s ease-in-out infinite;
+      }
+
+      .rkfl-loader-stroke {
+        stroke-dasharray: 1;
+        stroke-dashoffset: 1;
+        fill: none;
+        opacity: 0;
+      }
+
+      .rkfl-loader-stroke-h {
+        animation: rkflLoaderStrokeH 3.5s ease-in-out infinite;
+      }
+
+      .rkfl-loader-stroke-r {
+        animation: rkflLoaderStrokeR 3.5s ease-in-out infinite;
+      }
+
+      .rkfl-loader-fill {
+        opacity: 0;
+      }
+
+      .rkfl-loader-fill-h {
+        animation: rkflLoaderFillH 3.5s ease-in-out infinite;
+      }
+
+      .rkfl-loader-fill-r {
+        animation: rkflLoaderFillR 3.5s ease-in-out infinite;
+      }
+    `;
+
+    document.head.appendChild(style);
+    this.loaderStylesInjected = true;
+  }
+
+  private static createLoaderElement() {
+    this.ensureLoaderStyles();
+
+    const loaderShell = document.createElement('div');
+    loaderShell.className = 'rkfl-loader-shell';
+    loaderShell.innerHTML = ROCKETFUEL_LOADER_SVG;
+
+    return loaderShell;
+  }
+
   private static createIFrame(url: string) {
     const iframe = document.createElement('iframe');
     iframe.title = 'Rocketfuel';
@@ -17,7 +200,7 @@ export default class IframeUtiltites {
     iframe.style.border = '0';
     iframe.style.overflow = 'hidden';
     iframe.style.overflowY = 'auto';
-
+    iframe.style.minHeight = '500px';
     // Add cache-busting parameter to ensure fresh content
     const cacheBustedUrl = this.addCacheBusting(url);
     iframe.src = cacheBustedUrl;
@@ -85,8 +268,6 @@ export default class IframeUtiltites {
       this.handleCrash('iframe_styling', error);
     }
 
-    const iconUrl = 'https://ik.imagekit.io/rocketfuel/icons/Ripple%20loading%20animation.gif';
-
     // Create overlay
     const overlay = document.createElement('div');
     overlay.id = 'rkfl-loader-overlay';
@@ -103,14 +284,7 @@ export default class IframeUtiltites {
     overlay.style.alignItems = 'center';
     overlay.style.zIndex = '9998';
 
-    // Create loader image
-    const loader = document.createElement('img');
-    loader.src = iconUrl;
-    loader.alt = 'Loading';
-    loader.style.transform = 'translate(-50%, -50%)';
-    loader.style.position = 'absolute';
-    loader.style.top = '50%';
-    loader.style.left = '52%';
+    const loader = this.createLoaderElement();
 
     // Handle iframe load events
     this.iframe.addEventListener('load', () => {
