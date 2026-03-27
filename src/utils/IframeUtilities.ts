@@ -200,7 +200,7 @@ export default class IframeUtiltites {
     iframe.style.border = '0';
     iframe.style.overflow = 'hidden';
     iframe.style.overflowY = 'auto';
-    iframe.style.minHeight = '500px';
+    iframe.style.minHeight = '400px';
     // Add cache-busting parameter to ensure fresh content
     const cacheBustedUrl = this.addCacheBusting(url);
     iframe.src = cacheBustedUrl;
