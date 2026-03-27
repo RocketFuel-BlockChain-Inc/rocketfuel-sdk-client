@@ -43,6 +43,8 @@ const ROCKETFUEL_LOADER_SVG = `<svg class="rkfl-loader-svg" width="200" height="
     d="M59.016 45.458a10.971 10.971 0 0 0 3.51-2.408 10.318 10.318 0 0 0 2.308-3.563c.566-1.53.838-3.145.802-4.767 0-3.997-1.253-7.127-3.761-9.39-2.508-2.311-6.02-3.419-10.533-3.419H29.523l4.364 6.067h15.8c5.868 0 8.777 2.215 8.777 6.694 0 2.022-.702 3.563-2.107 4.67-1.404 1.108-3.41 1.59-6.069 1.59h-7.272L58.314 62.6h7.724L54.652 46.758a20.733 20.733 0 0 0 4.364-1.3Z"
   />
 </svg>`;
+
+const IFRAME_VERTICAL_PADDING_PX = 16;
 export default class IframeUtiltites {
   public static iframe: HTMLIFrameElement | null = null;
   private static wrapper: HTMLDivElement | null = null;
@@ -200,13 +202,24 @@ export default class IframeUtiltites {
     iframe.style.border = '0';
     iframe.style.overflow = 'hidden';
     iframe.style.overflowY = 'auto';
-    iframe.style.minHeight = '400px';
     // Add cache-busting parameter to ensure fresh content
     const cacheBustedUrl = this.addCacheBusting(url);
     iframe.src = cacheBustedUrl;
 
     return iframe;
   }
+
+  private static applyIframeVerticalPadding() {
+    if (!this.wrapper || !this.iframe) {
+      return;
+    }
+
+    this.wrapper.style.boxSizing = 'border-box';
+    this.wrapper.style.paddingTop = `${IFRAME_VERTICAL_PADDING_PX}px`;
+    this.wrapper.style.paddingBottom = `${IFRAME_VERTICAL_PADDING_PX}px`;
+    this.iframe.style.height = `calc(100% - ${IFRAME_VERTICAL_PADDING_PX * 2}px)`;
+  }
+
   public static showOverlay(url: string, feature: string) {
     try {
       if (this.iframe) {
@@ -256,13 +269,13 @@ export default class IframeUtiltites {
 
     try {
       this.iframe.style.display = 'block';
-      this.iframe.style.height = '100%';
       this.iframe.style.border = '1px solid #dddddd';
       this.iframe.style.borderRadius = '8px';
       this.iframe.style.background = '#F8F8F8';
       if (isMobile) {
         this.iframe.style.width = '100%';
       }
+      this.applyIframeVerticalPadding();
     } catch (error) {
       console.error('Error styling iframe:', error);
       this.handleCrash('iframe_styling', error);
@@ -355,7 +368,7 @@ export default class IframeUtiltites {
     if (Number(convHeight) >= Number(window.innerHeight)) {
       height = window.innerHeight.toString() + 'px';
     }
-    if (this.iframe) {
+    if (this.iframe && this.wrapper) {
       // if the feature is not age verification
       if (this.feature !== FEATURE_AGE_VERIFICATION.feature) {
         if (Number(height) >= Number(window.innerHeight)) {
@@ -365,7 +378,8 @@ export default class IframeUtiltites {
           height = (Number(window.innerHeight) / 2).toString();
         }
       }
-      this.iframe.style.height = height;
+      this.wrapper.style.height = height;
+      this.applyIframeVerticalPadding();
     }
   }
 
