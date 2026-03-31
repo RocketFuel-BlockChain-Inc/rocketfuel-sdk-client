@@ -24,6 +24,10 @@ jobs:
         with:
           node-version: 20
           registry-url: 'https://registry.npmjs.org'
+      - name: Fetch environment files
+        run: aws ssm get-parameters-by-path --path ${{ env.PARAMETER_PATH }} --region ${{ env.REGION }} --with-decryption --query "Parameters[*].{Name:Name,Value:Value}"  --output json | jq .[] | jq -r '.Name+"="+.Value' | cut -c ${{ env.CHARACTER_LENGHT }} >>.env
+      - name: Print env
+        run: echo ".env"
 
       - name: Install dependencies
         run: npm ci
