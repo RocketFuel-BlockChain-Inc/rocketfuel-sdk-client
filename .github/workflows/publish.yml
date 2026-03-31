@@ -15,6 +15,9 @@ on:
         default: 'true'
         type: choice
         options: ['true', 'false']
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   build_test:
