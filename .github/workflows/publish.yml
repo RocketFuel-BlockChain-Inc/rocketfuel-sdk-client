@@ -20,6 +20,8 @@ jobs:
   build_test:
     name: Build and Test
     runs-on: ubuntu-latest
+    environment: CLOUDFRONT_S3_BUCKET
+
 
     env:
       AWS_REGION: ${{ secrets.AWS_REGION }}
@@ -105,6 +107,16 @@ jobs:
     runs-on: ubuntu-latest
     needs: build_test
     if: github.event_name == 'workflow_dispatch' && inputs.deploy_cdn == 'true'
+    environment: CLOUDFRONT_S3_BUCKET
+
+
+    env:
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      REGION: ${{ vars.REGION }}
+      PARAMETER_PATH: ${{ vars.PARAMETER_PATH }}
+      S3_BUCKET: ${{ vars.S3_BUCKET }}
+      ENV_STATIC_FILE: ${{ vars.ENV_STATIC_FILE }}
+      CHARACTER_LENGHT: ${{ vars.CHARACTER_LENGHT }}
 
     steps:
       - name: Checkout
