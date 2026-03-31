@@ -1,9 +1,6 @@
 name: Build Test Publish SDK Client
 
 on:
-  push:
-    tags:
-      - 'v*.*.*'
   workflow_dispatch:
     inputs:
       publish_npm:
@@ -12,18 +9,6 @@ on:
         default: 'true'
         type: choice
         options: ['true', 'false']
-      deploy_cdn:
-        description: 'Deploy build to CDN'
-        required: true
-        default: 'true'
-        type: choice
-        options: ['true', 'false']
-      cdn_target:
-        description: 'CDN deployment target'
-        required: true
-        default: 'cloudfront'
-        type: choice
-        options: ['cloudfront', 'cloudflare', 'both']
 
 jobs:
   build_test:
@@ -32,7 +17,6 @@ jobs:
     defaults:
       run:
         working-directory: rocketfuel-sdk-client
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -107,28 +91,14 @@ jobs:
           name: sdk-dist
           path: rocketfuel-sdk-client/dist
 
-      - name: Configure AWS credentials
-        if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && (inputs.cdn_target == 'cloudfront' || inputs.cdn_target == 'both'))
+      - name: Configure AWS credentials using OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Upload assets to S3 for CloudFront
-        if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && (inputs.cdn_target == 'cloudfront' || inputs.cdn_target == 'both'))
-        run: aws s3 sync rocketfuel-sdk-client/dist s3://${{ secrets.CLOUDFRONT_S3_BUCKET }} --delete
+        run: aws s3 sync rocketfuel-sdk-client/dist s3://${{ secrets.CLOUDFRONT_S3_BUCKET }}
 
       - name: Invalidate CloudFront cache
-        if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && (inputs.cdn_target == 'cloudfront' || inputs.cdn_target == 'both'))
         run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
-
-      - name: Purge Cloudflare cache
-        if: github.event_name == 'workflow_dispatch' && (inputs.cdn_target == 'cloudflare' || inputs.cdn_target == 'both')
-        run: |
-          curl -sS -X POST "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/purge_cache" \
-            -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            --data '{"purge_everything":true}'
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
