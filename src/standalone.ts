@@ -1,4 +1,8 @@
 import { RKFLPlugin } from './RkflPlugin';
 
-// ✅ Attach to window directly
-(window as any).RkflPlugin = RKFLPlugin;
+declare global {
+  interface Window {
+    RkflPlugin: typeof RKFLPlugin;
+  }
+}
+window.RkflPlugin = RKFLPlugin;

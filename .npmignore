@@ -11,9 +11,6 @@ README.md
 dist-qa/
 build/
 .env.*
-build-wordpress.js
-rocketfuel-plugin.php
 *.zip
 tsconfig.json
 rollup.config.js
-build-wordpress.js

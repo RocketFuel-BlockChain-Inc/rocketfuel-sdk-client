@@ -1,55 +1,57 @@
-import { getApiDomains } from "../features/payin/types";
+import { getApiDomains } from '../features/payin/types';
 import CryptoJS from 'crypto-js';
-import IframeUtiltites from "./IframeUtilities";
-import { version } from "./constants";
+import { version } from './constants';
 class ApiClient {
-    private domain: string;
-    constructor(env: "production" | "qa" | "preprod" | "sandbox") {
-        this.domain = getApiDomains(env)
-    }
+  private domain: string;
+  constructor(env: 'production' | 'qa' | 'preprod' | 'sandbox') {
+    this.domain = getApiDomains(env);
+  }
 
-    encrypt(data: string, clientId: string) {
-        return CryptoJS.AES.encrypt(data, clientId).toString();
+  encrypt(data: string, clientId: string) {
+    return CryptoJS.AES.encrypt(data, clientId).toString();
+  }
+
+  async verifyClient(clientId: string) {
+    const data = {
+      clientUrl: window.location.protocol + '//' + window.location.host,
+      sessionId: sessionStorage.getItem('sessionId'),
+    };
+    if (!data.sessionId) {
+      data.sessionId = crypto.randomUUID();
+      sessionStorage.setItem('sessionId', data.sessionId);
+    }
+    const cipher = this.encrypt(JSON.stringify(data), clientId);
+    const payload = {
+      clientId,
+      encryptedReq: cipher,
     };
 
-    async verifyClient(clientId: string) {
-        const data = {
-            clientUrl: window.location.protocol + '//' + window.location.host
-        }
-        const cipher = this.encrypt(JSON.stringify(data), clientId)
-        const payload = {
-            clientId,
-            encryptedReq: cipher
-        };
+    try {
+      const response = await fetch(this.domain + '/sdk/generate-auth-token', {
+        method: 'POST',
+        headers: {
+          'x-sdk-version': version,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
 
-        try {
-            const response = await fetch(this.domain + '/sdk/generate-auth-token', {
-                method: "POST",
-                headers: {
-                    "x-sdk-version": version,
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(payload),
-            });
+      const data = await response.json();
 
-            const data = await response.json();
+      if (!response.ok || data.ok === false) {
+        return { ok: false, error: data?.message };
+      }
 
-            if (!response.ok || data.ok === false) {
-                return { ok: false, error: data?.message }
-            }
+      localStorage.setItem('access', data.result.access_token);
 
-            localStorage.setItem('access', data.result.access_token)
-
-
-            // Success
-            return {
-                ok: true,
-            };
-        } catch (err: any) {
-            console.error("Request failed:", err);
-            return { ok: false, error: err?.message }
-        }
+      // Success
+      return {
+        ok: true,
+      };
+    } catch (err: unknown) {
+      console.error('Request failed:', err);
+      return { ok: false, error: err instanceof Error ? err.message : String(err) };
     }
-
+  }
 }
 export default ApiClient;

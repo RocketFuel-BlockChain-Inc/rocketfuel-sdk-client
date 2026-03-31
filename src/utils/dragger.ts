@@ -1,13 +1,12 @@
-import { FEATURE_AGE_VERIFICATION } from "./constants";
+import { FEATURE_AGE_VERIFICATION } from './constants';
 
 export function dragElement(feature: string) {
-    const isMobile = window.innerWidth <= 768 || /Mobi|Android/i.test(navigator.userAgent);
-    const iframeWrapper = document.createElement("div");
-    const iframeWrapperHeader = document.createElement("div");
+  const isMobile = window.innerWidth <= 768 || /Mobi|Android/i.test(navigator.userAgent);
+  const iframeWrapper = document.createElement('div');
+  const iframeWrapperHeader = document.createElement('div');
 
-
-    if (feature === FEATURE_AGE_VERIFICATION.feature) {
-        iframeWrapper.style.cssText = `
+  if (feature === FEATURE_AGE_VERIFICATION.feature) {
+    iframeWrapper.style.cssText = `
             position: fixed;
             z-index: 2147483647;
             top: 50%;
@@ -18,8 +17,8 @@ export function dragElement(feature: string) {
             box-shadow: 0 0 10px rgba(0,0,0,0.15);
             border-radius: 8px;
         `;
-    } else {
-        iframeWrapper.style.cssText = `
+  } else {
+    iframeWrapper.style.cssText = `
             position: fixed;
             z-index: 2147483647;
             top: 1%;
@@ -29,9 +28,9 @@ export function dragElement(feature: string) {
             box-shadow: 0 0 10px rgba(0,0,0,0.15);
             border-radius: 8px;
         `;
-    }
+  }
 
-    iframeWrapperHeader.style.cssText = `
+  iframeWrapperHeader.style.cssText = `
         height: 4px;
         width: 40%;
         cursor: move;
@@ -43,28 +42,28 @@ export function dragElement(feature: string) {
         transition: all 0.3s ease;
         border-radius: 4px;
     `;
-    iframeWrapperHeader.title = 'Drag to move';
+  iframeWrapperHeader.title = 'Drag to move';
 
-    // Hover effect (desktop only)
-    iframeWrapperHeader.onmouseenter = () => {
-        if (!isMobile) {
-            iframeWrapperHeader.style.height = '14px';
-            iframeWrapperHeader.style.background = '#cecece';
-        }
-    };
-    iframeWrapperHeader.onmouseup = () => {
-        if (!isMobile) {
-            iframeWrapperHeader.style.height = '4px';
-            iframeWrapperHeader.style.background = '#cecece';
-        }
-        closeDragElement();
-    };
-
+  // Hover effect (desktop only)
+  iframeWrapperHeader.onmouseenter = () => {
     if (!isMobile) {
-        iframeWrapperHeader.onmousedown = dragMouseDown;
-    } else {
-        // Fullscreen for mobile
-        iframeWrapper.style.cssText = `
+      iframeWrapperHeader.style.height = '14px';
+      iframeWrapperHeader.style.background = '#cecece';
+    }
+  };
+  iframeWrapperHeader.onmouseup = () => {
+    if (!isMobile) {
+      iframeWrapperHeader.style.height = '4px';
+      iframeWrapperHeader.style.background = '#cecece';
+    }
+    closeDragElement();
+  };
+
+  if (!isMobile) {
+    iframeWrapperHeader.onmousedown = dragMouseDown;
+  } else {
+    // Fullscreen for mobile
+    iframeWrapper.style.cssText = `
             position: fixed;
             z-index: 2147483647;
             top: 0;
@@ -74,41 +73,44 @@ export function dragElement(feature: string) {
             border: none;
             background: white;
         `;
-    }
+  }
 
-    iframeWrapper.appendChild(iframeWrapperHeader);
+  iframeWrapper.appendChild(iframeWrapperHeader);
 
-    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+  let pos1 = 0,
+    pos2 = 0,
+    pos3 = 0,
+    pos4 = 0;
 
-    function dragMouseDown(e: MouseEvent) {
-        e.preventDefault();
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-        document.onmouseup = closeDragElement;
-        document.onmousemove = elementDrag;
-    }
+  function dragMouseDown(e: MouseEvent) {
+    e.preventDefault();
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    document.onmouseup = closeDragElement;
+    document.onmousemove = elementDrag;
+  }
 
-    function elementDrag(e: MouseEvent) {
-        e.preventDefault();
+  function elementDrag(e: MouseEvent) {
+    e.preventDefault();
 
-        // Calculate movement deltas
-        pos1 = pos3 - e.clientX;
-        pos2 = pos4 - e.clientY;
-        pos3 = e.clientX;
-        pos4 = e.clientY;
+    // Calculate movement deltas
+    pos1 = pos3 - e.clientX;
+    pos2 = pos4 - e.clientY;
+    pos3 = e.clientX;
+    pos4 = e.clientY;
 
-        // Vertical move
-        iframeWrapper.style.top = (iframeWrapper.offsetTop - pos2) + "px";
+    // Vertical move
+    iframeWrapper.style.top = iframeWrapper.offsetTop - pos2 + 'px';
 
-        // Horizontal move using right
-        const currentRight = parseFloat(getComputedStyle(iframeWrapper).right || "0");
-        iframeWrapper.style.right = (currentRight + pos1) + "px";
-    }
+    // Horizontal move using right
+    const currentRight = parseFloat(getComputedStyle(iframeWrapper).right || '0');
+    iframeWrapper.style.right = currentRight + pos1 + 'px';
+  }
 
-    function closeDragElement() {
-        document.onmouseup = null;
-        document.onmousemove = null;
-    }
+  function closeDragElement() {
+    document.onmouseup = null;
+    document.onmousemove = null;
+  }
 
-    return iframeWrapper;
+  return iframeWrapper;
 }

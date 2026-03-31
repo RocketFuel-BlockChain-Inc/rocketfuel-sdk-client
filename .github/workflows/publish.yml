@@ -1,0 +1,134 @@
+name: Build Test Publish SDK Client
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      publish_npm:
+        description: 'Publish package to npm'
+        required: true
+        default: 'true'
+        type: choice
+        options: ['true', 'false']
+      deploy_cdn:
+        description: 'Deploy build to CDN'
+        required: true
+        default: 'true'
+        type: choice
+        options: ['true', 'false']
+      cdn_target:
+        description: 'CDN deployment target'
+        required: true
+        default: 'cloudfront'
+        type: choice
+        options: ['cloudfront', 'cloudflare', 'both']
+
+jobs:
+  build_test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: rocketfuel-sdk-client
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm test --if-present
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sdk-dist
+          path: rocketfuel-sdk-client/dist
+
+  publish_npm:
+    name: Publish npm
+    runs-on: ubuntu-latest
+    needs: build_test
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.publish_npm == 'true')
+    defaults:
+      run:
+        working-directory: rocketfuel-sdk-client
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Publish to npm
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  deploy_cdn:
+    name: Deploy CDN (CloudFront/Cloudflare)
+    runs-on: ubuntu-latest
+    needs: build_test
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.deploy_cdn == 'true')
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download dist artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: sdk-dist
+          path: rocketfuel-sdk-client/dist
+
+      - name: Configure AWS credentials
+        if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && (inputs.cdn_target == 'cloudfront' || inputs.cdn_target == 'both'))
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Upload assets to S3 for CloudFront
+        if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && (inputs.cdn_target == 'cloudfront' || inputs.cdn_target == 'both'))
+        run: aws s3 sync rocketfuel-sdk-client/dist s3://${{ secrets.CLOUDFRONT_S3_BUCKET }} --delete
+
+      - name: Invalidate CloudFront cache
+        if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && (inputs.cdn_target == 'cloudfront' || inputs.cdn_target == 'both'))
+        run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
+
+      - name: Purge Cloudflare cache
+        if: github.event_name == 'workflow_dispatch' && (inputs.cdn_target == 'cloudflare' || inputs.cdn_target == 'both')
+        run: |
+          curl -sS -X POST "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/purge_cache" \
+            -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            --data '{"purge_everything":true}'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
