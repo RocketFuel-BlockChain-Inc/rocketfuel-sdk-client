@@ -55,13 +55,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Fetch environment files
-        run: |
-          if [ -z "$REGION" ] || [ -z "$PARAMETER_PATH" ]; then
-            echo "Missing REGION or PARAMETER_PATH"
-            exit 1
-          fi
-
-          aws ssm get-parameters-by-path \
+        run: aws ssm get-parameters-by-path \
             --path "$PARAMETER_PATH" \
             --region "$REGION" \
             --with-decryption \
