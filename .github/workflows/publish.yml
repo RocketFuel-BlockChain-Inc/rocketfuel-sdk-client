@@ -104,7 +104,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Upload assets to S3
-        run: aws s3 sync dist/ s3://${{ vars.CLOUDFRONT_S3_BUCKET }}
+        run: aws s3 cp dist/ s3://${{ vars.CLOUDFRONT_S3_BUCKET }} --recursive
 
       - name: Invalidate CloudFront cache
         run: aws cloudfront create-invalidation \
