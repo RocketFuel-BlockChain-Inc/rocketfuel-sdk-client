@@ -34,10 +34,6 @@ jobs:
       ENV_STATIC_FILE: ${{ vars.ENV_STATIC_FILE }}
       CHARACTER_LENGHT: ${{ vars.CHARACTER_LENGHT }}
 
-    defaults:
-      run:
-        working-directory: rocketfuel-sdk-client
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
