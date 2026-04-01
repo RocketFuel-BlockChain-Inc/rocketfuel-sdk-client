@@ -5,8 +5,8 @@ export const isMobile = window.innerWidth <= 768 || /Mobi|Android/i.test(navigat
 const ROCKETFUEL_LOADER_SVG = `<svg class="rkfl-loader-svg" width="200" height="200" viewBox="0 0 84 84" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <radialGradient id="paint0_rkfl_loader" cx="0" cy="0" r="1" gradientTransform="rotate(53.661 34.411 -57.959) scale(168.007)" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#B1D0FF" stop-opacity="0.8" />
-      <stop offset="1" stop-color="#0088F5" />
+      <stop stop-color="#1A202C" stop-opacity="0.9" />
+      <stop offset="1" stop-color="#1A202C" />
     </radialGradient>
   </defs>
   <circle class="rkfl-loader-bg" cx="42" cy="42" r="42" fill="url(#paint0_rkfl_loader)" />
