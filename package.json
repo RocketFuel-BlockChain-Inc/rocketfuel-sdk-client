@@ -1,6 +1,6 @@
 {
   "name": "@rkfl/transact-client",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "unpkg": "./dist/rkfl-transact-client.min.js",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -60,7 +60,10 @@
     "typescript": "^5.8.3"
   },
   "lint-staged": {
-    "src/**/*.ts": ["eslint --fix", "prettier --write"],
+    "src/**/*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ],
     "src/**/*.{js,json}": "prettier --write"
   },
   "dependencies": {
