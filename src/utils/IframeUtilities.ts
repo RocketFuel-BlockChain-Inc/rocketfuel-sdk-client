@@ -2,6 +2,9 @@ import { FEATURE_AGE_VERIFICATION } from './constants';
 import { dragElement } from './dragger';
 export const isMobile = window.innerWidth <= 768 || /Mobi|Android/i.test(navigator.userAgent);
 
+/** Required for SumSub camera/mic inside the nested payment iframe. */
+export const IFRAME_MEDIA_ALLOW = 'camera; microphone; geolocation; clipboard-write';
+
 const ROCKETFUEL_LOADER_SVG = `<svg class="rkfl-loader-svg" width="200" height="200" viewBox="0 0 84 84" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <radialGradient id="paint0_rkfl_loader" cx="0" cy="0" r="1" gradientTransform="rotate(53.661 34.411 -57.959) scale(168.007)" gradientUnits="userSpaceOnUse">
@@ -193,6 +196,11 @@ export default class IframeUtiltites {
     return loaderShell;
   }
 
+  private static applyMediaPermissionsToIframe(iframe: HTMLIFrameElement) {
+    iframe.setAttribute('allow', IFRAME_MEDIA_ALLOW);
+    iframe.allow = IFRAME_MEDIA_ALLOW;
+  }
+
   private static createIFrame(url: string) {
     const iframe = document.createElement('iframe');
     iframe.title = 'Rocketfuel';
@@ -201,6 +209,7 @@ export default class IframeUtiltites {
     iframe.style.border = '0';
     iframe.style.overflow = 'hidden';
     iframe.style.overflowY = 'auto';
+    this.applyMediaPermissionsToIframe(iframe);
     // Add cache-busting parameter to ensure fresh content
     const cacheBustedUrl = this.addCacheBusting(url);
     iframe.src = cacheBustedUrl;
@@ -210,6 +219,7 @@ export default class IframeUtiltites {
   public static showOverlay(url: string, feature: string) {
     try {
       if (this.iframe) {
+        this.applyMediaPermissionsToIframe(this.iframe);
         // Add cache-busting when updating iframe src
         const cacheBustedUrl = this.addCacheBusting(url);
         this.iframe.src = cacheBustedUrl;
@@ -444,6 +454,13 @@ export default class IframeUtiltites {
       try {
         // Only handle messages from our iframe
         if (event.source !== this.iframe?.contentWindow) return;
+
+        if (event.data?.type === 'rocketfuel_request_media_permissions') {
+          if (this.iframe) {
+            this.applyMediaPermissionsToIframe(this.iframe);
+          }
+          return;
+        }
 
         if (event.data && event.data.type === 'CURRENT_PATH_RESPONSE') {
           const newPath = event.data.path;
